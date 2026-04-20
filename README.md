@@ -1,73 +1,96 @@
-# React + TypeScript + Vite
+# Advact
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A practical, structured guide to mastering the modern React ecosystem — built through a real-world project.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## About
 
-## React Compiler
+This project started as a personal learning space to deeply understand advanced tools in the React ecosystem like:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* React Router
+* TanStack Query
+* Axios
+* React Hook Form + Zod
+* Redux Toolkit
+* Zustand
+* Testing (React Testing Library + Vitest)
 
-## Expanding the ESLint configuration
+At first, this was meant to be **just for me** — a place to organize everything I learn.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+But along the way, I realized:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+> "If this helps me understand things better, it might help others too."
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+So I decided to make it public.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Goal
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+To provide a **clear, structured, and practical learning path** for developers who want to move beyond basic React and start thinking like a real-world frontend engineer.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+This is not just theory.
+
+Everything is built on top of one consistent project:
+
+### TaskFlow — Team Task Management App
+
+Each chapter incrementally improves the same app, so you can understand how modern tools actually work **together in production**, not in isolation.
+
+---
+
+## What Makes This Different?
+
+* Project-based learning (not random examples)
+* Focus on *mental models*, not just syntax
+* Covers real-world patterns used in production
+* Clean UI + structured navigation
+* Beginner-friendly → Intermediate/Advanced bridge
+
+---
+
+## Learning Structure
+
+The content is divided into multiple chapters:
+
+1. **Routing** — using React Router like a pro
+2. **Server State** — TanStack Query + Axios
+3. **Forms & Validation** — React Hook Form + Zod
+4. **State Management** — Redux Toolkit
+5. **Lightweight State** — Zustand
+6. **Testing** — RTL & Vitest
+
+Each chapter includes:
+
+* Explanation (What, Why, When)
+* Mental model
+* Code examples
+* Common mistakes
+* Practical integration into the project
+
+---
+
+## Tech Stack
+
+* React
+* React Router
+* TanStack Query
+* Axios
+* Redux Toolkit
+* Zustand
+* React Hook Form
+* Zod
+* React Testing Library
+* Vitest
+
+---
+
+## Final Note
+
+This project is still evolving as I learn.
+
+So instead of being “perfect”,
+this project is meant to be **real**.
+
+---
