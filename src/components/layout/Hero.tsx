@@ -7,7 +7,7 @@ export default function Hero() {
 
       <div className="max-w-[900px] mx-auto px-12 pt-12 pb-10 relative z-10">
         <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-accent bg-accent/10 border border-accent/20 rounded-full px-3 py-1 mb-5 relative">
-          React Ecosystem &mdash; Bahasa Indonesia
+          Advact &mdash; Advance React Learning &mdash; Bahasa Indonesia
         </div>
 
         <h1 className="text-[2.4rem] font-bold leading-[1.2] mb-4 bg-gradient-to-br from-text to-muted2 bg-clip-text text-transparent relative">
