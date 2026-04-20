@@ -17,7 +17,7 @@ export default function TopicSection({
 }: TopicSectionProps) {
   return (
     <section
-      className={`py-9 pb-8 ${isLast ? "" : "border-b border-border"}`}
+      className={`py-9 ${isLast ? "pb-4" : "pb-8 border-b border-border"}`}
       id={id}
     >
       <div className="flex items-start gap-4 mb-6">

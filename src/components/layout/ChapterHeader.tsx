@@ -24,20 +24,20 @@ export default function ChapterHeader({
 }: ChapterHeaderProps) {
   return (
     <div
-      className="pt-10 pb-5 flex items-center gap-4 border-b border-border2 mb-2"
+      className="pt-8 pb-5 flex items-center gap-4 border-b border-border2 mb-2"
       id={id}
     >
-      <span
-        className={`font-mono text-[11px] px-2.5 py-1 rounded-md shrink-0 border ${badgeStyles[badgeVariant] || badgeStyles[1]}`}
-      >
-        {num}
-      </span>
-      <div>
-        <h2 className="text-[1.6rem] font-bold text-text leading-tight mb-0.5">
-          {title}
-        </h2>
-        <span className="text-[13px] text-muted">{subtitle}</span>
+        <span
+          className={`font-mono text-[11px] px-2.5 py-1 rounded-md shrink-0 border ${badgeStyles[badgeVariant] || badgeStyles[1]}`}
+        >
+          {num}
+        </span>
+        <div>
+          <h2 className="text-[1.6rem] font-bold text-text leading-tight mb-0.5">
+            {title}
+          </h2>
+          <span className="text-[13px] text-muted">{subtitle}</span>
+        </div>
       </div>
-    </div>
   );
 }

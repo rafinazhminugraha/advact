@@ -11,6 +11,7 @@ export default function IntroProject() {
       num="00"
       title="Struktur Proyek TaskFlow"
       subtitle="Gambaran awal sebelum mulai belajar"
+      isLast
     >
       <MentalModel>
         <p>Sebelum membangun rumah, kamu perlu melihat blueprintnya dulu. Bagian ini menunjukkan bagaimana TaskFlow distrukturisasi dan di mana setiap library akan digunakan. Kamu tidak perlu memahami semuanya sekarang, cukup jadikan referensi selama belajar.</p>

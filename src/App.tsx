@@ -17,6 +17,14 @@ const allSectionIds = navigationData.flatMap((group) =>
   group.items.map((item) => item.id)
 );
 
+// Shared container class for all chapter content
+const wrap = "px-12 max-w-[900px] mx-auto";
+
+// Full-bleed separator — direct child of <main> so it spans the full main width
+function ChapterDivider() {
+  return <hr className="border-none h-px bg-border2" />;
+}
+
 export default function App() {
   const { activeId, setActiveId, progress } = useScrollSpy(allSectionIds);
 
@@ -30,13 +38,37 @@ export default function App() {
         <Hero />
         <ProjectBanner />
 
-        <div className="px-12 pb-16 pt-12 max-w-[900px] mx-auto">
+        <div className={`${wrap} pt-12 pb-6`}>
           <IntroProject />
+        </div>
+
+        <ChapterDivider />
+        <div className={`${wrap} pb-6`}>
           <Chapter1Router />
+        </div>
+
+        <ChapterDivider />
+        <div className={`${wrap} pb-6`}>
           <Chapter2Query />
+        </div>
+
+        <ChapterDivider />
+        <div className={`${wrap} pb-6`}>
           <Chapter3Forms />
+        </div>
+
+        <ChapterDivider />
+        <div className={`${wrap} pb-6`}>
           <Chapter4Redux />
+        </div>
+
+        <ChapterDivider />
+        <div className={`${wrap} pb-6`}>
           <Chapter5Zustand />
+        </div>
+
+        <ChapterDivider />
+        <div className={`${wrap} pb-16`}>
           <Chapter6Testing />
           <CtaSection />
         </div>
