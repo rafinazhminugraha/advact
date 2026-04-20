@@ -1,0 +1,2960 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Ecosystem - Panduan Library Modern untuk Junior Dev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e2a;
+    --surface3: #222736;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #7a8099;
+    --muted2: #9ba3bf;
+    --accent: #61dafb;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --accent4: #fb923c;
+    --accent5: #f87171;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Sora', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 270px;
+    min-width: 270px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 0 0 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface3) transparent;
+  }
+
+  .sidebar-logo {
+    padding: 1.5rem 1.25rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-logo .logo-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .sidebar-logo h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .sidebar-progress {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .progress-bar { height: 3px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width 0.4s ease; width: 0%; }
+
+  .nav-section {
+    padding: 0.5rem 1.25rem 0.25rem;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.5rem;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.4rem 1.25rem;
+    font-size: 12.5px;
+    color: var(--muted2);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+  .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(97,218,251,0.06); font-weight: 500; }
+
+  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--surface3); flex-shrink: 0; transition: background 0.15s; }
+  .nav-item.active .nav-dot { background: var(--accent); }
+  .nav-item.done .nav-dot { background: var(--accent3); }
+
+  /* CHAPTER BADGE in sidebar */
+  .nav-chapter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.5rem 1.25rem 0.25rem;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted2);
+    letter-spacing: 0.04em;
+    margin-top: 0.25rem;
+  }
+
+  .nav-chapter-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    background: rgba(167,139,250,0.1);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    flex-shrink: 0;
+  }
+
+  /* MAIN */
+  .main { flex: 1; min-width: 0; }
+
+  /* HERO */
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -40px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(97,218,251,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 30%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(97,218,251,0.1);
+    border: 1px solid rgba(97,218,251,0.2);
+    border-radius: 99px;
+    padding: 4px 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--text) 0%, var(--muted2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 15px;
+    color: var(--muted2);
+    max-width: 600px;
+    margin-bottom: 1.75rem;
+    line-height: 1.7;
+  }
+
+  .hero-stats { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+
+  .stat { display: flex; flex-direction: column; }
+  .stat-num { font-size: 1.5rem; font-weight: 700; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* PROJECT BANNER */
+  .project-banner {
+    background: linear-gradient(135deg, rgba(97,218,251,0.08) 0%, rgba(167,139,250,0.06) 100%);
+    border: 1px solid rgba(97,218,251,0.2);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+    margin: 2rem 3rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .project-icon {
+    width: 48px; height: 48px;
+    background: rgba(97,218,251,0.12);
+    border: 1px solid rgba(97,218,251,0.25);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .project-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .project-info p { font-size: 13.5px; color: var(--muted2); line-height: 1.65; margin-bottom: 0.75rem; }
+
+  .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 99px;
+    border: 1px solid;
+  }
+
+  .tag-blue { color: var(--accent); background: rgba(97,218,251,0.08); border-color: rgba(97,218,251,0.2); }
+  .tag-purple { color: var(--accent2); background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.2); }
+  .tag-green { color: var(--accent3); background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.2); }
+  .tag-orange { color: var(--accent4); background: rgba(251,146,60,0.08); border-color: rgba(251,146,60,0.2); }
+
+  /* CONTENT */
+  .content-area { padding: 0 3rem 4rem; }
+
+  /* CHAPTER HEADER */
+  .chapter-header {
+    padding: 2.5rem 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border2);
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-num-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .chapter-badge-1 { color: var(--accent); background: rgba(97,218,251,0.1); border: 1px solid rgba(97,218,251,0.25); }
+  .chapter-badge-2 { color: var(--accent4); background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.25); }
+  .chapter-badge-3 { color: var(--accent2); background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.25); }
+  .chapter-badge-4 { color: var(--accent3); background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); }
+  .chapter-badge-5 { color: #f472b6; background: rgba(244,114,182,0.1); border: 1px solid rgba(244,114,182,0.25); }
+  .chapter-badge-6 { color: #38bdf8; background: rgba(56,189,248,0.1); border: 1px solid rgba(56,189,248,0.25); }
+
+  .chapter-title-wrap h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 3px;
+  }
+
+  .chapter-title-wrap .chapter-sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* TOPIC SECTION */
+  .topic {
+    padding: 2.25rem 0 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topic:last-child { border-bottom: none; }
+
+  .topic-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .topic-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .topic-title-wrap h3 { font-size: 1.2rem; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 3px; }
+  .topic-title-wrap .subtitle { font-size: 13px; color: var(--muted); }
+
+  /* CARDS */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-label.what { color: var(--accent); }
+  .card-label.why { color: var(--accent4); }
+  .card-label.when { color: var(--accent2); }
+
+  .card p { font-size: 13.5px; color: var(--muted2); line-height: 1.65; }
+  .card ul { padding-left: 1.1rem; }
+  .card li { font-size: 13.5px; color: var(--muted2); line-height: 1.7; margin-bottom: 2px; }
+  .card li::marker { color: var(--muted); }
+
+  /* CODE BLOCK */
+  .code-wrap { margin: 1.25rem 0; }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .code-lang { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .code-file { font-family: var(--mono); font-size: 11px; color: var(--accent3); }
+
+  .copy-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border2);
+    border-radius: 5px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { color: var(--text); }
+  .copy-btn.copied { color: var(--accent3); }
+
+  pre {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--text);
+  }
+
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .cmt { color: #546e7a; font-style: italic; }
+  .num { color: #f78c6c; }
+  .tag { color: #f07178; }
+  .atr { color: var(--accent); }
+  .jsx { color: #89ddff; }
+  .tp { color: var(--accent3); }
+
+  /* MISTAKE BLOCK */
+  .mistake-block {
+    background: rgba(248,113,113,0.05);
+    border: 1px solid rgba(248,113,113,0.15);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-top: 1.25rem;
+  }
+
+  .mistake-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent5);
+    margin-bottom: 0.6rem;
+  }
+
+  .mistake-list { padding-left: 1rem; }
+  .mistake-list li { font-size: 13.5px; color: var(--muted2); line-height: 1.7; margin-bottom: 4px; }
+  .mistake-list li::marker { color: var(--accent5); }
+
+  /* TIP BLOCK */
+  .tip-block {
+    background: rgba(97,218,251,0.05);
+    border: 1px solid rgba(97,218,251,0.15);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .tip-block p { font-size: 13.5px; color: var(--muted2); }
+  .tip-block strong { color: var(--accent); }
+
+  /* MENTAL MODEL */
+  .mental-model {
+    background: rgba(167,139,250,0.05);
+    border: 1px solid rgba(167,139,250,0.15);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .mental-model .mm-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 0.4rem;
+  }
+
+  .mental-model p { font-size: 13.5px; color: var(--muted2); line-height: 1.65; }
+
+  /* PROJECT STEP */
+  .project-step {
+    background: rgba(52,211,153,0.04);
+    border: 1px solid rgba(52,211,153,0.15);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin: 1.25rem 0;
+  }
+
+  .project-step .ps-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 0.4rem;
+  }
+
+  .project-step p { font-size: 13.5px; color: var(--muted2); line-height: 1.65; }
+  .project-step strong { color: var(--accent3); }
+
+  /* COMPARE TABLE */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 1rem 0; }
+  .compare-table th { text-align: left; padding: 0.6rem 1rem; background: var(--surface3); color: var(--muted2); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+  .compare-table td { padding: 0.7rem 1rem; color: var(--muted2); border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: var(--surface2); }
+
+  /* INLINE CODE */
+  .inline-code {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent);
+  }
+
+  /* SCROLL */
+  html { scroll-behavior: smooth; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .hero { padding: 2rem 1.5rem; }
+    .content-area { padding: 0 1.5rem 3rem; }
+    .project-banner { margin: 1.5rem 1.5rem; }
+  }
+
+  /* FINAL CTA */
+  .cta-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem;
+    text-align: center;
+  }
+
+  .cta-section h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text); }
+  .cta-section p { font-size: 14px; color: var(--muted2); max-width: 480px; margin: 0 auto 1.5rem; }
+
+  .checklist { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; text-align: left; margin-bottom: 2rem; }
+
+  .check-item { display: flex; align-items: center; gap: 0.6rem; font-size: 14px; color: var(--muted2); }
+
+  .check-icon {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: rgba(52,211,153,0.15);
+    border: 1px solid rgba(52,211,153,0.3);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 10px; color: var(--accent3);
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-tag">npm install react-mastery</span>
+      <h2>React Ecosystem<br>Junior Dev Roadmap</h2>
+    </div>
+
+    <div class="sidebar-progress">
+      <div class="progress-label">
+        <span>Progress belajar</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="nav-section">Proyek & Setup</div>
+    <a class="nav-item" href="#intro-project"><span class="nav-dot"></span>Intro Proyek TaskFlow</a>
+
+    <div class="nav-chapter">
+      <span class="nav-chapter-num">CH 1</span>React Router
+    </div>
+    <a class="nav-item" href="#rr-setup"><span class="nav-dot"></span>Setup & BrowserRouter</a>
+    <a class="nav-item" href="#rr-routes"><span class="nav-dot"></span>Routes & Route Params</a>
+    <a class="nav-item" href="#rr-navigate"><span class="nav-dot"></span>Navigasi Programatik</a>
+    <a class="nav-item" href="#rr-protected"><span class="nav-dot"></span>Protected Routes</a>
+    <a class="nav-item" href="#rr-nested"><span class="nav-dot"></span>Nested Routes & Layout</a>
+
+    <div class="nav-chapter">
+      <span class="nav-chapter-num">CH 2</span>TanStack Query + Axios
+    </div>
+    <a class="nav-item" href="#tq-setup"><span class="nav-dot"></span>Setup QueryClient & Axios</a>
+    <a class="nav-item" href="#tq-usequery"><span class="nav-dot"></span>useQuery - Fetching Data</a>
+    <a class="nav-item" href="#tq-usemutation"><span class="nav-dot"></span>useMutation - CUD Data</a>
+    <a class="nav-item" href="#tq-cache"><span class="nav-dot"></span>Cache & Invalidation</a>
+    <a class="nav-item" href="#tq-interceptor"><span class="nav-dot"></span>Axios Interceptor</a>
+
+    <div class="nav-chapter">
+      <span class="nav-chapter-num">CH 3</span>React Hook Form + Zod
+    </div>
+    <a class="nav-item" href="#rhf-setup"><span class="nav-dot"></span>Setup & useForm</a>
+    <a class="nav-item" href="#rhf-validation"><span class="nav-dot"></span>Validasi dengan Zod</a>
+    <a class="nav-item" href="#rhf-controlled"><span class="nav-dot"></span>Controlled Components</a>
+    <a class="nav-item" href="#rhf-errors"><span class="nav-dot"></span>Error Handling</a>
+
+    <div class="nav-chapter">
+      <span class="nav-chapter-num">CH 4</span>Redux Toolkit
+    </div>
+    <a class="nav-item" href="#rtk-setup"><span class="nav-dot"></span>Setup Store & Slice</a>
+    <a class="nav-item" href="#rtk-slice"><span class="nav-dot"></span>createSlice & Reducers</a>
+    <a class="nav-item" href="#rtk-thunk"><span class="nav-dot"></span>Async Thunk</a>
+    <a class="nav-item" href="#rtk-selector"><span class="nav-dot"></span>useSelector & useDispatch</a>
+
+    <div class="nav-chapter">
+      <span class="nav-chapter-num">CH 5</span>Zustand
+    </div>
+    <a class="nav-item" href="#zus-setup"><span class="nav-dot"></span>Setup & create Store</a>
+    <a class="nav-item" href="#zus-actions"><span class="nav-dot"></span>Actions & State Update</a>
+    <a class="nav-item" href="#zus-vs-redux"><span class="nav-dot"></span>Zustand vs Redux Toolkit</a>
+
+    <div class="nav-chapter">
+      <span class="nav-chapter-num">CH 6</span>Testing
+    </div>
+    <a class="nav-item" href="#test-setup"><span class="nav-dot"></span>Setup RTL & Vitest</a>
+    <a class="nav-item" href="#test-render"><span class="nav-dot"></span>Render & Query</a>
+    <a class="nav-item" href="#test-events"><span class="nav-dot"></span>User Events & Async</a>
+    <a class="nav-item" href="#test-mock"><span class="nav-dot"></span>Mocking API</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-badge">React Ecosystem &mdash; Bahasa Indonesia</div>
+      <h1>Library Modern React<br>untuk Junior Developer</h1>
+      <p>Panduan praktis dan terstruktur untuk menguasai ekosistem React yang dipakai di dunia kerja nyata. Setiap chapter dibangun di atas satu proyek yang sama agar kamu mengerti cara semua tools ini bekerja bersama.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">6</span><span class="stat-label">Chapter Utama</span></div>
+        <div class="stat"><span class="stat-num">24</span><span class="stat-label">Subtopik</span></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Contoh Kode</span></div>
+        <div class="stat"><span class="stat-num">1</span><span class="stat-label">Proyek Konsisten</span></div>
+      </div>
+    </div>
+
+    <!-- PROJECT BANNER -->
+    <div class="project-banner">
+      <div class="project-icon">&#9881;</div>
+      <div class="project-info">
+        <h3>Proyek: TaskFlow &mdash; Aplikasi Manajemen Tugas Tim</h3>
+        <p>Seluruh materi di panduan ini dibangun di atas satu proyek bernama <strong>TaskFlow</strong>. TaskFlow adalah aplikasi manajemen tugas berbasis web dengan autentikasi, CRUD task, filter status, dan notifikasi. Setiap library yang dipelajari akan diintegrasikan ke dalam proyek yang sama, sehingga kamu bisa melihat bagaimana semua tools saling bekerja sama seperti di production.</p>
+        <div class="project-tags">
+          <span class="tag tag-blue">React Router (routing)</span>
+          <span class="tag tag-orange">TanStack Query + Axios (server state)</span>
+          <span class="tag tag-purple">RHF + Zod (forms)</span>
+          <span class="tag tag-green">Redux Toolkit (UI state)</span>
+          <span class="tag tag-blue">Zustand (auth state)</span>
+          <span class="tag tag-orange">React Testing Library (testing)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ==================== INTRO PROJECT ==================== -->
+      <section class="topic" id="intro-project">
+        <div class="topic-header">
+          <span class="topic-num">00</span>
+          <div class="topic-title-wrap">
+            <h3>Struktur Proyek TaskFlow</h3>
+            <span class="subtitle">Gambaran awal sebelum mulai belajar</span>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model</div>
+          <p>Sebelum membangun rumah, kamu perlu melihat blueprintnya dulu. Bagian ini menunjukkan bagaimana TaskFlow distrukturisasi dan di mana setiap library akan digunakan. Kamu tidak perlu memahami semuanya sekarang, cukup jadikan referensi selama belajar.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">text</span>
+            <span class="code-file">struktur folder TaskFlow</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>taskflow/
+├── src/
+│   ├── api/
+│   │   ├── axiosInstance.js       <span class="cmt"># Konfigurasi Axios + interceptor (CH 2)</span>
+│   │   └── taskApi.js             <span class="cmt"># Fungsi API untuk task</span>
+│   │
+│   ├── components/
+│   │   ├── ui/
+│   │   │   ├── Button.jsx
+│   │   │   └── Input.jsx
+│   │   ├── TaskCard.jsx            <span class="cmt"># Kartu satu task</span>
+│   │   └── TaskForm.jsx            <span class="cmt"># Form buat/edit task (CH 3)</span>
+│   │
+│   ├── features/
+│   │   └── ui/
+│   │       └── uiSlice.js          <span class="cmt"># Redux slice untuk UI state (CH 4)</span>
+│   │
+│   ├── pages/
+│   │   ├── LoginPage.jsx           <span class="cmt"># Halaman login</span>
+│   │   ├── DashboardPage.jsx       <span class="cmt"># Halaman utama berisi daftar task</span>
+│   │   └── TaskDetailPage.jsx      <span class="cmt"># Detail satu task</span>
+│   │
+│   ├── router/
+│   │   ├── AppRouter.jsx           <span class="cmt"># Definisi semua routes (CH 1)</span>
+│   │   └── ProtectedRoute.jsx      <span class="cmt"># Guard untuk route privat (CH 1)</span>
+│   │
+│   ├── store/
+│   │   └── store.js                <span class="cmt"># Redux store (CH 4)</span>
+│   │
+│   ├── stores/
+│   │   └── useAuthStore.js         <span class="cmt"># Zustand store untuk auth (CH 5)</span>
+│   │
+│   ├── hooks/
+│   │   └── useTasks.js             <span class="cmt"># Custom hook untuk query task (CH 2)</span>
+│   │
+│   └── App.jsx                     <span class="cmt"># Root component</span>
+│
+├── src/__tests__/
+│   ├── TaskCard.test.jsx           <span class="cmt"># Unit test komponen (CH 6)</span>
+│   └── TaskForm.test.jsx           <span class="cmt"># Test form dan validasi (CH 6)</span>
+│
+└── vite.config.js</code></pre>
+        </div>
+
+        <div class="tip-block">
+          <p><strong>Cara pakai panduan ini:</strong> Setiap chapter akan menambahkan layer baru ke proyek TaskFlow. Di akhir chapter 6, kamu akan punya satu aplikasi lengkap yang menggunakan semua library yang dipelajari.</p>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- CHAPTER 1: REACT ROUTER -->
+      <!-- ====================================================== -->
+      <div class="chapter-header" id="ch-router">
+        <span class="chapter-num-badge chapter-badge-1">Chapter 01</span>
+        <div class="chapter-title-wrap">
+          <h2>React Router v6</h2>
+          <span class="chapter-sub">Navigasi dan routing di aplikasi React</span>
+        </div>
+      </div>
+
+      <!-- 1.1 Setup -->
+      <section class="topic" id="rr-setup">
+        <div class="topic-header">
+          <span class="topic-num">1.1</span>
+          <div class="topic-title-wrap">
+            <h3>Setup & BrowserRouter</h3>
+            <span class="subtitle">Cara kerja React Router dan titik awal konfigurasi</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>React Router adalah library yang memungkinkan kamu membuat navigasi antar halaman di aplikasi React tanpa melakukan full page reload. URL berubah, konten berganti, tapi browser tidak reload.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Setiap aplikasi multi-halaman membutuhkan routing. Ini adalah skill wajib yang selalu ditanyakan di interview. Tanpa React Router, aplikasimu hanya satu halaman statis.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Saat aplikasi punya lebih dari satu halaman</li>
+              <li>Saat perlu navigasi login &rarr; dashboard</li>
+              <li>Saat URL harus mencerminkan konten yang ditampilkan</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model</div>
+          <p>Bayangkan <code>BrowserRouter</code> sebagai "GPS" aplikasimu. Dia memantau URL browser dan memberitahu React komponen mana yang harus ditampilkan berdasarkan URL tersebut.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <span class="code-file">instalasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>npm install react-router-dom</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/main.jsx</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;BrowserRouter&gt;</span>
+    <span class="tag">&lt;App /&gt;</span>
+  <span class="tag">&lt;/BrowserRouter&gt;</span>
+);</code></pre>
+        </div>
+
+        <div class="project-step">
+          <div class="ps-label">TaskFlow - Langkah 1</div>
+          <p>Kita bungkus seluruh aplikasi TaskFlow dengan <strong>BrowserRouter</strong> di <code>main.jsx</code>. Ini adalah satu-satunya tempat kita meletakkan BrowserRouter, yaitu paling atas di tree komponen.</p>
+        </div>
+      </section>
+
+      <!-- 1.2 Routes & Params -->
+      <section class="topic" id="rr-routes">
+        <div class="topic-header">
+          <span class="topic-num">1.2</span>
+          <div class="topic-title-wrap">
+            <h3>Routes, Route, dan URL Parameters</h3>
+            <span class="subtitle">Mendefinisikan halaman dan membaca data dari URL</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>Routes</code> adalah wadah untuk semua route. <code>Route</code> adalah aturan "jika URL ini, tampilkan komponen ini". URL params (<code>:id</code>) memungkinkan kamu menyematkan data dinamis di URL.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Hampir setiap halaman detail menggunakan URL params, contohnya <code>/tasks/42</code>. Memahami cara membaca params dari URL adalah skill dasar yang wajib dikuasai.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Halaman detail produk: <code>/produk/:id</code></li>
+              <li>Profil user: <code>/user/:username</code></li>
+              <li>Halaman edit: <code>/tasks/:id/edit</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/router/AppRouter.jsx</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { Routes, Route } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> LoginPage <span class="kw">from</span> <span class="str">'../pages/LoginPage'</span>;
+<span class="kw">import</span> DashboardPage <span class="kw">from</span> <span class="str">'../pages/DashboardPage'</span>;
+<span class="kw">import</span> TaskDetailPage <span class="kw">from</span> <span class="str">'../pages/TaskDetailPage'</span>;
+
+<span class="kw">export default function</span> <span class="fn">AppRouter</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;Routes&gt;</span>
+      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/"</span>          <span class="atr">element</span>=<span class="jsx">{&lt;LoginPage /&gt;}</span>          <span class="tag">/&gt;</span>
+      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/dashboard"</span> <span class="atr">element</span>=<span class="jsx">{&lt;DashboardPage /&gt;}</span>      <span class="tag">/&gt;</span>
+      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/tasks/:id"</span> <span class="atr">element</span>=<span class="jsx">{&lt;TaskDetailPage /&gt;}</span>     <span class="tag">/&gt;</span>
+      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"*"</span>          <span class="atr">element</span>=<span class="jsx">{&lt;div&gt;404 - Halaman tidak ditemukan&lt;/div&gt;}</span> <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/Routes&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/pages/TaskDetailPage.jsx - membaca URL param</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">export default function</span> <span class="fn">TaskDetailPage</span>() {
+  <span class="kw">const</span> { id } = <span class="fn">useParams</span>(); <span class="cmt">// membaca :id dari URL /tasks/42 => id = "42"</span>
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>Detail Task #<span class="jsx">{id}</span><span class="tag">&lt;/h1&gt;</span>
+      <span class="cmt">// fetch task berdasarkan id (akan diintegrasikan di Chapter 2)</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">navigasi menggunakan Link - BUKAN tag &lt;a&gt;</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { Link, NavLink } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">function</span> <span class="fn">Navbar</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav&gt;</span>
+      <span class="cmt">// Link = navigasi tanpa reload, NavLink = Link dengan class "active" otomatis</span>
+      <span class="tag">&lt;NavLink</span>
+        <span class="atr">to</span>=<span class="str">"/dashboard"</span>
+        <span class="atr">className</span>=<span class="jsx">{({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}</span>
+      <span class="tag">&gt;</span>
+        Dashboard
+      <span class="tag">&lt;/NavLink&gt;</span>
+
+      <span class="cmt">// Link ke halaman task dengan ID dinamis</span>
+      <span class="tag">&lt;Link</span> <span class="atr">to</span>=<span class="jsx">{`/tasks/${task.id}`}</span><span class="tag">&gt;</span>Lihat Detail<span class="tag">&lt;/Link&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Menggunakan <code>&lt;a href="/dashboard"&gt;</code> untuk navigasi internal - ini akan menyebabkan full page reload dan kehilangan semua state. Selalu gunakan <code>&lt;Link&gt;</code></li>
+            <li>Lupa bahwa nilai dari <code>useParams()</code> selalu bertipe string, bukan number. Pastikan konversi dengan <code>Number(id)</code> atau <code>parseInt(id)</code> saat perlu</li>
+            <li>Meletakkan <code>&lt;Routes&gt;</code> di luar <code>&lt;BrowserRouter&gt;</code> - ini akan error</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 1.3 Navigate -->
+      <section class="topic" id="rr-navigate">
+        <div class="topic-header">
+          <span class="topic-num">1.3</span>
+          <div class="topic-title-wrap">
+            <h3>Navigasi Programatik dengan useNavigate</h3>
+            <span class="subtitle">Berpindah halaman dari dalam kode JavaScript</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>useNavigate</code> adalah hook yang mengembalikan fungsi <code>navigate</code>. Fungsi ini digunakan untuk berpindah halaman dari dalam logika JavaScript, bukan dari klik user secara langsung.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Kamu tidak bisa selalu menggunakan <code>&lt;Link&gt;</code>. Setelah submit form login, setelah delete data, atau setelah aksi async selesai, kamu perlu redirect secara programatik.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Setelah login berhasil &rarr; redirect ke dashboard</li>
+              <li>Setelah submit form &rarr; redirect ke halaman list</li>
+              <li>Tombol "kembali" kustom</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/pages/LoginPage.jsx</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">export default function</span> <span class="fn">LoginPage</span>() {
+  <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
+
+  <span class="kw">const</span> <span class="fn">handleLogin</span> = <span class="kw">async</span> (data) => {
+    <span class="kw">try</span> {
+      <span class="kw">await</span> <span class="fn">loginApi</span>(data);             <span class="cmt">// panggil API login</span>
+      navigate(<span class="str">'/dashboard'</span>);          <span class="cmt">// redirect setelah berhasil</span>
+    } <span class="kw">catch</span> (err) {
+      console.<span class="fn">error</span>(<span class="str">'Login gagal'</span>, err);
+    }
+  };
+
+  <span class="kw">return</span> <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{handleLogin}</span><span class="tag">&gt;</span>Login<span class="tag">&lt;/button&gt;</span>;
+}
+
+<span class="cmt">// navigate(-1)         => kembali ke halaman sebelumnya (seperti tombol back)</span>
+<span class="cmt">// navigate('/login', { replace: true })  => replace history, tidak bisa back</span></code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Memanggil <code>navigate()</code> langsung di body komponen (bukan di dalam event handler atau useEffect) - ini menyebabkan infinite render</li>
+            <li>Lupa <code>replace: true</code> setelah logout sehingga user bisa menekan "back" dan kembali ke halaman yang butuh autentikasi</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 1.4 Protected Routes -->
+      <section class="topic" id="rr-protected">
+        <div class="topic-header">
+          <span class="topic-num">1.4</span>
+          <div class="topic-title-wrap">
+            <h3>Protected Routes (Guard)</h3>
+            <span class="subtitle">Mencegah akses ke halaman tanpa login</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Protected Route adalah pola di mana kamu membungkus <code>Route</code> dengan komponen yang memeriksa status autentikasi. Jika user belum login, dia diarahkan ke halaman login secara otomatis.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Ini adalah pola yang wajib ada di hampir setiap aplikasi production. Tanpa ini, siapapun bisa mengakses halaman dashboard atau admin hanya dengan mengetik URL secara langsung.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Halaman dashboard yang butuh login</li>
+              <li>Halaman admin yang butuh role tertentu</li>
+              <li>Semua route yang butuh autentikasi</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/router/ProtectedRoute.jsx</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { Navigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> { useAuthStore } <span class="kw">from</span> <span class="str">'../stores/useAuthStore'</span>; <span class="cmt">// Zustand store (CH 5)</span>
+
+<span class="kw">export default function</span> <span class="fn">ProtectedRoute</span>({ children }) {
+  <span class="kw">const</span> isLoggedIn = <span class="fn">useAuthStore</span>((state) => state.isLoggedIn);
+
+  <span class="kw">if</span> (!isLoggedIn) {
+    <span class="cmt">// replace: true agar user tidak bisa "back" ke halaman protected</span>
+    <span class="kw">return</span> <span class="tag">&lt;Navigate</span> <span class="atr">to</span>=<span class="str">"/"</span> <span class="atr">replace</span> <span class="tag">/&gt;</span>;
+  }
+
+  <span class="kw">return</span> children;
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/router/AppRouter.jsx - menggunakan ProtectedRoute</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> ProtectedRoute <span class="kw">from</span> <span class="str">'./ProtectedRoute'</span>;
+
+<span class="kw">export default function</span> <span class="fn">AppRouter</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;Routes&gt;</span>
+      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/"</span> <span class="atr">element</span>=<span class="jsx">{&lt;LoginPage /&gt;}</span> <span class="tag">/&gt;</span>
+
+      <span class="cmt">// Semua route di bawah ini butuh login</span>
+      <span class="tag">&lt;Route</span>
+        <span class="atr">path</span>=<span class="str">"/dashboard"</span>
+        <span class="atr">element</span>=<span class="jsx">{
+          &lt;ProtectedRoute&gt;
+            &lt;DashboardPage /&gt;
+          &lt;/ProtectedRoute&gt;
+        }</span>
+      <span class="tag">/&gt;</span>
+      <span class="tag">&lt;Route</span>
+        <span class="atr">path</span>=<span class="str">"/tasks/:id"</span>
+        <span class="atr">element</span>=<span class="jsx">{
+          &lt;ProtectedRoute&gt;
+            &lt;TaskDetailPage /&gt;
+          &lt;/ProtectedRoute&gt;
+        }</span>
+      <span class="tag">/&gt;</span>
+    <span class="tag">&lt;/Routes&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Mengecek autentikasi hanya dari localStorage tanpa state global - state tidak reaktif, tampilan tidak update saat logout</li>
+            <li>Tidak menggunakan <code>replace</code> pada Navigate setelah logout - user bisa kembali ke halaman protected dengan tombol back browser</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 1.5 Nested Routes -->
+      <section class="topic" id="rr-nested">
+        <div class="topic-header">
+          <span class="topic-num">1.5</span>
+          <div class="topic-title-wrap">
+            <h3>Nested Routes & Layout Route</h3>
+            <span class="subtitle">Berbagi layout (Navbar, Sidebar) antar halaman</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Nested Routes memungkinkan route bersarang di dalam route lain. Layout Route digunakan untuk berbagi komponen layout (seperti Navbar) tanpa mengulang kode di setiap halaman.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Ini adalah pola yang sangat umum di aplikasi production. Navbar dan Sidebar yang konsisten di semua halaman dashboard diimplementasikan dengan nested routes, bukan dengan mengcopy komponen ke setiap halaman.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Semua halaman dashboard berbagi satu layout</li>
+              <li>Tab navigasi di dalam satu halaman</li>
+              <li>Halaman admin dengan sidebar khusus</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/components/layout/AppLayout.jsx - layout bersama</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { Outlet } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> Navbar <span class="kw">from</span> <span class="str">'./Navbar'</span>;
+<span class="kw">import</span> Sidebar <span class="kw">from</span> <span class="str">'./Sidebar'</span>;
+
+<span class="cmt">// Outlet = placeholder untuk child route yang aktif</span>
+<span class="kw">export default function</span> <span class="fn">AppLayout</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;Navbar /&gt;</span>
+      <span class="tag">&lt;div</span> <span class="atr">style</span>=<span class="jsx">{{ display: 'flex' }}</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;Sidebar /&gt;</span>
+        <span class="tag">&lt;main&gt;</span>
+          <span class="tag">&lt;Outlet /&gt;</span> <span class="cmt">// Di sini child route dirender</span>
+        <span class="tag">&lt;/main&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/router/AppRouter.jsx - nested routes final TaskFlow</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">export default function</span> <span class="fn">AppRouter</span>() {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;Routes&gt;</span>
+      <span class="cmt">// Route publik</span>
+      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/"</span> <span class="atr">element</span>=<span class="jsx">{&lt;LoginPage /&gt;}</span> <span class="tag">/&gt;</span>
+
+      <span class="cmt">// Layout route - semua child akan mewarisi AppLayout</span>
+      <span class="tag">&lt;Route</span>
+        <span class="atr">element</span>=<span class="jsx">{
+          &lt;ProtectedRoute&gt;
+            &lt;AppLayout /&gt;
+          &lt;/ProtectedRoute&gt;
+        }</span>
+      <span class="tag">&gt;</span>
+        <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/dashboard"</span>  <span class="atr">element</span>=<span class="jsx">{&lt;DashboardPage /&gt;}</span>  <span class="tag">/&gt;</span>
+        <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/tasks/:id"</span> <span class="atr">element</span>=<span class="jsx">{&lt;TaskDetailPage /&gt;}</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;/Route&gt;</span>
+    <span class="tag">&lt;/Routes&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="tip-block">
+          <p><strong>Pola ini sangat umum di dunia kerja.</strong> Hampir semua aplikasi production menggunakan layout route untuk Navbar dan Sidebar. Kuasai pola ini dengan baik sebelum interview.</p>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Lupa menambahkan <code>&lt;Outlet /&gt;</code> di komponen layout - child route tidak akan pernah ditampilkan</li>
+            <li>Copy-paste Navbar ke setiap halaman secara manual alih-alih menggunakan layout route</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- CHAPTER 2: TANSTACK QUERY + AXIOS -->
+      <!-- ====================================================== -->
+      <div class="chapter-header" id="ch-query">
+        <span class="chapter-num-badge chapter-badge-2">Chapter 02</span>
+        <div class="chapter-title-wrap">
+          <h2>TanStack Query + Axios</h2>
+          <span class="chapter-sub">Server state management dan HTTP client</span>
+        </div>
+      </div>
+
+      <!-- 2.1 Setup -->
+      <section class="topic" id="tq-setup">
+        <div class="topic-header">
+          <span class="topic-num">2.1</span>
+          <div class="topic-title-wrap">
+            <h3>Setup QueryClient & Instance Axios</h3>
+            <span class="subtitle">Konfigurasi awal yang diperlukan sebelum fetch data</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>TanStack Query (dulu React Query) adalah library untuk mengurus semua hal yang berhubungan dengan data dari server: fetching, caching, loading state, error state, dan sinkronisasi otomatis. Axios adalah HTTP client yang lebih powerful dari <code>fetch</code> bawaan browser.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Mengurus server state dengan <code>useState + useEffect</code> itu menyakitkan: kamu harus handle loading, error, refetch, dan cache secara manual. TanStack Query melakukan semua itu secara otomatis dengan kode yang jauh lebih bersih.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Setiap kali fetch data dari API REST</li>
+              <li>Saat butuh caching otomatis</li>
+              <li>Saat butuh refetch saat window kembali fokus</li>
+              <li>Saat melakukan create/update/delete via API</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model</div>
+          <p>Bayangkan TanStack Query sebagai "asisten cerdas" untuk data API kamu. Kamu cukup bilang "ambilkan data tasks", dan dia yang mengurus loading state, error handling, caching, dan pembaruan otomatis. Kamu tidak perlu lagi menulis <code>setLoading(true)</code> dan <code>setData(result)</code> secara manual.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <span class="code-file">instalasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>npm install @tanstack/react-query axios</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/main.jsx - setup QueryClientProvider</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { QueryClient, QueryClientProvider } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
+  defaultOptions: {
+    queries: {
+      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>, <span class="cmt">// data dianggap fresh selama 5 menit</span>
+      retry: <span class="num">1</span>,               <span class="cmt">// coba ulang 1x jika gagal</span>
+    },
+  },
+});
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;QueryClientProvider</span> <span class="atr">client</span>=<span class="jsx">{queryClient}</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;BrowserRouter&gt;</span>
+      <span class="tag">&lt;App /&gt;</span>
+    <span class="tag">&lt;/BrowserRouter&gt;</span>
+  <span class="tag">&lt;/QueryClientProvider&gt;</span>
+);</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/api/axiosInstance.js - konfigurasi Axios</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
+
+<span class="kw">const</span> api = axios.<span class="fn">create</span>({
+  baseURL: <span class="str">'https://api.taskflow.dev/v1'</span>, <span class="cmt">// base URL sekali, tidak perlu diulang</span>
+  timeout: <span class="num">10000</span>,                           <span class="cmt">// batas waktu 10 detik</span>
+  headers: {
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
+  },
+});
+
+<span class="kw">export default</span> api;</code></pre>
+        </div>
+      </section>
+
+      <!-- 2.2 useQuery -->
+      <section class="topic" id="tq-usequery">
+        <div class="topic-header">
+          <span class="topic-num">2.2</span>
+          <div class="topic-title-wrap">
+            <h3>useQuery - Mengambil Data dari API</h3>
+            <span class="subtitle">Fetch data dengan loading, error, dan caching otomatis</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>useQuery</code> adalah hook untuk mengambil (GET) data dari server. Dia secara otomatis mengurus loading state, error state, caching, dan refetch.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Menggantikan pola <code>useEffect + fetch + useState</code> yang verbose dan error-prone. Dengan <code>useQuery</code>, kode fetch data menjadi 3-5 baris dan lebih reliable.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Fetch daftar tasks di DashboardPage</li>
+              <li>Fetch detail task berdasarkan ID</li>
+              <li>Fetch data apapun dari API GET</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/api/taskApi.js - fungsi API</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> api <span class="kw">from</span> <span class="str">'./axiosInstance'</span>;
+
+<span class="cmt">// Fungsi-fungsi ini hanya bertanggung jawab untuk panggil API</span>
+<span class="kw">export const</span> <span class="fn">fetchTasks</span> = () => api.<span class="fn">get</span>(<span class="str">'/tasks'</span>).<span class="fn">then</span>((res) => res.data);
+<span class="kw">export const</span> <span class="fn">fetchTaskById</span> = (id) => api.<span class="fn">get</span>(<span class="str">`/tasks/${id}`</span>).<span class="fn">then</span>((res) => res.data);</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/pages/DashboardPage.jsx - useQuery di action</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useQuery } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { fetchTasks } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="kw">export default function</span> <span class="fn">DashboardPage</span>() {
+  <span class="kw">const</span> {
+    data: tasks,       <span class="cmt">// data yang dikembalikan dari queryFn</span>
+    isLoading,         <span class="cmt">// true saat pertama kali loading</span>
+    isError,           <span class="cmt">// true jika request gagal</span>
+    error,             <span class="cmt">// objek error jika isError = true</span>
+    refetch,           <span class="cmt">// fungsi untuk fetch ulang manual</span>
+  } = <span class="fn">useQuery</span>({
+    queryKey: [<span class="str">'tasks'</span>],    <span class="cmt">// key unik untuk cache - PENTING!</span>
+    queryFn: fetchTasks,    <span class="cmt">// fungsi yang melakukan fetch</span>
+  });
+
+  <span class="kw">if</span> (isLoading) <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>Memuat tasks...<span class="tag">&lt;/div&gt;</span>;
+  <span class="kw">if</span> (isError) <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>Error: <span class="jsx">{error.message}</span><span class="tag">&lt;/div&gt;</span>;
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="jsx">{tasks.<span class="fn">map</span>((task) => (
+        &lt;TaskCard key={task.id} task={task} /&gt;
+      ))}</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/pages/TaskDetailPage.jsx - useQuery dengan ID dinamis</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> { useQuery } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { fetchTaskById } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="kw">export default function</span> <span class="fn">TaskDetailPage</span>() {
+  <span class="kw">const</span> { id } = <span class="fn">useParams</span>();
+
+  <span class="kw">const</span> { data: task, isLoading } = <span class="fn">useQuery</span>({
+    queryKey: [<span class="str">'tasks'</span>, id],           <span class="cmt">// key mengandung id agar cache terpisah per task</span>
+    queryFn: () => <span class="fn">fetchTaskById</span>(id),  <span class="cmt">// fungsi dengan parameter</span>
+    enabled: !!id,                       <span class="cmt">// hanya fetch jika id ada</span>
+  });
+
+  <span class="kw">if</span> (isLoading) <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>Memuat...<span class="tag">&lt;/div&gt;</span>;
+  <span class="kw">return</span> <span class="tag">&lt;div&gt;</span><span class="jsx">{task?.title}</span><span class="tag">&lt;/div&gt;</span>;
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Menggunakan <code>queryKey: ['tasks']</code> yang sama untuk query dengan ID berbeda - semua task akan berbagi cache yang sama. Selalu sertakan ID di queryKey: <code>['tasks', id]</code></li>
+            <li>Langsung menaruh <code>fetch()</code> di dalam <code>queryFn</code> tanpa fungsi terpisah - susah di-test dan duplikasi kode</li>
+            <li>Tidak menangani <code>isLoading</code> dan <code>isError</code> - menyebabkan error runtime ketika data belum tersedia</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 2.3 useMutation -->
+      <section class="topic" id="tq-usemutation">
+        <div class="topic-header">
+          <span class="topic-num">2.3</span>
+          <div class="topic-title-wrap">
+            <h3>useMutation - Create, Update, Delete Data</h3>
+            <span class="subtitle">Mengirim data ke server dengan feedback otomatis</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>useMutation</code> adalah hook untuk operasi yang mengubah data di server: POST, PUT, PATCH, DELETE. Berbeda dari <code>useQuery</code>, mutation hanya dijalankan ketika kamu memintanya secara eksplisit.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Setiap aplikasi CRUD butuh mutation. <code>useMutation</code> menyediakan <code>onSuccess</code>, <code>onError</code>, dan <code>isPending</code> secara gratis, sehingga kamu bisa memberikan feedback yang baik ke user.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Membuat task baru (POST)</li>
+              <li>Mengupdate status task (PATCH)</li>
+              <li>Menghapus task (DELETE)</li>
+              <li>Semua operasi yang mengubah data server</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/api/taskApi.js - tambahkan fungsi mutasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">export const</span> <span class="fn">createTask</span> = (data) => api.<span class="fn">post</span>(<span class="str">'/tasks'</span>, data).<span class="fn">then</span>((res) => res.data);
+<span class="kw">export const</span> <span class="fn">updateTask</span> = ({ id, ...data }) => api.<span class="fn">patch</span>(<span class="str">`/tasks/${id}`</span>, data).<span class="fn">then</span>((res) => res.data);
+<span class="kw">export const</span> <span class="fn">deleteTask</span> = (id) => api.<span class="fn">delete</span>(<span class="str">`/tasks/${id}`</span>).<span class="fn">then</span>((res) => res.data);</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/pages/DashboardPage.jsx - useMutation untuk hapus task</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useMutation, useQueryClient } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { deleteTask } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="kw">function</span> <span class="fn">TaskCard</span>({ task }) {
+  <span class="kw">const</span> queryClient = <span class="fn">useQueryClient</span>(); <span class="cmt">// akses ke query cache</span>
+
+  <span class="kw">const</span> deleteMutation = <span class="fn">useMutation</span>({
+    mutationFn: deleteTask,
+    onSuccess: () => {
+      <span class="cmt">// Setelah hapus berhasil, invalidate cache tasks agar list direfresh</span>
+      queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] });
+    },
+    onError: (error) => {
+      console.<span class="fn">error</span>(<span class="str">'Gagal menghapus task:'</span>, error);
+    },
+  });
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;p&gt;</span><span class="jsx">{task.title}</span><span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;button</span>
+        <span class="atr">onClick</span>=<span class="jsx">{() => deleteMutation.mutate(task.id)}</span>
+        <span class="atr">disabled</span>=<span class="jsx">{deleteMutation.isPending}</span>  <span class="cmt">// disable saat loading</span>
+      <span class="tag">&gt;</span>
+        <span class="jsx">{deleteMutation.isPending ? 'Menghapus...' : 'Hapus'}</span>
+      <span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Tidak memanggil <code>invalidateQueries</code> setelah mutation berhasil - list data di UI tidak akan diperbarui setelah create/update/delete</li>
+            <li>Menggunakan <code>mutate()</code> tanpa menangani <code>isPending</code> - user bisa klik tombol berkali-kali dan mengirim request duplikat</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 2.4 Cache & Invalidation -->
+      <section class="topic" id="tq-cache">
+        <div class="topic-header">
+          <span class="topic-num">2.4</span>
+          <div class="topic-title-wrap">
+            <h3>Cache & Query Invalidation</h3>
+            <span class="subtitle">Cara TanStack Query mengingat data dan kapan harus memperbarui</span>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model</div>
+          <p><strong>Cache</strong> = lemari penyimpanan data sementara. <strong>queryKey</strong> = label di lemari itu. <strong>invalidateQueries</strong> = kamu memberi tanda "sudah kedaluwarsa" pada label tertentu sehingga TanStack Query akan mengambil data segar dari server di request berikutnya.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">konsep cache - queryKey sebagai kunci unik</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="cmt">// Setiap queryKey yang unik punya cache sendiri</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>] })             <span class="cmt">// cache: semua tasks</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, <span class="str">'1'</span>] })        <span class="cmt">// cache: task dengan id 1</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, <span class="str">'2'</span>] })        <span class="cmt">// cache: task dengan id 2</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, { status: <span class="str">'done'</span> }] }) <span class="cmt">// cache: tasks dengan filter</span>
+
+<span class="cmt">// Invalidate berdasarkan prefix key</span>
+queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] });
+<span class="cmt">// Ini akan menginvalidasi SEMUA query yang keynya dimulai dengan 'tasks'</span>
+<span class="cmt">// Termasuk ['tasks'], ['tasks', '1'], ['tasks', '2'], dll.</span></code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">staleTime vs gcTime - perbedaan penting</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
+  defaultOptions: {
+    queries: {
+      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>,  <span class="cmt">// 5 menit: data dianggap "fresh", tidak refetch</span>
+      gcTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">10</span>,   <span class="cmt">// 10 menit: data dihapus dari cache setelah ini</span>
+    },
+  },
+});
+
+<span class="cmt">// staleTime = 0 (default): setiap mount komponen akan refetch</span>
+<span class="cmt">// staleTime = Infinity: data tidak pernah dianggap stale (jarang dipakai)</span>
+<span class="cmt">// Untuk data yang jarang berubah (daftar kategori), staleTime tinggi lebih efisien</span></code></pre>
+        </div>
+      </section>
+
+      <!-- 2.5 Axios Interceptor -->
+      <section class="topic" id="tq-interceptor">
+        <div class="topic-header">
+          <span class="topic-num">2.5</span>
+          <div class="topic-title-wrap">
+            <h3>Axios Interceptor untuk Auth Token</h3>
+            <span class="subtitle">Menambahkan token JWT otomatis di setiap request</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Interceptor adalah middleware di Axios. Request interceptor berjalan sebelum request dikirim, response interceptor berjalan setelah response diterima. Keduanya memungkinkan kamu mengubah atau menangani data secara terpusat.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Tanpa interceptor, kamu harus menambahkan token auth secara manual di setiap request. Dengan interceptor, cukup satu kali konfigurasi dan semua request otomatis menyertakan token.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Menambahkan JWT token ke header Authorization</li>
+              <li>Handle error 401 (unauthorized) - redirect ke login</li>
+              <li>Logging semua request/response</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/api/axiosInstance.js - interceptor lengkap</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
+
+<span class="kw">const</span> api = axios.<span class="fn">create</span>({
+  baseURL: <span class="str">'https://api.taskflow.dev/v1'</span>,
+  timeout: <span class="num">10000</span>,
+});
+
+<span class="cmt">// Request interceptor: tambahkan token sebelum request dikirim</span>
+api.interceptors.request.<span class="fn">use</span>(
+  (config) => {
+    <span class="kw">const</span> token = localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>);
+    <span class="kw">if</span> (token) {
+      config.headers.Authorization = <span class="str">`Bearer ${token}`</span>;
+    }
+    <span class="kw">return</span> config; <span class="cmt">// harus return config!</span>
+  },
+  (error) => Promise.<span class="fn">reject</span>(error)
+);
+
+<span class="cmt">// Response interceptor: handle error 401 secara global</span>
+api.interceptors.response.<span class="fn">use</span>(
+  (response) => response, <span class="cmt">// jika sukses, lewatkan saja</span>
+  (error) => {
+    <span class="kw">if</span> (error.response?.status === <span class="num">401</span>) {
+      localStorage.<span class="fn">removeItem</span>(<span class="str">'token'</span>);
+      window.location.href = <span class="str">'/'</span>; <span class="cmt">// redirect ke login</span>
+    }
+    <span class="kw">return</span> Promise.<span class="fn">reject</span>(error);
+  }
+);
+
+<span class="kw">export default</span> api;</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Lupa <code>return config</code> di dalam request interceptor - semua request akan ter-hang dan tidak pernah dikirim</li>
+            <li>Membuat banyak instance Axios terpisah alih-alih menggunakan satu instance yang dibagikan</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- CHAPTER 3: REACT HOOK FORM + ZOD -->
+      <!-- ====================================================== -->
+      <div class="chapter-header" id="ch-form">
+        <span class="chapter-num-badge chapter-badge-3">Chapter 03</span>
+        <div class="chapter-title-wrap">
+          <h2>React Hook Form + Zod</h2>
+          <span class="chapter-sub">Form yang performant dengan validasi yang type-safe</span>
+        </div>
+      </div>
+
+      <!-- 3.1 Setup -->
+      <section class="topic" id="rhf-setup">
+        <div class="topic-header">
+          <span class="topic-num">3.1</span>
+          <div class="topic-title-wrap">
+            <h3>Setup & Hook useForm</h3>
+            <span class="subtitle">Dasar React Hook Form dan cara mendaftarkan input</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>React Hook Form (RHF) adalah library form yang performant karena tidak menyimpan nilai setiap input ke React state (tidak ada re-render di setiap ketikan). Zod adalah library untuk membuat schema validasi dengan TypeScript.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Form dengan validasi adalah fitur yang ada di hampir setiap aplikasi. Membuat form dengan <code>useState</code> biasa menjadi sangat verbose. RHF + Zod adalah kombinasi yang paling banyak dipakai di industri saat ini.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Form login dan registrasi</li>
+              <li>Form buat atau edit task di TaskFlow</li>
+              <li>Form yang butuh validasi kompleks</li>
+              <li>Form dengan banyak field</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model</div>
+          <p>RHF menggunakan "uncontrolled inputs" - dia mengakses nilai input langsung dari DOM, bukan melalui React state. Ini membuat form sangat cepat. <code>register()</code> adalah cara RHF "mendaftarkan" input agar bisa diawasi.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <span class="code-file">instalasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>npm install react-hook-form zod @hookform/resolvers</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/components/TaskForm.jsx - useForm dasar</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useForm } <span class="kw">from</span> <span class="str">'react-hook-form'</span>;
+
+<span class="kw">export default function</span> <span class="fn">TaskForm</span>({ onSubmit }) {
+  <span class="kw">const</span> {
+    register,       <span class="cmt">// mendaftarkan input ke RHF</span>
+    handleSubmit,   <span class="cmt">// wrapper submit yang menangani validasi</span>
+    formState: { errors, isSubmitting }, <span class="cmt">// state form</span>
+    reset,          <span class="cmt">// reset form ke nilai awal</span>
+  } = <span class="fn">useForm</span>();
+
+  <span class="kw">const</span> <span class="fn">submitHandler</span> = (data) => {
+    <span class="cmt">// data = { title: '...', description: '...', priority: '...' }</span>
+    onSubmit(data);
+    reset();
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;form</span> <span class="atr">onSubmit</span>=<span class="jsx">{handleSubmit(submitHandler)}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;input</span>
+        <span class="atr">placeholder</span>=<span class="str">"Judul task"</span>
+        <span class="jsx">{...register('title')}</span>  <span class="cmt">// spread operator untuk register</span>
+      <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">type</span>=<span class="str">"submit"</span> <span class="atr">disabled</span>=<span class="jsx">{isSubmitting}</span><span class="tag">&gt;</span>
+        Simpan
+      <span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Menggunakan <code>onSubmit={submitHandler}</code> langsung di form tanpa membungkusnya dengan <code>handleSubmit()</code> - validasi tidak akan berjalan</li>
+            <li>Menambahkan <code>value</code> dan <code>onChange</code> secara manual pada input yang sudah di-<code>register</code> - ini konflik dan menyebabkan bug</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 3.2 Zod Validation -->
+      <section class="topic" id="rhf-validation">
+        <div class="topic-header">
+          <span class="topic-num">3.2</span>
+          <div class="topic-title-wrap">
+            <h3>Validasi Form dengan Zod Schema</h3>
+            <span class="subtitle">Mendefinisikan aturan validasi dengan cara yang reusable</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Zod memungkinkan kamu mendefinisikan "schema" - sebuah objek yang mendeskripsikan bentuk dan aturan validasi data yang valid. Schema ini kemudian dihubungkan ke RHF melalui <code>zodResolver</code>.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Validasi form yang baik adalah kualitas yang membedakan developer junior yang baik. Zod membuat validasi mudah dibaca, mudah diubah, dan bisa digunakan ulang di backend dan frontend.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Setiap form yang butuh validasi</li>
+              <li>Validasi: required, min/max, format email, regex</li>
+              <li>Validasi silang antar field (misal: konfirmasi password)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/components/TaskForm.jsx - RHF + Zod lengkap</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useForm } <span class="kw">from</span> <span class="str">'react-hook-form'</span>;
+<span class="kw">import</span> { zodResolver } <span class="kw">from</span> <span class="str">'@hookform/resolvers/zod'</span>;
+<span class="kw">import</span> { z } <span class="kw">from</span> <span class="str">'zod'</span>;
+<span class="kw">import</span> { useMutation, useQueryClient } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { createTask } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="cmt">// 1. Definisikan schema validasi</span>
+<span class="kw">const</span> taskSchema = z.<span class="fn">object</span>({
+  title: z.<span class="fn">string</span>()
+    .<span class="fn">min</span>(<span class="num">3</span>, <span class="str">'Judul minimal 3 karakter'</span>)
+    .<span class="fn">max</span>(<span class="num">100</span>, <span class="str">'Judul maksimal 100 karakter'</span>),
+  description: z.<span class="fn">string</span>().<span class="fn">optional</span>(),
+  priority: z.<span class="fn">enum</span>([<span class="str">'low'</span>, <span class="str">'medium'</span>, <span class="str">'high'</span>], {
+    errorMap: () => ({ message: <span class="str">'Pilih prioritas yang valid'</span> }),
+  }),
+  dueDate: z.<span class="fn">string</span>().<span class="fn">refine</span>(
+    (val) => !isNaN(<span class="kw">new</span> <span class="fn">Date</span>(val)),
+    { message: <span class="str">'Format tanggal tidak valid'</span> }
+  ),
+});
+
+<span class="cmt">// Ekstrak tipe TypeScript dari schema (bonus: type safety)</span>
+<span class="kw">type</span> <span class="tp">TaskFormData</span> = z.<span class="fn">infer</span>&lt;<span class="kw">typeof</span> taskSchema&gt;;
+
+<span class="kw">export default function</span> <span class="fn">TaskForm</span>({ onClose }) {
+  <span class="kw">const</span> queryClient = <span class="fn">useQueryClient</span>();
+
+  <span class="kw">const</span> { register, handleSubmit, formState: { errors } } = <span class="fn">useForm</span>({
+    resolver: <span class="fn">zodResolver</span>(taskSchema), <span class="cmt">// 2. Hubungkan schema ke RHF</span>
+    defaultValues: {
+      priority: <span class="str">'medium'</span>,
+    },
+  });
+
+  <span class="kw">const</span> mutation = <span class="fn">useMutation</span>({
+    mutationFn: createTask,
+    onSuccess: () => {
+      queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] });
+      onClose(); <span class="cmt">// tutup modal setelah berhasil</span>
+    },
+  });
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;form</span> <span class="atr">onSubmit</span>=<span class="jsx">{handleSubmit((data) => mutation.mutate(data))}</span><span class="tag">&gt;</span>
+
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;input</span> <span class="atr">placeholder</span>=<span class="str">"Judul task"</span> <span class="jsx">{...register('title')}</span> <span class="tag">/&gt;</span>
+        <span class="jsx">{errors.title &amp;&amp; &lt;p className="error"&gt;{errors.title.message}&lt;/p&gt;}</span>
+      <span class="tag">&lt;/div&gt;</span>
+
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;select</span> <span class="jsx">{...register('priority')}</span><span class="tag">&gt;</span>
+          <span class="tag">&lt;option</span> <span class="atr">value</span>=<span class="str">"low"</span><span class="tag">&gt;</span>Rendah<span class="tag">&lt;/option&gt;</span>
+          <span class="tag">&lt;option</span> <span class="atr">value</span>=<span class="str">"medium"</span><span class="tag">&gt;</span>Sedang<span class="tag">&lt;/option&gt;</span>
+          <span class="tag">&lt;option</span> <span class="atr">value</span>=<span class="str">"high"</span><span class="tag">&gt;</span>Tinggi<span class="tag">&lt;/option&gt;</span>
+        <span class="tag">&lt;/select&gt;</span>
+        <span class="jsx">{errors.priority &amp;&amp; &lt;p className="error"&gt;{errors.priority.message}&lt;/p&gt;}</span>
+      <span class="tag">&lt;/div&gt;</span>
+
+      <span class="tag">&lt;button</span> <span class="atr">type</span>=<span class="str">"submit"</span> <span class="atr">disabled</span>=<span class="jsx">{mutation.isPending}</span><span class="tag">&gt;</span>
+        <span class="jsx">{mutation.isPending ? 'Menyimpan...' : 'Buat Task'}</span>
+      <span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  );
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- 3.3 Controlled Components -->
+      <section class="topic" id="rhf-controlled">
+        <div class="topic-header">
+          <span class="topic-num">3.3</span>
+          <div class="topic-title-wrap">
+            <h3>Controlled Components dengan Controller</h3>
+            <span class="subtitle">Mengintegrasikan UI library eksternal ke dalam RHF</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>Controller</code> dari RHF digunakan saat kamu menggunakan komponen input dari library eksternal (seperti Select dari shadcn, DatePicker, atau komponen kustom) yang tidak bisa langsung menggunakan <code>register()</code>.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Di dunia kerja nyata, kamu hampir pasti menggunakan komponen UI dari library (shadcn/ui, Ant Design, Chakra UI). Semua komponen kustom ini membutuhkan <code>Controller</code> untuk bekerja dengan RHF.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Komponen Select dari library UI</li>
+              <li>Date picker library</li>
+              <li>Komponen input kustom yang punya prop <code>value</code> dan <code>onChange</code> sendiri</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">contoh Controller untuk komponen kustom</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useForm, Controller } <span class="kw">from</span> <span class="str">'react-hook-form'</span>;
+<span class="kw">import</span> CustomSelect <span class="kw">from</span> <span class="str">'./CustomSelect'</span>; <span class="cmt">// komponen dari library UI</span>
+
+<span class="kw">function</span> <span class="fn">TaskForm</span>() {
+  <span class="kw">const</span> { control, handleSubmit } = <span class="fn">useForm</span>();
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;form</span> <span class="atr">onSubmit</span>=<span class="jsx">{handleSubmit(console.log)}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;Controller</span>
+        <span class="atr">name</span>=<span class="str">"priority"</span>
+        <span class="atr">control</span>=<span class="jsx">{control}</span>
+        <span class="atr">defaultValue</span>=<span class="str">"medium"</span>
+        <span class="atr">render</span>=<span class="jsx">{({ field }) => (</span>
+          <span class="cmt">// field mengandung: value, onChange, onBlur, name, ref</span>
+          <span class="tag">&lt;CustomSelect</span>
+            <span class="jsx">{...field}</span>
+            <span class="atr">options</span>=<span class="jsx">{[
+              { label: 'Rendah', value: 'low' },
+              { label: 'Sedang', value: 'medium' },
+              { label: 'Tinggi', value: 'high' },
+            ]}</span>
+          <span class="tag">/&gt;</span>
+        <span class="jsx">)}</span>
+      <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">type</span>=<span class="str">"submit"</span><span class="tag">&gt;</span>Submit<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  );
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- 3.4 Errors -->
+      <section class="topic" id="rhf-errors">
+        <div class="topic-header">
+          <span class="topic-num">3.4</span>
+          <div class="topic-title-wrap">
+            <h3>Error Handling & Edit Form</h3>
+            <span class="subtitle">Menampilkan error validasi dan mengisi ulang form untuk edit</span>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">form edit task - prefill defaultValues dari data API</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="cmt">// Untuk form edit, kita perlu mengisi ulang field dengan data yang ada</span>
+<span class="kw">function</span> <span class="fn">EditTaskForm</span>({ taskId }) {
+  <span class="kw">const</span> { data: task } = <span class="fn">useQuery</span>({
+    queryKey: [<span class="str">'tasks'</span>, taskId],
+    queryFn: () => <span class="fn">fetchTaskById</span>(taskId),
+  });
+
+  <span class="kw">const</span> { register, handleSubmit, formState: { errors }, reset } = <span class="fn">useForm</span>({
+    resolver: <span class="fn">zodResolver</span>(taskSchema),
+  });
+
+  <span class="cmt">// Ketika data task tersedia, isi ulang form</span>
+  useEffect(() => {
+    <span class="kw">if</span> (task) {
+      <span class="fn">reset</span>({
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+      });
+    }
+  }, [task, reset]);
+
+  <span class="kw">const</span> updateMutation = <span class="fn">useMutation</span>({
+    mutationFn: (data) => <span class="fn">updateTask</span>({ id: taskId, ...data }),
+    onSuccess: () => queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] }),
+  });
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;form</span> <span class="atr">onSubmit</span>=<span class="jsx">{handleSubmit((data) => updateMutation.mutate(data))}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;label&gt;</span>Judul<span class="tag">&lt;/label&gt;</span>
+        <span class="tag">&lt;input</span> <span class="jsx">{...register('title')}</span> <span class="tag">/&gt;</span>
+        <span class="cmt">// Tampilkan pesan error spesifik dari Zod</span>
+        <span class="jsx">{errors.title &amp;&amp; (
+          &lt;span style={{ color: 'red', fontSize: '12px' }}&gt;
+            {errors.title.message}
+          &lt;/span&gt;
+        )}</span>
+      <span class="tag">&lt;/div&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">type</span>=<span class="str">"submit"</span><span class="tag">&gt;</span>Update<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Mengisi defaultValues langsung dari data yang bisa undefined - menyebabkan form tidak ter-populate. Selalu gunakan <code>reset()</code> di dalam <code>useEffect</code> setelah data tersedia</li>
+            <li>Lupa menambahkan <code>reset</code> ke dalam dependency array useEffect sehingga ESLint terus warning</li>
+            <li>Menggunakan <code>watch()</code> di setiap field untuk tracking nilai - ini menyebabkan re-render berlebihan. Hanya gunakan <code>watch</code> jika benar-benar perlu</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- CHAPTER 4: REDUX TOOLKIT -->
+      <!-- ====================================================== -->
+      <div class="chapter-header" id="ch-redux">
+        <span class="chapter-num-badge chapter-badge-4">Chapter 04</span>
+        <div class="chapter-title-wrap">
+          <h2>Redux Toolkit (RTK)</h2>
+          <span class="chapter-sub">State management global untuk aplikasi skala besar</span>
+        </div>
+      </div>
+
+      <!-- 4.1 Setup -->
+      <section class="topic" id="rtk-setup">
+        <div class="topic-header">
+          <span class="topic-num">4.1</span>
+          <div class="topic-title-wrap">
+            <h3>Setup Store dan Provider</h3>
+            <span class="subtitle">Konfigurasi Redux Toolkit dari nol</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Redux Toolkit (RTK) adalah cara modern dan resmi untuk menggunakan Redux. Redux adalah library state management global berbasis "single source of truth": semua state aplikasi disimpan di satu tempat bernama "Store".</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Redux masih digunakan di banyak perusahaan dan sering ditanyakan di interview. RTK menghilangkan boilerplate Redux lama yang sangat verbose, sehingga lebih praktis dan modern.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>State UI global: sidebar open/close, notifikasi toast</li>
+              <li>Aplikasi besar dengan banyak fitur yang berbagi state</li>
+              <li>Tim besar yang butuh standar dan predictability</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model Redux</div>
+          <p><strong>Store</strong> = satu objek besar yang menyimpan semua state. <strong>Slice</strong> = satu bagian/fitur dari store (contoh: uiSlice, authSlice). <strong>Action</strong> = pesan "terjadi sesuatu" yang dikirim ke store. <strong>Reducer</strong> = fungsi yang memutuskan bagaimana state berubah berdasarkan action.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <span class="code-file">instalasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>npm install @reduxjs/toolkit react-redux</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/store/store.js - membuat store</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { configureStore } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+<span class="kw">import</span> uiReducer <span class="kw">from</span> <span class="str">'../features/ui/uiSlice'</span>;
+
+<span class="kw">export const</span> store = <span class="fn">configureStore</span>({
+  reducer: {
+    ui: uiReducer,      <span class="cmt">// state.ui -> semua state UI</span>
+    <span class="cmt">// auth: authReducer, // jika menggunakan Redux untuk auth</span>
+  },
+});</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/main.jsx - tambahkan Provider</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { Provider } <span class="kw">from</span> <span class="str">'react-redux'</span>;
+<span class="kw">import</span> { store } <span class="kw">from</span> <span class="str">'./store/store'</span>;
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;Provider</span> <span class="atr">store</span>=<span class="jsx">{store}</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;QueryClientProvider</span> <span class="atr">client</span>=<span class="jsx">{queryClient}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;BrowserRouter&gt;</span>
+        <span class="tag">&lt;App /&gt;</span>
+      <span class="tag">&lt;/BrowserRouter&gt;</span>
+    <span class="tag">&lt;/QueryClientProvider&gt;</span>
+  <span class="tag">&lt;/Provider&gt;</span>
+);</code></pre>
+        </div>
+      </section>
+
+      <!-- 4.2 createSlice -->
+      <section class="topic" id="rtk-slice">
+        <div class="topic-header">
+          <span class="topic-num">4.2</span>
+          <div class="topic-title-wrap">
+            <h3>createSlice - Mendefinisikan State dan Reducer</h3>
+            <span class="subtitle">Cara modern mendefinisikan potongan state dan logika perubahannya</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>createSlice</code> adalah fungsi RTK yang menggabungkan state awal, reducer functions, dan action creators dalam satu objek. Ini menghilangkan boilerplate Redux lama yang membutuhkan file terpisah untuk actions dan reducers.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Ini adalah cara utama mendefinisikan state di RTK. Semua logika perubahan state untuk satu fitur diletakkan di satu tempat (slice), membuat kode mudah dibaca dan dirawat.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Mendefinisikan state global untuk satu fitur</li>
+              <li>Sidebar open/close, modal open/close</li>
+              <li>Notifikasi toast global</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/features/ui/uiSlice.js - UI state untuk TaskFlow</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { createSlice } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+
+<span class="kw">const</span> uiSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'ui'</span>,                      <span class="cmt">// nama slice (dipakai sebagai prefix action type)</span>
+  initialState: {
+    isSidebarOpen: <span class="kw">true</span>,
+    isCreateTaskModalOpen: <span class="kw">false</span>,
+    toast: <span class="kw">null</span>,               <span class="cmt">// { message: '...', type: 'success' | 'error' }</span>
+  },
+  reducers: {
+    <span class="cmt">// Setiap fungsi di sini otomatis menjadi action creator</span>
+    <span class="fn">toggleSidebar</span>(state) {
+      state.isSidebarOpen = !state.isSidebarOpen; <span class="cmt">// Immer: boleh mutasi langsung!</span>
+    },
+    <span class="fn">openCreateTaskModal</span>(state) {
+      state.isCreateTaskModalOpen = <span class="kw">true</span>;
+    },
+    <span class="fn">closeCreateTaskModal</span>(state) {
+      state.isCreateTaskModalOpen = <span class="kw">false</span>;
+    },
+    <span class="fn">showToast</span>(state, action) {      <span class="cmt">// action.payload = data yang dikirim</span>
+      state.toast = action.payload;  <span class="cmt">// { message: '...', type: 'success' }</span>
+    },
+    <span class="fn">hideToast</span>(state) {
+      state.toast = <span class="kw">null</span>;
+    },
+  },
+});
+
+<span class="cmt">// Export action creators</span>
+<span class="kw">export const</span> {
+  toggleSidebar,
+  openCreateTaskModal,
+  closeCreateTaskModal,
+  showToast,
+  hideToast,
+} = uiSlice.actions;
+
+<span class="cmt">// Export reducer untuk dimasukkan ke store</span>
+<span class="kw">export default</span> uiSlice.reducer;</code></pre>
+        </div>
+
+        <div class="tip-block">
+          <p><strong>Immer di balik layar:</strong> RTK menggunakan library Immer, sehingga di dalam reducer kamu boleh "memutasi" state secara langsung seperti <code>state.isSidebarOpen = true</code>. Ini tidak benar-benar memutasi state asli, Immer yang membuatnya immutable di balik layar.</p>
+        </div>
+      </section>
+
+      <!-- 4.3 Async Thunk -->
+      <section class="topic" id="rtk-thunk">
+        <div class="topic-header">
+          <span class="topic-num">4.3</span>
+          <div class="topic-title-wrap">
+            <h3>createAsyncThunk untuk Operasi Async</h3>
+            <span class="subtitle">Menangani logika async (API call) di dalam Redux</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>createAsyncThunk</code> adalah cara Redux menangani operasi asynchronous seperti API call. Dia secara otomatis men-dispatch tiga action: <code>pending</code>, <code>fulfilled</code>, dan <code>rejected</code>.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Sering muncul di interview dan di codebase lama yang menggunakan Redux untuk server state. Penting untuk dipahami meskipun di project baru kamu akan lebih sering menggunakan TanStack Query untuk ini.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Ketika proyek sudah pakai Redux tapi belum ada TanStack Query</li>
+              <li>Proses async yang bukan data fetching murni (contoh: login yang menyimpan token ke state)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tip-block">
+          <p><strong>Penting untuk interview:</strong> Di proyek modern, <code>createAsyncThunk</code> tidak direkomendasikan untuk data fetching. Gunakan TanStack Query untuk itu. Namun kamu harus paham cara kerjanya karena sering ada di kodebase yang sudah ada.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">contoh createAsyncThunk untuk login (dipahami, bukan dipakai di TaskFlow)</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { createAsyncThunk, createSlice } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
+<span class="kw">import</span> api <span class="kw">from</span> <span class="str">'../api/axiosInstance'</span>;
+
+<span class="cmt">// createAsyncThunk(actionName, asyncFunction)</span>
+<span class="kw">export const</span> loginUser = <span class="fn">createAsyncThunk</span>(
+  <span class="str">'auth/loginUser'</span>,
+  <span class="kw">async</span> (credentials, thunkAPI) => {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> response = <span class="kw">await</span> api.<span class="fn">post</span>(<span class="str">'/auth/login'</span>, credentials);
+      <span class="kw">return</span> response.data; <span class="cmt">// menjadi action.payload di fulfilled</span>
+    } <span class="kw">catch</span> (error) {
+      <span class="kw">return</span> thunkAPI.<span class="fn">rejectWithValue</span>(error.response?.data?.message);
+    }
+  }
+);
+
+<span class="kw">const</span> authSlice = <span class="fn">createSlice</span>({
+  name: <span class="str">'auth'</span>,
+  initialState: { user: <span class="kw">null</span>, status: <span class="str">'idle'</span>, error: <span class="kw">null</span> },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .<span class="fn">addCase</span>(loginUser.pending, (state) => {
+        state.status = <span class="str">'loading'</span>;
+      })
+      .<span class="fn">addCase</span>(loginUser.fulfilled, (state, action) => {
+        state.status = <span class="str">'succeeded'</span>;
+        state.user = action.payload.user;
+      })
+      .<span class="fn">addCase</span>(loginUser.rejected, (state, action) => {
+        state.status = <span class="str">'failed'</span>;
+        state.error = action.payload;
+      });
+  },
+});</code></pre>
+        </div>
+      </section>
+
+      <!-- 4.4 useSelector & useDispatch -->
+      <section class="topic" id="rtk-selector">
+        <div class="topic-header">
+          <span class="topic-num">4.4</span>
+          <div class="topic-title-wrap">
+            <h3>useSelector & useDispatch di Komponen</h3>
+            <span class="subtitle">Cara membaca state dan mengirim aksi dari komponen React</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>useSelector</code> membaca data dari Redux store. <code>useDispatch</code> mengembalikan fungsi <code>dispatch</code> yang digunakan untuk mengirim action ke store.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Ini adalah dua hook utama yang dipakai di setiap komponen yang berinteraksi dengan Redux. Tanpa ini, kamu tidak bisa membaca atau mengubah state Redux dari komponen manapun.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Setiap komponen yang butuh data dari Redux store</li>
+              <li>Setiap komponen yang perlu mengubah state Redux</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/components/layout/Sidebar.jsx - membaca dan mengubah UI state</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useSelector, useDispatch } <span class="kw">from</span> <span class="str">'react-redux'</span>;
+<span class="kw">import</span> { toggleSidebar } <span class="kw">from</span> <span class="str">'../../features/ui/uiSlice'</span>;
+
+<span class="kw">export default function</span> <span class="fn">Sidebar</span>() {
+  <span class="kw">const</span> dispatch = <span class="fn">useDispatch</span>();
+
+  <span class="cmt">// useSelector mengambil slice state yang kita butuhkan</span>
+  <span class="kw">const</span> isSidebarOpen = <span class="fn">useSelector</span>((state) => state.ui.isSidebarOpen);
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;aside</span> <span class="atr">style</span>=<span class="jsx">{{ width: isSidebarOpen ? '240px' : '60px' }}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{() => dispatch(toggleSidebar())}</span><span class="tag">&gt;</span>
+        <span class="jsx">{isSidebarOpen ? 'Tutup' : 'Buka'}</span>
+      <span class="tag">&lt;/button&gt;</span>
+      <span class="cmt">// ... isi sidebar ...</span>
+    <span class="tag">&lt;/aside&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/components/layout/Navbar.jsx - trigger modal buat task</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useDispatch, useSelector } <span class="kw">from</span> <span class="str">'react-redux'</span>;
+<span class="kw">import</span> { openCreateTaskModal, closeCreateTaskModal } <span class="kw">from</span> <span class="str">'../../features/ui/uiSlice'</span>;
+<span class="kw">import</span> TaskForm <span class="kw">from</span> <span class="str">'../TaskForm'</span>;
+
+<span class="kw">export default function</span> <span class="fn">Navbar</span>() {
+  <span class="kw">const</span> dispatch = <span class="fn">useDispatch</span>();
+  <span class="kw">const</span> isModalOpen = <span class="fn">useSelector</span>((state) => state.ui.isCreateTaskModalOpen);
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{() => dispatch(openCreateTaskModal())}</span><span class="tag">&gt;</span>
+        + Buat Task
+      <span class="tag">&lt;/button&gt;</span>
+
+      <span class="jsx">{isModalOpen &amp;&amp; (
+        &lt;Modal&gt;
+          &lt;TaskForm onClose={() => dispatch(closeCreateTaskModal())} /&gt;
+        &lt;/Modal&gt;
+      )}</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Selector yang terlalu lebar: <code>useSelector(state => state.ui)</code> - ini menyebabkan komponen re-render setiap kali state UI berubah meskipun bagian yang dipakai tidak berubah. Selalu ambil data yang spesifik: <code>state => state.ui.isSidebarOpen</code></li>
+            <li>Menggunakan Redux untuk menyimpan data dari API (server state) - gunakan TanStack Query untuk itu, Redux untuk UI state</li>
+            <li>Memanggil <code>dispatch</code> secara langsung di render (bukan di event handler atau useEffect)</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- CHAPTER 5: ZUSTAND -->
+      <!-- ====================================================== -->
+      <div class="chapter-header" id="ch-zustand">
+        <span class="chapter-num-badge chapter-badge-5">Chapter 05</span>
+        <div class="chapter-title-wrap">
+          <h2>Zustand</h2>
+          <span class="chapter-sub">State management global yang minimalis dan tanpa boilerplate</span>
+        </div>
+      </div>
+
+      <!-- 5.1 Setup -->
+      <section class="topic" id="zus-setup">
+        <div class="topic-header">
+          <span class="topic-num">5.1</span>
+          <div class="topic-title-wrap">
+            <h3>Setup dan Membuat Store</h3>
+            <span class="subtitle">Cara membuat state global dengan Zustand dalam hitungan menit</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Zustand adalah library state management yang sangat ringan dan simpel. Berbeda dari Redux, tidak ada boilerplate, tidak ada Provider, tidak ada action type, tidak ada reducer. Cukup <code>create()</code> dan selesai.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Semakin populer di tahun-tahun terakhir sebagai alternatif Redux yang lebih sederhana. Banyak startup dan tim kecil memilih Zustand karena kemudahannya. Sangat sering muncul di lowongan pekerjaan frontend modern.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>State auth: user yang sedang login, token</li>
+              <li>Proyek kecil-menengah yang butuh state global</li>
+              <li>Ketika Redux terasa terlalu berat untuk kebutuhan</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Mental Model</div>
+          <p>Zustand store adalah sebuah hook biasa. Kamu membuat <code>useAuthStore</code> dan memanggilnya di komponen manapun, persis seperti hook React biasa. Tidak perlu Provider, tidak perlu Provider, tidak ada setup tambahan.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <span class="code-file">instalasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>npm install zustand</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/stores/useAuthStore.js - auth store untuk TaskFlow</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { create } <span class="kw">from</span> <span class="str">'zustand'</span>;
+
+<span class="kw">export const</span> useAuthStore = <span class="fn">create</span>((set) => ({
+  <span class="cmt">// State awal</span>
+  user: <span class="kw">null</span>,
+  token: localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>) || <span class="kw">null</span>,
+  isLoggedIn: !!localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>),
+
+  <span class="cmt">// Actions: fungsi untuk mengubah state</span>
+  <span class="fn">login</span>: (user, token) => {
+    localStorage.<span class="fn">setItem</span>(<span class="str">'token'</span>, token);
+    <span class="fn">set</span>({ user, token, isLoggedIn: <span class="kw">true</span> });
+  },
+
+  <span class="fn">logout</span>: () => {
+    localStorage.<span class="fn">removeItem</span>(<span class="str">'token'</span>);
+    <span class="fn">set</span>({ user: <span class="kw">null</span>, token: <span class="kw">null</span>, isLoggedIn: <span class="kw">false</span> });
+  },
+
+  <span class="fn">updateUser</span>: (userData) => {
+    <span class="fn">set</span>((state) => ({ user: { ...state.user, ...userData } }));
+  },
+}));</code></pre>
+        </div>
+      </section>
+
+      <!-- 5.2 Actions -->
+      <section class="topic" id="zus-actions">
+        <div class="topic-header">
+          <span class="topic-num">5.2</span>
+          <div class="topic-title-wrap">
+            <h3>Menggunakan Store di Komponen</h3>
+            <span class="subtitle">Membaca state dan memanggil action dari Zustand store</span>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/pages/LoginPage.jsx - integrasi Zustand + RHF + Router</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> { useAuthStore } <span class="kw">from</span> <span class="str">'../stores/useAuthStore'</span>;
+<span class="kw">import</span> { useForm } <span class="kw">from</span> <span class="str">'react-hook-form'</span>;
+<span class="kw">import</span> { zodResolver } <span class="kw">from</span> <span class="str">'@hookform/resolvers/zod'</span>;
+<span class="kw">import</span> { z } <span class="kw">from</span> <span class="str">'zod'</span>;
+<span class="kw">import</span> api <span class="kw">from</span> <span class="str">'../api/axiosInstance'</span>;
+
+<span class="kw">const</span> loginSchema = z.<span class="fn">object</span>({
+  email: z.<span class="fn">string</span>().<span class="fn">email</span>(<span class="str">'Format email tidak valid'</span>),
+  password: z.<span class="fn">string</span>().<span class="fn">min</span>(<span class="num">6</span>, <span class="str">'Password minimal 6 karakter'</span>),
+});
+
+<span class="kw">export default function</span> <span class="fn">LoginPage</span>() {
+  <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
+  <span class="kw">const</span> login = <span class="fn">useAuthStore</span>((state) => state.login); <span class="cmt">// ambil hanya fungsi login</span>
+
+  <span class="kw">const</span> { register, handleSubmit, formState: { errors, isSubmitting } } = <span class="fn">useForm</span>({
+    resolver: <span class="fn">zodResolver</span>(loginSchema),
+  });
+
+  <span class="kw">const</span> <span class="fn">onSubmit</span> = <span class="kw">async</span> (data) => {
+    <span class="kw">const</span> response = <span class="kw">await</span> api.<span class="fn">post</span>(<span class="str">'/auth/login'</span>, data);
+    <span class="fn">login</span>(response.data.user, response.data.token); <span class="cmt">// simpan ke Zustand</span>
+    navigate(<span class="str">'/dashboard'</span>);
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;form</span> <span class="atr">onSubmit</span>=<span class="jsx">{handleSubmit(onSubmit)}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="str">"email"</span> <span class="jsx">{...register('email')}</span> <span class="atr">placeholder</span>=<span class="str">"Email"</span> <span class="tag">/&gt;</span>
+      <span class="jsx">{errors.email &amp;&amp; &lt;p&gt;{errors.email.message}&lt;/p&gt;}</span>
+
+      <span class="tag">&lt;input</span> <span class="atr">type</span>=<span class="str">"password"</span> <span class="jsx">{...register('password')}</span> <span class="atr">placeholder</span>=<span class="str">"Password"</span> <span class="tag">/&gt;</span>
+      <span class="jsx">{errors.password &amp;&amp; &lt;p&gt;{errors.password.message}&lt;/p&gt;}</span>
+
+      <span class="tag">&lt;button</span> <span class="atr">type</span>=<span class="str">"submit"</span> <span class="atr">disabled</span>=<span class="jsx">{isSubmitting}</span><span class="tag">&gt;</span>
+        <span class="jsx">{isSubmitting ? 'Masuk...' : 'Masuk'}</span>
+      <span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/form&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/components/layout/Navbar.jsx - tombol logout</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> { useAuthStore } <span class="kw">from</span> <span class="str">'../../stores/useAuthStore'</span>;
+
+<span class="kw">export default function</span> <span class="fn">Navbar</span>() {
+  <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
+  <span class="kw">const</span> { user, logout } = <span class="fn">useAuthStore</span>(); <span class="cmt">// bisa ambil beberapa sekaligus</span>
+
+  <span class="kw">const</span> <span class="fn">handleLogout</span> = () => {
+    <span class="fn">logout</span>();
+    navigate(<span class="str">'/'</span>, { replace: <span class="kw">true</span> });
+  };
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;nav&gt;</span>
+      <span class="tag">&lt;span&gt;</span>Halo, <span class="jsx">{user?.name}</span><span class="tag">&lt;/span&gt;</span>
+      <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{handleLogout}</span><span class="tag">&gt;</span>Keluar<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/nav&gt;</span>
+  );
+}</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Mengambil seluruh store: <code>useAuthStore()</code> tanpa selector - komponen akan re-render setiap kali state apapun di store berubah. Gunakan selector: <code>useAuthStore(state => state.user)</code></li>
+            <li>Menyimpan data sensitif seperti password di Zustand atau localStorage - hanya simpan token</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 5.3 Zustand vs Redux -->
+      <section class="topic" id="zus-vs-redux">
+        <div class="topic-header">
+          <span class="topic-num">5.3</span>
+          <div class="topic-title-wrap">
+            <h3>Zustand vs Redux Toolkit - Kapan Pilih Mana?</h3>
+            <span class="subtitle">Panduan memilih state management yang tepat di interview</span>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Aturan Praktis untuk Interview</div>
+          <p>Pertanyaan "Redux atau Zustand?" sering muncul di interview. Jawaban yang baik bukan "Zustand lebih bagus" tapi tahu kapan masing-masing tepat digunakan.</p>
+        </div>
+
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Kriteria</th>
+              <th>Zustand</th>
+              <th>Redux Toolkit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Boilerplate</strong></td>
+              <td>Sangat minimal</td>
+              <td>Lebih banyak (slice, store, provider)</td>
+            </tr>
+            <tr>
+              <td><strong>Kurva belajar</strong></td>
+              <td>Sangat mudah</td>
+              <td>Lebih curam</td>
+            </tr>
+            <tr>
+              <td><strong>DevTools</strong></td>
+              <td>Ada (lebih terbatas)</td>
+              <td>Redux DevTools yang kuat</td>
+            </tr>
+            <tr>
+              <td><strong>Skala proyek</strong></td>
+              <td>Kecil hingga menengah</td>
+              <td>Menengah hingga besar</td>
+            </tr>
+            <tr>
+              <td><strong>Time-travel debug</strong></td>
+              <td>Tidak ada</td>
+              <td>Ada</td>
+            </tr>
+            <tr>
+              <td><strong>Middleware</strong></td>
+              <td>Tersedia tapi manual</td>
+              <td>Built-in dan terstandar</td>
+            </tr>
+            <tr>
+              <td><strong>Kapan pilih</strong></td>
+              <td>Startup, proyek baru, tim kecil</td>
+              <td>Enterprise, tim besar, standarisasi</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="tip-block">
+          <p><strong>Di TaskFlow:</strong> Kita menggunakan Zustand untuk state auth (ringan, tidak butuh DevTools kompleks) dan Redux Toolkit untuk UI state global (bisa berkembang, punya DevTools yang baik). Di dunia nyata, sebuah proyek biasanya hanya menggunakan salah satunya, bukan keduanya.</p>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- CHAPTER 6: TESTING -->
+      <!-- ====================================================== -->
+      <div class="chapter-header" id="ch-testing">
+        <span class="chapter-num-badge chapter-badge-6">Chapter 06</span>
+        <div class="chapter-title-wrap">
+          <h2>React Testing Library + Vitest</h2>
+          <span class="chapter-sub">Testing komponen React yang berfokus pada perilaku, bukan implementasi</span>
+        </div>
+      </div>
+
+      <!-- 6.1 Setup -->
+      <section class="topic" id="test-setup">
+        <div class="topic-header">
+          <span class="topic-num">6.1</span>
+          <div class="topic-title-wrap">
+            <h3>Setup RTL, Vitest, dan jsdom</h3>
+            <span class="subtitle">Konfigurasi environment testing untuk React</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>React Testing Library (RTL) adalah library testing yang mendorong kamu test komponen seperti yang user lakukan (mencari teks, klik tombol), bukan implementasi internal. Vitest adalah test runner modern yang cepat, cocok dipakai bersama Vite.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Testing adalah skill yang membedakan developer junior yang baik. Di interview sering ditanyakan. Di pekerjaan, kemampuan menulis test yang baik membuat kamu dipercaya untuk mengerjakan fitur yang lebih besar.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Test form dan validasi (TaskForm)</li>
+              <li>Test komponen yang punya state</li>
+              <li>Test integrasi beberapa komponen</li>
+              <li>Test tampilan berdasarkan kondisi</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mental-model">
+          <div class="mm-label">Filosofi Utama RTL</div>
+          <p>"Test what the user sees, not how it works internally." Artinya: jangan test nama state variable atau nama fungsi internal. Test apakah teks yang benar muncul di layar, apakah tombol bisa diklik, apakah form menampilkan error yang benar.</p>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <span class="code-file">instalasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code>npm install -D vitest @testing-library/react @testing-library/user-event @testing-library/jest-dom jsdom</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">vite.config.js - tambahkan konfigurasi test</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { defineConfig } <span class="kw">from</span> <span class="str">'vite'</span>;
+<span class="kw">import</span> react <span class="kw">from</span> <span class="str">'@vitejs/plugin-react'</span>;
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  plugins: [<span class="fn">react</span>()],
+  test: {
+    environment: <span class="str">'jsdom'</span>,      <span class="cmt">// simulasi browser DOM</span>
+    globals: <span class="kw">true</span>,             <span class="cmt">// tidak perlu import describe, it, expect</span>
+    setupFiles: <span class="str">'./src/setupTests.js'</span>,
+  },
+});</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/setupTests.js - setup jest-dom matchers</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> <span class="str">'@testing-library/jest-dom'</span>;
+<span class="cmt">// Ini menambahkan matcher seperti .toBeInTheDocument(), .toBeVisible(), dll.</span></code></pre>
+        </div>
+      </section>
+
+      <!-- 6.2 Render & Query -->
+      <section class="topic" id="test-render">
+        <div class="topic-header">
+          <span class="topic-num">6.2</span>
+          <div class="topic-title-wrap">
+            <h3>Render dan Mencari Elemen</h3>
+            <span class="subtitle">Cara merender komponen dan menemukan elemen di DOM virtual</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>render()</code> merender komponen ke DOM virtual. Query functions seperti <code>getByRole</code>, <code>getByText</code>, <code>getByLabelText</code> digunakan untuk mencari elemen di DOM tersebut.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Urutan prioritas query adalah kunci menulis test yang baik. Menggunakan query yang tepat membuat test lebih resilient dan lebih mencerminkan pengalaman user sesungguhnya.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Setiap test komponen dimulai dengan <code>render()</code></li>
+              <li>Gunakan <code>getByRole</code> sebagai prioritas pertama</li>
+              <li>Gunakan <code>getByText</code> untuk konten teks</li>
+              <li>Hindari <code>getByTestId</code> kecuali tidak ada pilihan lain</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/__tests__/TaskCard.test.jsx</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { render, screen } <span class="kw">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="kw">import</span> TaskCard <span class="kw">from</span> <span class="str">'../components/TaskCard'</span>;
+
+<span class="kw">const</span> mockTask = {
+  id: <span class="num">1</span>,
+  title: <span class="str">'Buat fitur login'</span>,
+  priority: <span class="str">'high'</span>,
+  status: <span class="str">'in-progress'</span>,
+};
+
+<span class="fn">describe</span>(<span class="str">'TaskCard'</span>, () => {
+  <span class="fn">it</span>(<span class="str">'menampilkan judul task dengan benar'</span>, () => {
+    <span class="fn">render</span>(<span class="tag">&lt;TaskCard</span> <span class="atr">task</span>=<span class="jsx">{mockTask}</span> <span class="tag">/&gt;</span>);
+
+    <span class="cmt">// getByText: cari elemen yang mengandung teks ini</span>
+    <span class="kw">expect</span>(screen.<span class="fn">getByText</span>(<span class="str">'Buat fitur login'</span>)).<span class="fn">toBeInTheDocument</span>();
+  });
+
+  <span class="fn">it</span>(<span class="str">'menampilkan badge prioritas tinggi'</span>, () => {
+    <span class="fn">render</span>(<span class="tag">&lt;TaskCard</span> <span class="atr">task</span>=<span class="jsx">{mockTask}</span> <span class="tag">/&gt;</span>);
+
+    <span class="cmt">// getByRole: cara terbaik untuk mencari elemen berdasarkan aksesibilitas</span>
+    <span class="kw">const</span> badge = screen.<span class="fn">getByRole</span>(<span class="str">'status'</span>);
+    <span class="kw">expect</span>(badge).<span class="fn">toHaveTextContent</span>(<span class="str">'Tinggi'</span>);
+  });
+
+  <span class="fn">it</span>(<span class="str">'tidak menampilkan tombol edit ketika isOwner = false'</span>, () => {
+    <span class="fn">render</span>(<span class="tag">&lt;TaskCard</span> <span class="atr">task</span>=<span class="jsx">{mockTask}</span> <span class="atr">isOwner</span>=<span class="jsx">{false}</span> <span class="tag">/&gt;</span>);
+
+    <span class="cmt">// queryByRole: tidak throw error jika tidak ditemukan (berbeda dari getByRole)</span>
+    <span class="kw">expect</span>(screen.<span class="fn">queryByRole</span>(<span class="str">'button'</span>, { name: /edit/i })).<span class="fn">not</span>.<span class="fn">toBeInTheDocument</span>();
+  });
+});</code></pre>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">prioritas query RTL - dari terbaik ke terburuk</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="cmt">// Prioritas tinggi ke rendah (gunakan dari atas ke bawah):</span>
+
+screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /submit/i })   <span class="cmt">// TERBAIK - berbasis aksesibilitas</span>
+screen.<span class="fn">getByLabelText</span>(<span class="str">'Email'</span>)                     <span class="cmt">// untuk input dengan label</span>
+screen.<span class="fn">getByPlaceholderText</span>(<span class="str">'Masukkan email'</span>)       <span class="cmt">// kurang ideal tapi OK</span>
+screen.<span class="fn">getByText</span>(<span class="str">'Selamat Datang'</span>)                  <span class="cmt">// untuk konten teks biasa</span>
+screen.<span class="fn">getByDisplayValue</span>(<span class="str">'nilai input'</span>)             <span class="cmt">// untuk input yang sudah terisi</span>
+screen.<span class="fn">getByAltText</span>(<span class="str">'logo'</span>)                        <span class="cmt">// untuk gambar</span>
+screen.<span class="fn">getByTestId</span>(<span class="str">'my-element'</span>)                   <span class="cmt">// TERBURUK - hanya jika tidak ada pilihan</span>
+
+<span class="cmt">// Perbedaan getBy vs queryBy vs findBy:</span>
+<span class="cmt">// getBy    - throw error jika tidak ditemukan (untuk elemen yang HARUS ada)</span>
+<span class="cmt">// queryBy  - return null jika tidak ditemukan (untuk test "tidak ada")</span>
+<span class="cmt">// findBy   - async, return promise (untuk elemen yang muncul setelah loading)</span></code></pre>
+        </div>
+      </section>
+
+      <!-- 6.3 User Events -->
+      <section class="topic" id="test-events">
+        <div class="topic-header">
+          <span class="topic-num">6.3</span>
+          <div class="topic-title-wrap">
+            <h3>User Events dan Async Testing</h3>
+            <span class="subtitle">Mensimulasikan interaksi user dan menunggu operasi async</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p><code>userEvent</code> dari <code>@testing-library/user-event</code> mensimulasikan interaksi user yang lebih realistis dibanding <code>fireEvent</code>. <code>waitFor</code> dan <code>findBy*</code> digunakan untuk menunggu perubahan DOM yang async.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Form, tombol, dan elemen interaktif lainnya adalah bagian yang paling sering perlu ditest. <code>userEvent</code> lebih realistis karena mensimulasikan events yang sebenarnya terjadi saat user berinteraksi.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Test submit form dan validasi error</li>
+              <li>Test klik tombol yang mengubah UI</li>
+              <li>Test input teks dan perubahan state</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/__tests__/TaskForm.test.jsx - test form dan validasi</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { render, screen, waitFor } <span class="kw">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="kw">import</span> userEvent <span class="kw">from</span> <span class="str">'@testing-library/user-event'</span>;
+<span class="kw">import</span> TaskForm <span class="kw">from</span> <span class="str">'../components/TaskForm'</span>;
+
+<span class="fn">describe</span>(<span class="str">'TaskForm'</span>, () => {
+  <span class="fn">it</span>(<span class="str">'menampilkan error validasi ketika judul kurang dari 3 karakter'</span>, <span class="kw">async</span> () => {
+    <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>(); <span class="cmt">// buat instance user event</span>
+    <span class="fn">render</span>(<span class="tag">&lt;TaskForm</span> <span class="atr">onClose</span>=<span class="jsx">{vi.fn()}</span> <span class="tag">/&gt;</span>);
+
+    <span class="cmt">// 1. Ketik judul yang terlalu pendek</span>
+    <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByPlaceholderText</span>(<span class="str">'Judul task'</span>), <span class="str">'ab'</span>);
+
+    <span class="cmt">// 2. Klik tombol submit</span>
+    <span class="kw">await</span> user.<span class="fn">click</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /buat task/i }));
+
+    <span class="cmt">// 3. Tunggu dan cek apakah pesan error muncul</span>
+    <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+      <span class="kw">expect</span>(screen.<span class="fn">getByText</span>(<span class="str">'Judul minimal 3 karakter'</span>)).<span class="fn">toBeInTheDocument</span>();
+    });
+  });
+
+  <span class="fn">it</span>(<span class="str">'memanggil onClose setelah form berhasil disubmit'</span>, <span class="kw">async</span> () => {
+    <span class="kw">const</span> user = userEvent.<span class="fn">setup</span>();
+    <span class="kw">const</span> mockOnClose = vi.<span class="fn">fn</span>(); <span class="cmt">// mock function untuk cek apakah dipanggil</span>
+
+    <span class="fn">render</span>(<span class="tag">&lt;TaskForm</span> <span class="atr">onClose</span>=<span class="jsx">{mockOnClose}</span> <span class="tag">/&gt;</span>);
+
+    <span class="kw">await</span> user.<span class="fn">type</span>(screen.<span class="fn">getByPlaceholderText</span>(<span class="str">'Judul task'</span>), <span class="str">'Task baru saya'</span>);
+    <span class="kw">await</span> user.<span class="fn">click</span>(screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /buat task/i }));
+
+    <span class="kw">await</span> <span class="fn">waitFor</span>(() => {
+      <span class="kw">expect</span>(mockOnClose).<span class="fn">toHaveBeenCalledOnce</span>();
+    });
+  });
+});</code></pre>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Menggunakan <code>fireEvent.click()</code> alih-alih <code>userEvent.click()</code> - fireEvent lebih rendah level dan tidak mensimulasikan urutan event yang sebenarnya (mousedown, mouseup, click)</li>
+            <li>Lupa <code>await</code> sebelum <code>userEvent.type()</code> dan <code>userEvent.click()</code> - user-event v14 semuanya async</li>
+            <li>Menggunakan <code>getBy</code> untuk elemen yang muncul secara async - gunakan <code>findBy</code> yang mengembalikan promise dan menunggu elemen muncul</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 6.4 Mocking API -->
+      <section class="topic" id="test-mock">
+        <div class="topic-header">
+          <span class="topic-num">6.4</span>
+          <div class="topic-title-wrap">
+            <h3>Mocking API dengan vi.mock</h3>
+            <span class="subtitle">Isolasi komponen dari API call nyata saat testing</span>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-label what">Apa itu</div>
+            <p>Mocking adalah teknik menggantikan dependency nyata (seperti API call) dengan versi palsu yang bisa kita kontrol hasilnya. Ini memastikan test tidak bergantung pada network atau server eksternal.</p>
+          </div>
+          <div class="card">
+            <div class="card-label why">Kenapa penting</div>
+            <p>Test yang memanggil API nyata itu lambat, tidak reliable, dan bisa gagal karena masalah network. Mock membuat test cepat, terisolasi, dan deterministik - hasilnya selalu sama setiap kali dijalankan.</p>
+          </div>
+          <div class="card">
+            <div class="card-label when">Kapan dipakai</div>
+            <ul>
+              <li>Test komponen yang menggunakan TanStack Query</li>
+              <li>Test komponen yang langsung memanggil API</li>
+              <li>Simulasi kondisi error dari API</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <div class="code-header">
+            <span class="code-lang">jsx</span>
+            <span class="code-file">src/__tests__/DashboardPage.test.jsx - mock API dengan QueryClientProvider</span>
+            <button class="copy-btn" onclick="copyCode(this)">copy</button>
+          </div>
+          <pre><code><span class="kw">import</span> { render, screen } <span class="kw">from</span> <span class="str">'@testing-library/react'</span>;
+<span class="kw">import</span> { QueryClient, QueryClientProvider } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> DashboardPage <span class="kw">from</span> <span class="str">'../pages/DashboardPage'</span>;
+<span class="kw">import</span> * <span class="kw">as</span> taskApi <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="cmt">// Mock seluruh module taskApi</span>
+vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
+
+<span class="cmt">// Helper untuk membungkus komponen dengan semua Provider yang diperlukan</span>
+<span class="kw">const</span> <span class="fn">renderWithProviders</span> = (component) => {
+  <span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
+    defaultOptions: { queries: { retry: <span class="kw">false</span> } }, <span class="cmt">// tidak retry di test</span>
+  });
+  <span class="kw">return</span> <span class="fn">render</span>(
+    <span class="tag">&lt;QueryClientProvider</span> <span class="atr">client</span>=<span class="jsx">{queryClient}</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;BrowserRouter&gt;</span>{component}<span class="tag">&lt;/BrowserRouter&gt;</span>
+    <span class="tag">&lt;/QueryClientProvider&gt;</span>
+  );
+};
+
+<span class="fn">describe</span>(<span class="str">'DashboardPage'</span>, () => {
+  <span class="fn">it</span>(<span class="str">'menampilkan daftar task setelah data berhasil di-fetch'</span>, <span class="kw">async</span> () => {
+    <span class="cmt">// Atur apa yang dikembalikan mock</span>
+    taskApi.fetchTasks.<span class="fn">mockResolvedValue</span>([
+      { id: <span class="num">1</span>, title: <span class="str">'Task Pertama'</span>, status: <span class="str">'todo'</span> },
+      { id: <span class="num">2</span>, title: <span class="str">'Task Kedua'</span>, status: <span class="str">'done'</span> },
+    ]);
+
+    <span class="fn">renderWithProviders</span>(<span class="tag">&lt;DashboardPage /&gt;</span>);
+
+    <span class="cmt">// findByText = async, menunggu elemen muncul setelah loading selesai</span>
+    <span class="kw">expect</span>(<span class="kw">await</span> screen.<span class="fn">findByText</span>(<span class="str">'Task Pertama'</span>)).<span class="fn">toBeInTheDocument</span>();
+    <span class="kw">expect</span>(<span class="kw">await</span> screen.<span class="fn">findByText</span>(<span class="str">'Task Kedua'</span>)).<span class="fn">toBeInTheDocument</span>();
+  });
+
+  <span class="fn">it</span>(<span class="str">'menampilkan pesan error ketika API gagal'</span>, <span class="kw">async</span> () => {
+    <span class="cmt">// Simulasi API error</span>
+    taskApi.fetchTasks.<span class="fn">mockRejectedValue</span>(<span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Network Error'</span>));
+
+    <span class="fn">renderWithProviders</span>(<span class="tag">&lt;DashboardPage /&gt;</span>);
+
+    <span class="kw">expect</span>(<span class="kw">await</span> screen.<span class="fn">findByText</span>(/error/i)).<span class="fn">toBeInTheDocument</span>();
+  });
+});</code></pre>
+        </div>
+
+        <div class="tip-block">
+          <p><strong>Buat helper renderWithProviders:</strong> Di proyek nyata, buat satu fungsi helper yang membungkus semua Provider (QueryClientProvider, Provider Redux, BrowserRouter) agar tidak mengulang kode di setiap file test. Tempatkan di <code>src/__tests__/utils.tsx</code>.</p>
+        </div>
+
+        <div class="mistake-block">
+          <div class="mistake-title">Kesalahan Umum</div>
+          <ul class="mistake-list">
+            <li>Tidak membungkus komponen dengan Provider yang diperlukan (QueryClientProvider, Redux Provider) saat rendering di test - ini akan menyebabkan error karena hooks tidak bisa menemukan context</li>
+            <li>Menggunakan <code>getByText</code> untuk konten yang muncul secara async (setelah loading) - gunakan <code>await findByText()</code> untuk menunggu konten muncul</li>
+            <li>Tidak mereset mock antar test dengan <code>vi.clearAllMocks()</code> di <code>afterEach</code> - sisa mock dari test sebelumnya bisa mempengaruhi test berikutnya</li>
+          </ul>
+        </div>
+      </section>
+
+    </div><!-- end content-area -->
+
+    <!-- FINAL CTA -->
+    <div class="cta-section">
+      <h2>TaskFlow selesai. Kamu siap.</h2>
+      <p>Kamu sudah mempelajari seluruh ekosistem React modern yang dipakai di dunia kerja nyata, semuanya dalam konteks satu proyek yang konsisten.</p>
+      <div class="checklist">
+        <div class="check-item"><div class="check-icon">&#10003;</div> Routing multi-halaman dengan React Router v6</div>
+        <div class="check-item"><div class="check-icon">&#10003;</div> Fetch dan manajemen server state dengan TanStack Query + Axios</div>
+        <div class="check-item"><div class="check-icon">&#10003;</div> Form yang performant dan valid dengan RHF + Zod</div>
+        <div class="check-item"><div class="check-icon">&#10003;</div> State global UI dengan Redux Toolkit</div>
+        <div class="check-item"><div class="check-icon">&#10003;</div> State management minimalis dengan Zustand</div>
+        <div class="check-item"><div class="check-icon">&#10003;</div> Testing komponen dengan React Testing Library</div>
+        <div class="check-item"><div class="check-icon">&#10003;</div> Semua library terintegrasi dalam satu proyek nyata</div>
+      </div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:0;">Langkah selanjutnya: selesaikan TaskFlow, deploy ke Vercel, dan jadikan portfolio-mu. Kemudian lamar pekerjaan.</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  const sections = document.querySelectorAll('.topic, .chapter-header');
+  const navItems = document.querySelectorAll('.nav-item');
+  const progressFill = document.getElementById('progress-fill');
+  const progressPct = document.getElementById('progress-pct');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('href') === '#' + id) {
+            item.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-10% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = Math.round((scrollTop / docHeight) * 100);
+    progressFill.style.width = pct + '%';
+    progressPct.textContent = pct + '%';
+  });
+</script>
+
+</body>
+</html>
