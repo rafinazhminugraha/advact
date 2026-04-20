@@ -29,6 +29,7 @@ export const navigationData: NavGroup[] = [
       { id: "rr-navigate", label: "Navigasi Programatik" },
       { id: "rr-protected", label: "Protected Routes" },
       { id: "rr-nested", label: "Nested Routes & Layout" },
+      { id: "rr-searchparams", label: "useSearchParams & Filter" },
     ],
   },
   {

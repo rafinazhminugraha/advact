@@ -4,6 +4,7 @@ import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
 import MentalModel from "../ui/MentalModel";
 import MistakeBlock from "../ui/MistakeBlock";
+import TipBlock from "../ui/TipBlock";
 import TopicSection from "../layout/TopicSection";
 
 export default function Chapter2Query() {
@@ -153,6 +154,59 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
   <span class="kw">return</span> <span class="tag">&lt;div&gt;</span><span class="jsx">{task?.title}</span><span class="tag">&lt;/div&gt;</span>;
 }`} />
 
+        <TipBlock>
+          <p><strong>Best practice di dunia kerja:</strong> query logic sering dibungkus dalam custom hook agar reusable dan komponen lebih bersih. Ini juga memudahkan testing karena logika query terisolasi.</p>
+        </TipBlock>
+
+        <CodeBlock lang="jsx" file="src/hooks/useTasks.js - custom hook yang membungkus query task" id="tq-usequery-useTasks" html={`<span class="kw">import</span> { useQuery } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { fetchTasks, fetchTaskById } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="cmt">// Custom hook untuk daftar tasks dengan filter opsional</span>
+<span class="kw">export function</span> <span class="fn">useTasks</span>(filters = {}) {
+  <span class="kw">return</span> <span class="fn">useQuery</span>({
+    queryKey: [<span class="str">'tasks'</span>, filters],
+    queryFn: () => <span class="fn">fetchTasks</span>(filters),
+  });
+}
+
+<span class="cmt">// Custom hook untuk satu task berdasarkan id</span>
+<span class="kw">export function</span> <span class="fn">useTask</span>(id) {
+  <span class="kw">return</span> <span class="fn">useQuery</span>({
+    queryKey: [<span class="str">'tasks'</span>, id],
+    queryFn: () => <span class="fn">fetchTaskById</span>(id),
+    enabled: !!id,
+  });
+}
+
+<span class="cmt">// Pemakaian di komponen jadi jauh lebih bersih:</span>
+<span class="cmt">// const { data: tasks, isLoading } = useTasks({ status: activeStatus });</span>
+<span class="cmt">// const { data: task } = useTask(id);</span>`} />
+
+        <MentalModel label="isLoading vs isFetching vs isPending — Perbedaan Penting">
+          <p>Ini adalah sumber kebingungan yang sering muncul di interview. Ketiga properti ini berbeda dan masing-masing punya use case spesifik.</p>
+        </MentalModel>
+
+        <CodeBlock lang="jsx" file="referensi - perbedaan isLoading isFetching dan isPending" id="tq-usequery-loading-diff" html={`<span class="kw">const</span> { data, isLoading, isFetching, isPending } = <span class="fn">useQuery</span>({ ... });
+
+<span class="cmt">// isLoading  = true HANYA saat pertama kali fetch DAN tidak ada cache sama sekali</span>
+<span class="cmt">//             Gunakan ini untuk skeleton/loading screen pertama kali halaman dibuka</span>
+
+<span class="cmt">// isFetching = true setiap kali sedang fetch, termasuk background refetch</span>
+<span class="cmt">//             Gunakan ini untuk spinner kecil yang menunjukkan data sedang diperbarui</span>
+
+<span class="cmt">// isPending  = true saat query belum punya data (sama dengan isLoading di v5)</span>
+<span class="cmt">//             Di TanStack Query v5, isPending menggantikan isLoading untuk useQuery</span>
+
+<span class="cmt">// Contoh use case yang tepat:</span>
+<span class="kw">if</span> (isLoading) <span class="kw">return</span> <span class="tag">&lt;SkeletonCard /&gt;</span>;    <span class="cmt">// hanya tampil saat pertama kali, bukan setiap refetch</span>
+
+<span class="kw">return</span> (
+  <span class="tag">&lt;div&gt;</span>
+    <span class="jsx">{isFetching &amp;&amp; &lt;span&gt;Memperbarui data...&lt;/span&gt;}</span>  <span class="cmt">// indikator background update</span>
+    <span class="jsx">{tasks.<span class="fn">map</span>((task) => &lt;TaskCard key={task.id} task={task} /&gt;)}</span>
+  <span class="tag">&lt;/div&gt;</span>
+);`} />
+
         <MistakeBlock>
           <li>Menggunakan <code>queryKey: ['tasks']</code> yang sama untuk query dengan ID berbeda - semua task akan berbagi cache yang sama. Selalu sertakan ID di queryKey: <code>['tasks', id]</code></li>
           <li>Langsung menaruh <code>fetch()</code> di dalam <code>queryFn</code> tanpa fungsi terpisah - susah di-test dan duplikasi kode</li>
@@ -183,6 +237,48 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
             </ul>
           </Card>
         </CardGrid>
+
+        <TipBlock>
+          <p><strong>Sebelum lanjut ke useMutation</strong>, kita perlu mendefinisikan <code>TaskCard.jsx</code> terlebih dahulu karena komponen ini digunakan di <code>DashboardPage</code> dan akan menjadi subjek test di Chapter 6.</p>
+        </TipBlock>
+
+        <CodeBlock lang="jsx" file="src/components/TaskCard.jsx - kartu tampilan satu task" id="tq-usemutation-taskcard" html={`<span class="kw">import</span> { Link } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+
+<span class="kw">const</span> priorityLabel = {
+  low: <span class="str">'Rendah'</span>,
+  medium: <span class="str">'Sedang'</span>,
+  high: <span class="str">'Tinggi'</span>,
+};
+
+<span class="kw">export default function</span> <span class="fn">TaskCard</span>({ task, isOwner = <span class="kw">false</span>, onDelete }) {
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div</span> <span class="atr">className</span>=<span class="str">"task-card"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;h3&gt;</span><span class="jsx">{task.title}</span><span class="tag">&lt;/h3&gt;</span>
+        <span class="tag">&lt;span</span> <span class="atr">role</span>=<span class="str">"status"</span><span class="tag">&gt;</span><span class="jsx">{priorityLabel[task.priority]}</span><span class="tag">&lt;/span&gt;</span>
+      <span class="tag">&lt;/div&gt;</span>
+
+      <span class="tag">&lt;p&gt;</span><span class="jsx">{task.description}</span><span class="tag">&lt;/p&gt;</span>
+
+      <span class="tag">&lt;div&gt;</span>
+        <span class="tag">&lt;Link</span> <span class="atr">to</span>=<span class="jsx">{\`/tasks/\${task.id}\`}</span><span class="tag">&gt;</span>Lihat Detail<span class="tag">&lt;/Link&gt;</span>
+
+        <span class="jsx">{isOwner &amp;&amp; (</span>
+          <span class="tag">&lt;button</span>
+            <span class="atr">aria-label</span>=<span class="str">"edit"</span>
+            <span class="atr">onClick</span>=<span class="jsx">{() => {/* buka edit modal */}}</span>
+          <span class="tag">&gt;</span>
+            Edit
+          <span class="tag">&lt;/button&gt;</span>
+        <span class="jsx">)}</span>
+
+        <span class="jsx">{isOwner &amp;&amp; (</span>
+          <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{() => onDelete(task.id)}</span><span class="tag">&gt;</span>Hapus<span class="tag">&lt;/button&gt;</span>
+        <span class="jsx">)}</span>
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}`} />
 
         <CodeBlock lang="jsx" file="src/api/taskApi.js - tambahkan fungsi mutasi" id="tq-usemutation-api" html={`<span class="kw">export const</span> <span class="fn">createTask</span> = (data) => api.<span class="fn">post</span>(<span class="str">'/tasks'</span>, data).<span class="fn">then</span>((res) => res.data);
 <span class="kw">export const</span> <span class="fn">updateTask</span> = ({ id, ...data }) => api.<span class="fn">patch</span>(<span class="str">\`/tasks/\${id}\`</span>, data).<span class="fn">then</span>((res) => res.data);

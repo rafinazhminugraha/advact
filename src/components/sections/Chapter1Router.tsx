@@ -266,7 +266,6 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
         num="1.5"
         title="Nested Routes & Layout Route"
         subtitle="Berbagi layout (Navbar, Sidebar) antar halaman"
-        isLast
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
@@ -331,6 +330,94 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
         <MistakeBlock>
           <li>Lupa menambahkan <code>&lt;Outlet /&gt;</code> di komponen layout - child route tidak akan pernah ditampilkan</li>
           <li>Copy-paste Navbar ke setiap halaman secara manual alih-alih menggunakan layout route</li>
+        </MistakeBlock>
+      </TopicSection>
+
+      {/* 1.6 useSearchParams */}
+      <TopicSection
+        id="rr-searchparams"
+        num="1.6"
+        title="useSearchParams untuk Filter via URL"
+        subtitle="Membaca dan mengubah query string di URL tanpa reload"
+        isLast
+      >
+        <CardGrid>
+          <Card label="Apa itu" type="what">
+            <p><code>useSearchParams</code> adalah hook untuk membaca dan mengubah query parameters di URL, yaitu bagian setelah tanda <code>?</code> seperti <code>/dashboard?status=todo&amp;priority=high</code>. State filter tersimpan di URL sehingga bisa di-share dan tidak hilang saat refresh.</p>
+          </Card>
+          <Card label="Kenapa penting" type="why">
+            <p>Hampir setiap dashboard di dunia kerja punya fitur filter. Menyimpan filter di URL adalah best practice: user bisa bookmark, share link, dan halaman tidak reset saat refresh. Ini ditanyakan di interview dan ada di hampir setiap job description.</p>
+          </Card>
+          <Card label="Kapan dipakai" type="when">
+            <ul>
+              <li>Filter task berdasarkan status di DashboardPage</li>
+              <li>Pagination: <code>?page=2</code></li>
+              <li>Search query: <code>?q=keyword</code></li>
+              <li>Kombinasi filter: <code>?status=todo&amp;priority=high</code></li>
+            </ul>
+          </Card>
+        </CardGrid>
+
+        <MentalModel>
+          <p>Bayangkan <code>useSearchParams</code> seperti <code>useState</code> tapi nilainya disimpan di URL, bukan di memori React. <code>[searchParams, setSearchParams]</code> persis seperti <code>[state, setState]</code> — bedanya perubahan langsung tercermin di URL browser.</p>
+        </MentalModel>
+
+        <CodeBlock lang="jsx" file="src/pages/DashboardPage.jsx - filter task berdasarkan status via URL" id="rr-searchparams-code" html={`<span class="kw">import</span> { useSearchParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> { useQuery } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { fetchTasks } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+<span class="kw">export default function</span> <span class="fn">DashboardPage</span>() {
+  <span class="cmt">// searchParams = URLSearchParams object, setSearchParams = fungsi update URL</span>
+  <span class="kw">const</span> [searchParams, setSearchParams] = <span class="fn">useSearchParams</span>();
+
+  <span class="cmt">// Baca nilai dari URL: /dashboard?status=todo => 'todo'</span>
+  <span class="cmt">// Jika tidak ada di URL, default ke 'all'</span>
+  <span class="kw">const</span> activeStatus = searchParams.<span class="fn">get</span>(<span class="str">'status'</span>) || <span class="str">'all'</span>;
+
+  <span class="kw">const</span> { data: tasks = [], isLoading } = <span class="fn">useQuery</span>({
+    queryKey: [<span class="str">'tasks'</span>, { status: activeStatus }], <span class="cmt">// cache terpisah per filter</span>
+    queryFn: () => <span class="fn">fetchTasks</span>({ status: activeStatus }),
+  });
+
+  <span class="kw">const</span> statusOptions = [<span class="str">'all'</span>, <span class="str">'todo'</span>, <span class="str">'in-progress'</span>, <span class="str">'done'</span>];
+
+  <span class="kw">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="cmt">// Tombol filter - mengubah URL tanpa reload halaman</span>
+      <span class="tag">&lt;div&gt;</span>
+        <span class="jsx">{statusOptions.<span class="fn">map</span>((status) => (
+          &lt;button
+            key={status}
+            onClick={() => setSearchParams({ status })}
+            style={{ fontWeight: activeStatus === status ? 'bold' : 'normal' }}
+          &gt;
+            {status}
+          &lt;/button&gt;
+        ))}</span>
+      <span class="tag">&lt;/div&gt;</span>
+
+      <span class="jsx">{isLoading ? (
+        &lt;p&gt;Memuat...&lt;/p&gt;
+      ) : (
+        tasks.<span class="fn">map</span>((task) => &lt;TaskCard key={task.id} task={task} /&gt;)
+      )}</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+
+<span class="cmt">// URL berubah saat filter diklik:</span>
+<span class="cmt">// /dashboard           => activeStatus = 'all'</span>
+<span class="cmt">// /dashboard?status=todo        => activeStatus = 'todo'</span>
+<span class="cmt">// /dashboard?status=in-progress => activeStatus = 'in-progress'</span>`} />
+
+        <ProjectStep label="TaskFlow - Filter Task">
+          <p>Dengan <strong>useSearchParams</strong>, fitur filter status di DashboardPage TaskFlow menjadi persisten di URL. User bisa membagikan link <code>/dashboard?status=todo</code> dan orang lain langsung melihat task yang sama tersaring.</p>
+        </ProjectStep>
+
+        <MistakeBlock>
+          <li>Menyimpan state filter di <code>useState</code> biasa — filter hilang saat user refresh atau berpindah halaman lalu kembali. Gunakan <code>useSearchParams</code> agar filter persisten</li>
+          <li>Memanggil <code>setSearchParams(&#123; status &#125;)</code> yang menghapus semua params lain. Jika ada beberapa filter, pertahankan yang lain: <code>setSearchParams(prev =&gt; &#123; prev.set('status', status); return prev; &#125;)</code></li>
+          <li>Lupa menyertakan nilai filter di <code>queryKey</code> TanStack Query — semua filter akan berbagi cache yang sama dan data tidak akan diperbarui saat filter berubah</li>
         </MistakeBlock>
       </TopicSection>
     </>

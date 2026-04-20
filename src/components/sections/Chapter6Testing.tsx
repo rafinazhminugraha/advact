@@ -274,6 +274,40 @@ vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
   });
 });`} />
 
+        <CodeBlock lang="jsx" file="src/__tests__/contoh.test.jsx - pola beforeEach dan afterEach untuk isolasi test" id="test-mock-beforeeach" html={`<span class="kw">import</span> * <span class="kw">as</span> taskApi <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+
+vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
+
+<span class="fn">describe</span>(<span class="str">'NamaKomponen'</span>, () => {
+  <span class="cmt">// beforeEach: dijalankan SEBELUM setiap test dalam describe ini</span>
+  <span class="fn">beforeEach</span>(() => {
+    <span class="cmt">// Reset semua mock ke kondisi awal - mencegah sisa mock dari test sebelumnya</span>
+    vi.<span class="fn">clearAllMocks</span>();
+  });
+
+  <span class="cmt">// afterEach: dijalankan SETELAH setiap test</span>
+  <span class="fn">afterEach</span>(() => {
+    <span class="cmt">// Bersihkan efek samping jika ada (localStorage, timer palsu, dll)</span>
+    localStorage.<span class="fn">clear</span>();
+  });
+
+  <span class="fn">it</span>(<span class="str">'test pertama'</span>, <span class="kw">async</span> () => {
+    taskApi.fetchTasks.<span class="fn">mockResolvedValue</span>([{ id: <span class="num">1</span>, title: <span class="str">'Task A'</span> }]);
+    <span class="cmt">// ... test code</span>
+  });
+
+  <span class="fn">it</span>(<span class="str">'test kedua tidak terpengaruh mock dari test pertama'</span>, <span class="kw">async</span> () => {
+    <span class="cmt">// Mock di sini fresh karena clearAllMocks() dipanggil beforeEach</span>
+    taskApi.fetchTasks.<span class="fn">mockResolvedValue</span>([]);
+    <span class="cmt">// ... test code</span>
+  });
+});
+
+<span class="cmt">// beforeAll  = sekali sebelum semua test di describe (untuk setup mahal)</span>
+<span class="cmt">// afterAll   = sekali setelah semua test di describe (untuk teardown)</span>
+<span class="cmt">// beforeEach = sebelum setiap test (paling sering dipakai)</span>
+<span class="cmt">// afterEach  = setelah setiap test</span>`} />
+
         <TipBlock>
           <p><strong>Buat helper renderWithProviders:</strong> Di proyek nyata, buat satu fungsi helper yang membungkus semua Provider (QueryClientProvider, Provider Redux, BrowserRouter) agar tidak mengulang kode di setiap file test. Tempatkan di <code>src/__tests__/utils.tsx</code>.</p>
         </TipBlock>

@@ -70,6 +70,33 @@ export default function Chapter5Zustand() {
     <span class="fn">set</span>((state) => ({ user: { ...state.user, ...userData } }));
   },
 }));`} />
+        <CodeBlock lang="jsx" file="src/stores/useAuthStore.js - versi dengan persist middleware (direkomendasikan)" id="zus-setup-persist" html={`<span class="kw">import</span> { create } <span class="kw">from</span> <span class="str">'zustand'</span>;
+<span class="kw">import</span> { persist } <span class="kw">from</span> <span class="str">'zustand/middleware'</span>;
+
+<span class="cmt">// persist middleware otomatis sync state ke localStorage</span>
+<span class="cmt">// tidak perlu lagi localStorage.setItem/getItem secara manual</span>
+<span class="kw">export const</span> useAuthStore = <span class="fn">create</span>(
+  <span class="fn">persist</span>(
+    (set) => ({
+      user: <span class="kw">null</span>,
+      token: <span class="kw">null</span>,
+      isLoggedIn: <span class="kw">false</span>,
+
+      <span class="fn">login</span>: (user, token) => <span class="fn">set</span>({ user, token, isLoggedIn: <span class="kw">true</span> }),
+      <span class="fn">logout</span>: () => <span class="fn">set</span>({ user: <span class="kw">null</span>, token: <span class="kw">null</span>, isLoggedIn: <span class="kw">false</span> }),
+      <span class="fn">updateUser</span>: (userData) =>
+        <span class="fn">set</span>((state) => ({ user: { ...state.user, ...userData } })),
+    }),
+    {
+      name: <span class="str">'auth-storage'</span>,  <span class="cmt">// key di localStorage</span>
+      partialize: (state) => ({ token: state.token, user: state.user }), <span class="cmt">// hanya simpan ini</span>
+    }
+  )
+);`} />
+
+        <TipBlock>
+          <p><strong>Versi mana yang dipakai?</strong> Di TaskFlow, gunakan versi dengan <code>persist</code>. Ini adalah pola standar di industri. Tanpa <code>persist</code>, state auth hilang setiap kali user refresh halaman dan harus login ulang meskipun token masih valid.</p>
+        </TipBlock>
       </TopicSection>
 
       {/* 5.2 Actions */}

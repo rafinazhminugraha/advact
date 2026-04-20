@@ -69,6 +69,35 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
     <span class="tag">&lt;/QueryClientProvider&gt;</span>
   <span class="tag">&lt;/Provider&gt;</span>
 );`} />
+
+        <CodeBlock lang="jsx" file="src/main.jsx - versi final lengkap dengan semua provider" id="rtk-setup-mainjsx-final" html={`<span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
+<span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+<span class="kw">import</span> { QueryClient, QueryClientProvider } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
+<span class="kw">import</span> { Provider } <span class="kw">from</span> <span class="str">'react-redux'</span>;
+<span class="kw">import</span> { store } <span class="kw">from</span> <span class="str">'./store/store'</span>;
+<span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
+
+<span class="cmt">// Zustand TIDAK butuh Provider - langsung pakai useAuthStore di komponen manapun</span>
+
+<span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
+  defaultOptions: {
+    queries: {
+      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>,
+      retry: <span class="num">1</span>,
+    },
+  },
+});
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
+  <span class="tag">&lt;Provider</span> <span class="atr">store</span>=<span class="jsx">{store}</span><span class="tag">&gt;</span>               <span class="cmt">// Redux - untuk UI state global</span>
+    <span class="tag">&lt;QueryClientProvider</span> <span class="atr">client</span>=<span class="jsx">{queryClient}</span><span class="tag">&gt;</span>  <span class="cmt">// TanStack Query - untuk server state</span>
+      <span class="tag">&lt;BrowserRouter&gt;</span>                  <span class="cmt">// React Router - untuk navigasi</span>
+        <span class="tag">&lt;App /&gt;</span>
+      <span class="tag">&lt;/BrowserRouter&gt;</span>
+    <span class="tag">&lt;/QueryClientProvider&gt;</span>
+  <span class="tag">&lt;/Provider&gt;</span>
+);`} />
       </TopicSection>
 
       {/* 4.2 createSlice */}
