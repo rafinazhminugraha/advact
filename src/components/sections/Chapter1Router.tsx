@@ -19,19 +19,27 @@ export default function Chapter1Router() {
         badgeVariant={1}
       />
 
-      {/* 1.1 Setup & BrowserRouter */}
+      {/* 1.1 Setup & createBrowserRouter */}
       <TopicSection
         id="rr-setup"
         num="1.1"
-        title="Setup & BrowserRouter"
-        subtitle="Cara kerja React Router dan titik awal konfigurasi"
+        title="Setup & createBrowserRouter"
+        subtitle="Cara kerja React Router modern dan titik awal konfigurasi"
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
-            <p>React Router adalah library yang memungkinkan kamu membuat navigasi antar halaman di aplikasi React tanpa melakukan full page reload. URL berubah, konten berganti, tapi browser tidak reload.</p>
+            <p>
+              React Router adalah library yang memungkinkan kamu membuat
+              navigasi antar halaman di aplikasi React tanpa melakukan full page
+              reload. URL berubah, konten berganti, tapi browser tidak reload.
+            </p>
           </Card>
           <Card label="Kenapa penting" type="why">
-            <p>Setiap aplikasi multi-halaman membutuhkan routing. Ini adalah skill wajib yang selalu ditanyakan di interview. Tanpa React Router, aplikasimu hanya satu halaman statis.</p>
+            <p>
+              Setiap aplikasi multi-halaman membutuhkan routing. Ini adalah
+              skill wajib yang selalu ditanyakan di interview. Tanpa React
+              Router, aplikasimu hanya satu halaman statis.
+            </p>
           </Card>
           <Card label="Kapan dipakai" type="when">
             <ul>
@@ -43,22 +51,46 @@ export default function Chapter1Router() {
         </CardGrid>
 
         <MentalModel>
-          <p>Bayangkan <code>BrowserRouter</code> sebagai "GPS" aplikasimu. Dia memantau URL browser dan memberitahu React komponen mana yang harus ditampilkan berdasarkan URL tersebut.</p>
+          <p>
+            Bayangkan router sebagai "GPS" aplikasimu. Di arsitektur modern,
+            <code>createBrowserRouter</code> menyimpan seluruh definisi route
+            dalam satu objek yang menjadi sumber kebenaran untuk navigasi.
+          </p>
         </MentalModel>
 
-        <CodeBlock lang="bash" file="terminal - instalasi react-router-dom" id="rr-setup-install" html={`npm install react-router-dom`} />
+        <CodeBlock
+          lang="bash"
+          file="terminal - instalasi react-router-dom"
+          id="rr-setup-install"
+          html={`npm install react-router-dom`}
+        />
 
-        <CodeBlock lang="jsx" file="src/main.jsx - membungkus App dengan BrowserRouter" id="rr-setup-main" html={`<span class="kw">import</span> { BrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/main.tsx - final modern entry point (router ada di App.tsx)"
+          id="rr-setup-main"
+          html={`<span class="kw">import</span> React <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
 <span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
 
-ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>)).<span class="fn">render</span>(
-  <span class="tag">&lt;BrowserRouter&gt;</span>
+<span class="cmt">// Modern React Router pattern:</span>
+<span class="cmt">// RouterProvider ada di App.tsx, bukan di main.tsx</span>
+<span class="cmt">// main.tsx hanya jadi entry point render App</span>
+<span class="cmt">// Provider lain (QueryClient, Redux) ditambahkan bertahap di chapter berikutnya</span>
+
+ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>) <span class="kw">as</span> <span class="tp">HTMLElement</span>).<span class="fn">render</span>(
+  <span class="tag">&lt;React.StrictMode&gt;</span>
     <span class="tag">&lt;App /&gt;</span>
-  <span class="tag">&lt;/BrowserRouter&gt;</span>
-);`} />
+  <span class="tag">&lt;/React.StrictMode&gt;</span>
+);`}
+        />
 
         <ProjectStep label="TaskFlow - Langkah 1">
-          <p>Kita bungkus seluruh aplikasi TaskFlow dengan <strong>BrowserRouter</strong> di <code>main.jsx</code>. Ini adalah satu-satunya tempat kita meletakkan BrowserRouter, yaitu paling atas di tree komponen.</p>
+          <p>
+            Di TaskFlow, kita mendefinisikan semua routes menggunakan
+            createBrowserRouter di AppRouter.tsx. RouterProvider dirender di
+            App.tsx. main.tsx tetap bersih tanpa provider routing apapun.
+          </p>
         </ProjectStep>
       </TopicSection>
 
@@ -66,42 +98,80 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       <TopicSection
         id="rr-routes"
         num="1.2"
-        title="Routes, Route, dan URL Parameters"
+        title="Router Object, Params, dan Layout Route"
         subtitle="Mendefinisikan halaman dan membaca data dari URL"
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
-            <p><code>Routes</code> adalah wadah untuk semua route. <code>Route</code> adalah aturan "jika URL ini, tampilkan komponen ini". URL params (<code>:id</code>) memungkinkan kamu menyematkan data dinamis di URL.</p>
+            <p>
+              <code>Routes</code> adalah wadah untuk semua route.{" "}
+              <code>Route</code> adalah aturan "jika URL ini, tampilkan komponen
+              ini". URL params (<code>:id</code>) memungkinkan kamu menyematkan
+              data dinamis di URL.
+            </p>
           </Card>
           <Card label="Kenapa penting" type="why">
-            <p>Hampir setiap halaman detail menggunakan URL params, contohnya <code>/tasks/42</code>. Memahami cara membaca params dari URL adalah skill dasar yang wajib dikuasai.</p>
+            <p>
+              Hampir setiap halaman detail menggunakan URL params, contohnya{" "}
+              <code>/tasks/42</code>. Memahami cara membaca params dari URL
+              adalah skill dasar yang wajib dikuasai.
+            </p>
           </Card>
           <Card label="Kapan dipakai" type="when">
             <ul>
-              <li>Halaman detail produk: <code>/produk/:id</code></li>
-              <li>Profil user: <code>/user/:username</code></li>
-              <li>Halaman edit: <code>/tasks/:id/edit</code></li>
+              <li>
+                Halaman detail produk: <code>/produk/:id</code>
+              </li>
+              <li>
+                Profil user: <code>/user/:username</code>
+              </li>
+              <li>
+                Halaman edit: <code>/tasks/:id/edit</code>
+              </li>
             </ul>
           </Card>
         </CardGrid>
 
-        <CodeBlock lang="jsx" file="src/router/AppRouter.jsx - mendefinisikan semua routes aplikasi" id="rr-routes-approuter" html={`<span class="kw">import</span> { Routes, Route } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/router/AppRouter.tsx - final router object dengan createBrowserRouter"
+          id="rr-routes-approuter"
+          html={`<span class="kw">import</span> { createBrowserRouter } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 <span class="kw">import</span> LoginPage <span class="kw">from</span> <span class="str">'../pages/LoginPage'</span>;
 <span class="kw">import</span> DashboardPage <span class="kw">from</span> <span class="str">'../pages/DashboardPage'</span>;
 <span class="kw">import</span> TaskDetailPage <span class="kw">from</span> <span class="str">'../pages/TaskDetailPage'</span>;
+<span class="kw">import</span> ProtectedRoute <span class="kw">from</span> <span class="str">'./ProtectedRoute'</span>;
+<span class="kw">import</span> AppLayout <span class="kw">from</span> <span class="str">'../components/layout/AppLayout'</span>;
 
-<span class="kw">export default function</span> <span class="fn">AppRouter</span>() {
-  <span class="kw">return</span> (
-    <span class="tag">&lt;Routes&gt;</span>
-      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/"</span>          <span class="atr">element</span>=<span class="jsx">{&lt;LoginPage /&gt;}</span>          <span class="tag">/&gt;</span>
-      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/dashboard"</span> <span class="atr">element</span>=<span class="jsx">{&lt;DashboardPage /&gt;}</span>      <span class="tag">/&gt;</span>
-      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/tasks/:id"</span> <span class="atr">element</span>=<span class="jsx">{&lt;TaskDetailPage /&gt;}</span>     <span class="tag">/&gt;</span>
-      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"*"</span>          <span class="atr">element</span>=<span class="jsx">{&lt;div&gt;404 - Halaman tidak ditemukan&lt;/div&gt;}</span> <span class="tag">/&gt;</span>
-    <span class="tag">&lt;/Routes&gt;</span>
-  );
-}`} />
+<span class="kw">export const</span> router = <span class="fn">createBrowserRouter</span>([
+  {
+    path: <span class="str">'/'</span>,
+    element: <span class="tag">&lt;LoginPage /&gt;</span>,
+  },
+  {
+    <span class="cmt">// Layout route: semua child mewarisi AppLayout + proteksi auth</span>
+    element: (
+      <span class="tag">&lt;ProtectedRoute&gt;</span>
+        <span class="tag">&lt;AppLayout /&gt;</span>
+      <span class="tag">&lt;/ProtectedRoute&gt;</span>
+    ),
+    children: [
+      { path: <span class="str">'/dashboard'</span>, element: <span class="tag">&lt;DashboardPage /&gt;</span> },
+      { path: <span class="str">'/tasks/:id'</span>, element: <span class="tag">&lt;TaskDetailPage /&gt;</span> },
+    ],
+  },
+  {
+    path: <span class="str">'*'</span>,
+    element: <span class="tag">&lt;div&gt;</span>404 - Halaman tidak ditemukan<span class="tag">&lt;/div&gt;</span>,
+  },
+]);`}
+        />
 
-        <CodeBlock lang="jsx" file="src/pages/TaskDetailPage.jsx - membaca URL param" id="rr-routes-params" html={`<span class="kw">import</span> { useParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/pages/TaskDetailPage.tsx - membaca URL param dengan useParams"
+          id="rr-routes-params"
+          html={`<span class="kw">import</span> { useParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 
 <span class="kw">export default function</span> <span class="fn">TaskDetailPage</span>() {
   <span class="kw">const</span> { id } = <span class="fn">useParams</span>(); <span class="cmt">// membaca :id dari URL /tasks/42 => id = "42"</span>
@@ -112,9 +182,14 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       <span class="cmt">// fetch task berdasarkan id (akan diintegrasikan di Chapter 2)</span>
     <span class="tag">&lt;/div&gt;</span>
   );
-}`} />
+}`}
+        />
 
-        <CodeBlock lang="jsx" file="src/components/layout/Navbar.jsx - navigasi dengan Link, bukan tag a" id="rr-routes-link" html={`<span class="kw">import</span> { Link, NavLink } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/components/layout/Navbar.tsx - navigasi dengan Link dan NavLink, bukan tag a"
+          id="rr-routes-link"
+          html={`<span class="kw">import</span> { Link, NavLink } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 
 <span class="kw">function</span> <span class="fn">Navbar</span>() {
   <span class="kw">return</span> (
@@ -131,12 +206,24 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       <span class="tag">&lt;Link</span> <span class="atr">to</span>=<span class="jsx">{\`/tasks/\${task.id}\`}</span><span class="tag">&gt;</span>Lihat Detail<span class="tag">&lt;/Link&gt;</span>
     <span class="tag">&lt;/nav&gt;</span>
   );
-}`} />
+}`}
+        />
 
         <MistakeBlock>
-          <li>Menggunakan <code>&lt;a href="/dashboard"&gt;</code> untuk navigasi internal - ini akan menyebabkan full page reload dan kehilangan semua state. Selalu gunakan <code>&lt;Link&gt;</code></li>
-          <li>Lupa bahwa nilai dari <code>useParams()</code> selalu bertipe string, bukan number. Pastikan konversi dengan <code>Number(id)</code> atau <code>parseInt(id)</code> saat perlu</li>
-          <li>Meletakkan <code>&lt;Routes&gt;</code> di luar <code>&lt;BrowserRouter&gt;</code> - ini akan error</li>
+          <li>
+            Menggunakan <code>&lt;a href="/dashboard"&gt;</code> untuk navigasi
+            internal - ini akan menyebabkan full page reload dan kehilangan
+            semua state. Selalu gunakan <code>&lt;Link&gt;</code>
+          </li>
+          <li>
+            Lupa bahwa nilai dari <code>useParams()</code> selalu bertipe
+            string, bukan number. Pastikan konversi dengan{" "}
+            <code>Number(id)</code> atau <code>parseInt(id)</code> saat perlu
+          </li>
+          <li>
+            Membuat layout route tanpa <code>children</code> atau tanpa{" "}
+            <code>&lt;Outlet /&gt;</code> - child route tidak akan pernah tampil
+          </li>
         </MistakeBlock>
       </TopicSection>
 
@@ -149,10 +236,19 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
-            <p><code>useNavigate</code> adalah hook yang mengembalikan fungsi <code>navigate</code>. Fungsi ini digunakan untuk berpindah halaman dari dalam logika JavaScript, bukan dari klik user secara langsung.</p>
+            <p>
+              <code>useNavigate</code> adalah hook yang mengembalikan fungsi{" "}
+              <code>navigate</code>. Fungsi ini digunakan untuk berpindah
+              halaman dari dalam logika JavaScript, bukan dari klik user secara
+              langsung.
+            </p>
           </Card>
           <Card label="Kenapa penting" type="why">
-            <p>Kamu tidak bisa selalu menggunakan <code>&lt;Link&gt;</code>. Setelah submit form login, setelah delete data, atau setelah aksi async selesai, kamu perlu redirect secara programatik.</p>
+            <p>
+              Kamu tidak bisa selalu menggunakan <code>&lt;Link&gt;</code>.
+              Setelah submit form login, setelah delete data, atau setelah aksi
+              async selesai, kamu perlu redirect secara programatik.
+            </p>
           </Card>
           <Card label="Kapan dipakai" type="when">
             <ul>
@@ -163,7 +259,11 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           </Card>
         </CardGrid>
 
-        <CodeBlock lang="jsx" file="src/pages/LoginPage.jsx - navigasi programatik dengan useNavigate" id="rr-navigate-code" html={`<span class="kw">import</span> { useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/pages/LoginPage.tsx - redirect setelah login berhasil menggunakan useNavigate"
+          id="rr-navigate-code"
+          html={`<span class="kw">import</span> { useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 
 <span class="kw">export default function</span> <span class="fn">LoginPage</span>() {
   <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
@@ -181,11 +281,19 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 }
 
 <span class="cmt">// navigate(-1)         => kembali ke halaman sebelumnya (seperti tombol back)</span>
-<span class="cmt">// navigate('/login', { replace: true })  => replace history, tidak bisa back</span>`} />
+<span class="cmt">// navigate('/login', { replace: true })  => replace history, tidak bisa back</span>`}
+        />
 
         <MistakeBlock>
-          <li>Memanggil <code>navigate()</code> langsung di body komponen (bukan di dalam event handler atau useEffect) - ini menyebabkan infinite render</li>
-          <li>Lupa <code>replace: true</code> setelah logout sehingga user bisa menekan "back" dan kembali ke halaman yang butuh autentikasi</li>
+          <li>
+            Memanggil <code>navigate()</code> langsung di body komponen (bukan
+            di dalam event handler atau useEffect) - ini menyebabkan infinite
+            render
+          </li>
+          <li>
+            Lupa <code>replace: true</code> setelah logout sehingga user bisa
+            menekan "back" dan kembali ke halaman yang butuh autentikasi
+          </li>
         </MistakeBlock>
       </TopicSection>
 
@@ -198,10 +306,19 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
-            <p>Protected Route adalah pola di mana kamu membungkus <code>Route</code> dengan komponen yang memeriksa status autentikasi. Jika user belum login, dia diarahkan ke halaman login secara otomatis.</p>
+            <p>
+              Protected Route adalah pola di mana kamu membungkus{" "}
+              <code>Route</code> dengan komponen yang memeriksa status
+              autentikasi. Jika user belum login, dia diarahkan ke halaman login
+              secara otomatis.
+            </p>
           </Card>
           <Card label="Kenapa penting" type="why">
-            <p>Ini adalah pola yang wajib ada di hampir setiap aplikasi production. Tanpa ini, siapapun bisa mengakses halaman dashboard atau admin hanya dengan mengetik URL secara langsung.</p>
+            <p>
+              Ini adalah pola yang wajib ada di hampir setiap aplikasi
+              production. Tanpa ini, siapapun bisa mengakses halaman dashboard
+              atau admin hanya dengan mengetik URL secara langsung.
+            </p>
           </Card>
           <Card label="Kapan dipakai" type="when">
             <ul>
@@ -212,51 +329,49 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           </Card>
         </CardGrid>
 
-        <CodeBlock lang="jsx" file="src/router/ProtectedRoute.jsx - guard untuk halaman yang butuh autentikasi" id="rr-protected-code" html={`<span class="kw">import</span> { Navigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
-<span class="kw">import</span> { useAuthStore } <span class="kw">from</span> <span class="str">'../stores/useAuthStore'</span>; <span class="cmt">// Zustand store (CH 5)</span>
+        <CodeBlock
+          lang="tsx"
+          file="src/router/ProtectedRoute.tsx - interim guard (final auth store di Chapter 5)"
+          id="rr-protected-code"
+          html={`<span class="kw">import</span> { Navigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 
-<span class="kw">export default function</span> <span class="fn">ProtectedRoute</span>({ children }) {
-  <span class="kw">const</span> isLoggedIn = <span class="fn">useAuthStore</span>((state) => state.isLoggedIn);
+<span class="kw">interface</span> <span class="tp">ProtectedRouteProps</span> {
+  children: <span class="tp">React.ReactNode</span>;
+}
+
+<span class="kw">export default function</span> <span class="fn">ProtectedRoute</span>({ children }: <span class="tp">ProtectedRouteProps</span>) {
+  <span class="cmt">// Interim placeholder untuk menjaga alur belajar Chapter 1 tetap jalan.</span>
+  <span class="cmt">// Di Chapter 5, ganti jadi:</span>
+  <span class="cmt">// const isLoggedIn = useAuthStore((state) =&gt; state.isLoggedIn);</span>
+  <span class="kw">const</span> isLoggedIn = <span class="kw">true</span>;
 
   <span class="kw">if</span> (!isLoggedIn) {
-    <span class="cmt">// replace: true agar user tidak bisa "back" ke halaman protected</span>
     <span class="kw">return</span> <span class="tag">&lt;Navigate</span> <span class="atr">to</span>=<span class="str">"/"</span> <span class="atr">replace</span> <span class="tag">/&gt;</span>;
   }
 
   <span class="kw">return</span> children;
-}`} />
+}`}
+        />
 
-        <CodeBlock lang="jsx" file="src/router/AppRouter.jsx - menggunakan ProtectedRoute" id="rr-protected-usage" html={`<span class="kw">import</span> ProtectedRoute <span class="kw">from</span> <span class="str">'./ProtectedRoute'</span>;
-
-<span class="kw">export default function</span> <span class="fn">AppRouter</span>() {
-  <span class="kw">return</span> (
-    <span class="tag">&lt;Routes&gt;</span>
-      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/"</span> <span class="atr">element</span>=<span class="jsx">{&lt;LoginPage /&gt;}</span> <span class="tag">/&gt;</span>
-
-      <span class="cmt">// Semua route di bawah ini butuh login</span>
-      <span class="tag">&lt;Route</span>
-        <span class="atr">path</span>=<span class="str">"/dashboard"</span>
-        <span class="atr">element</span>=<span class="jsx">{
-          &lt;ProtectedRoute&gt;
-            &lt;DashboardPage /&gt;
-          &lt;/ProtectedRoute&gt;
-        }</span>
-      <span class="tag">/&gt;</span>
-      <span class="tag">&lt;Route</span>
-        <span class="atr">path</span>=<span class="str">"/tasks/:id"</span>
-        <span class="atr">element</span>=<span class="jsx">{
-          &lt;ProtectedRoute&gt;
-            &lt;TaskDetailPage /&gt;
-          &lt;/ProtectedRoute&gt;
-        }</span>
-      <span class="tag">/&gt;</span>
-    <span class="tag">&lt;/Routes&gt;</span>
-  );
-}`} />
+        <TipBlock>
+          <p>
+            <strong>Dengan createBrowserRouter:</strong> ProtectedRoute tidak
+            lagi dibungkus di setiap Route secara terpisah. Cukup satu kali di
+            parent element pada definisi router di AppRouter.tsx. Semua child
+            routes otomatis terlindungi. Lihat kode di section 1.2 untuk
+            implementasi lengkapnya.
+          </p>
+        </TipBlock>
 
         <MistakeBlock>
-          <li>Mengecek autentikasi hanya dari localStorage tanpa state global - state tidak reaktif, tampilan tidak update saat logout</li>
-          <li>Tidak menggunakan <code>replace</code> pada Navigate setelah logout - user bisa kembali ke halaman protected dengan tombol back browser</li>
+          <li>
+            Mengecek autentikasi hanya dari localStorage tanpa state global -
+            state tidak reaktif, tampilan tidak update saat logout
+          </li>
+          <li>
+            Tidak menggunakan <code>replace</code> pada Navigate setelah logout
+            - user bisa kembali ke halaman protected dengan tombol back browser
+          </li>
         </MistakeBlock>
       </TopicSection>
 
@@ -269,10 +384,19 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
-            <p>Nested Routes memungkinkan route bersarang di dalam route lain. Layout Route digunakan untuk berbagi komponen layout (seperti Navbar) tanpa mengulang kode di setiap halaman.</p>
+            <p>
+              Nested Routes memungkinkan route bersarang di dalam route lain.
+              Layout Route digunakan untuk berbagi komponen layout (seperti
+              Navbar) tanpa mengulang kode di setiap halaman.
+            </p>
           </Card>
           <Card label="Kenapa penting" type="why">
-            <p>Ini adalah pola yang sangat umum di aplikasi production. Navbar dan Sidebar yang konsisten di semua halaman dashboard diimplementasikan dengan nested routes, bukan dengan mengcopy komponen ke setiap halaman.</p>
+            <p>
+              Ini adalah pola yang sangat umum di aplikasi production. Navbar
+              dan Sidebar yang konsisten di semua halaman dashboard
+              diimplementasikan dengan nested routes, bukan dengan mengcopy
+              komponen ke setiap halaman.
+            </p>
           </Card>
           <Card label="Kapan dipakai" type="when">
             <ul>
@@ -283,7 +407,11 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           </Card>
         </CardGrid>
 
-        <CodeBlock lang="jsx" file="src/components/layout/AppLayout.jsx - layout bersama" id="rr-nested-layout" html={`<span class="kw">import</span> { Outlet } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/components/layout/AppLayout.tsx - layout bersama Navbar dan Sidebar dengan Outlet"
+          id="rr-nested-layout"
+          html={`<span class="kw">import</span> { Outlet } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 <span class="kw">import</span> Navbar <span class="kw">from</span> <span class="str">'./Navbar'</span>;
 <span class="kw">import</span> Sidebar <span class="kw">from</span> <span class="str">'./Sidebar'</span>;
 
@@ -300,36 +428,36 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       <span class="tag">&lt;/div&gt;</span>
     <span class="tag">&lt;/div&gt;</span>
   );
-}`} />
+}`}
+        />
 
-        <CodeBlock lang="jsx" file="src/router/AppRouter.jsx - nested routes final TaskFlow" id="rr-nested-final" html={`<span class="kw">export default function</span> <span class="fn">AppRouter</span>() {
-  <span class="kw">return</span> (
-    <span class="tag">&lt;Routes&gt;</span>
-      <span class="cmt">// Route publik</span>
-      <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/"</span> <span class="atr">element</span>=<span class="jsx">{&lt;LoginPage /&gt;}</span> <span class="tag">/&gt;</span>
-
-      <span class="cmt">// Layout route - semua child akan mewarisi AppLayout</span>
-      <span class="tag">&lt;Route</span>
-        <span class="atr">element</span>=<span class="jsx">{
-          &lt;ProtectedRoute&gt;
-            &lt;AppLayout /&gt;
-          &lt;/ProtectedRoute&gt;
-        }</span>
-      <span class="tag">&gt;</span>
-        <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/dashboard"</span>  <span class="atr">element</span>=<span class="jsx">{&lt;DashboardPage /&gt;}</span>  <span class="tag">/&gt;</span>
-        <span class="tag">&lt;Route</span> <span class="atr">path</span>=<span class="str">"/tasks/:id"</span> <span class="atr">element</span>=<span class="jsx">{&lt;TaskDetailPage /&gt;}</span> <span class="tag">/&gt;</span>
-      <span class="tag">&lt;/Route&gt;</span>
-    <span class="tag">&lt;/Routes&gt;</span>
-  );
-}`} />
+        <MentalModel label="Struktur Akhir AppRouter.tsx">
+          <p>
+            Dengan <code>createBrowserRouter</code>, nested routes dan layout
+            route sudah terintegrasi dalam satu definisi di{" "}
+            <code>AppRouter.tsx</code> yang ditunjukkan di section 1.2. Tidak
+            ada file router terpisah yang diperlukan. Satu file, satu sumber
+            kebenaran untuk semua routes.
+          </p>
+        </MentalModel>
 
         <TipBlock>
-          <p><strong>Pola ini sangat umum di dunia kerja.</strong> Hampir semua aplikasi production menggunakan layout route untuk Navbar dan Sidebar. Kuasai pola ini dengan baik sebelum interview.</p>
+          <p>
+            <strong>Pola ini sangat umum di dunia kerja.</strong> Hampir semua
+            aplikasi production menggunakan layout route untuk Navbar dan
+            Sidebar. Kuasai pola ini dengan baik sebelum interview.
+          </p>
         </TipBlock>
 
         <MistakeBlock>
-          <li>Lupa menambahkan <code>&lt;Outlet /&gt;</code> di komponen layout - child route tidak akan pernah ditampilkan</li>
-          <li>Copy-paste Navbar ke setiap halaman secara manual alih-alih menggunakan layout route</li>
+          <li>
+            Lupa menambahkan <code>&lt;Outlet /&gt;</code> di komponen layout -
+            child route tidak akan pernah ditampilkan
+          </li>
+          <li>
+            Copy-paste Navbar ke setiap halaman secara manual alih-alih
+            menggunakan layout route
+          </li>
         </MistakeBlock>
       </TopicSection>
 
@@ -343,52 +471,82 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       >
         <CardGrid>
           <Card label="Apa itu" type="what">
-            <p><code>useSearchParams</code> adalah hook untuk membaca dan mengubah query parameters di URL, yaitu bagian setelah tanda <code>?</code> seperti <code>/dashboard?status=todo&amp;priority=high</code>. State filter tersimpan di URL sehingga bisa di-share dan tidak hilang saat refresh.</p>
+            <p>
+              <code>useSearchParams</code> adalah hook untuk membaca dan
+              mengubah query parameters di URL, yaitu bagian setelah tanda{" "}
+              <code>?</code> seperti{" "}
+              <code>/dashboard?status=todo&amp;priority=high</code>. State
+              filter tersimpan di URL sehingga bisa di-share dan tidak hilang
+              saat refresh.
+            </p>
           </Card>
           <Card label="Kenapa penting" type="why">
-            <p>Hampir setiap dashboard di dunia kerja punya fitur filter. Menyimpan filter di URL adalah best practice: user bisa bookmark, share link, dan halaman tidak reset saat refresh. Ini ditanyakan di interview dan ada di hampir setiap job description.</p>
+            <p>
+              Hampir setiap dashboard di dunia kerja punya fitur filter.
+              Menyimpan filter di URL adalah best practice: user bisa bookmark,
+              share link, dan halaman tidak reset saat refresh. Ini ditanyakan
+              di interview dan ada di hampir setiap job description.
+            </p>
           </Card>
           <Card label="Kapan dipakai" type="when">
             <ul>
               <li>Filter task berdasarkan status di DashboardPage</li>
-              <li>Pagination: <code>?page=2</code></li>
-              <li>Search query: <code>?q=keyword</code></li>
-              <li>Kombinasi filter: <code>?status=todo&amp;priority=high</code></li>
+              <li>
+                Pagination: <code>?page=2</code>
+              </li>
+              <li>
+                Search query: <code>?q=keyword</code>
+              </li>
+              <li>
+                Kombinasi filter: <code>?status=todo&amp;priority=high</code>
+              </li>
             </ul>
           </Card>
         </CardGrid>
 
         <MentalModel>
-          <p>Bayangkan <code>useSearchParams</code> seperti <code>useState</code> tapi nilainya disimpan di URL, bukan di memori React. <code>[searchParams, setSearchParams]</code> persis seperti <code>[state, setState]</code> — bedanya perubahan langsung tercermin di URL browser.</p>
+          <p>
+            Bayangkan <code>useSearchParams</code> seperti <code>useState</code>{" "}
+            tapi nilainya disimpan di URL, bukan di memori React.{" "}
+            <code>[searchParams, setSearchParams]</code> persis seperti{" "}
+            <code>[state, setState]</code> — bedanya perubahan langsung
+            tercermin di URL browser.
+          </p>
         </MentalModel>
 
-        <CodeBlock lang="jsx" file="src/pages/DashboardPage.jsx - filter task berdasarkan status via URL" id="rr-searchparams-code" html={`<span class="kw">import</span> { useSearchParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
+        <CodeBlock
+          lang="tsx"
+          file="src/pages/DashboardPage.tsx - filter task berdasarkan status via URL"
+          id="rr-searchparams-code"
+          html={`<span class="kw">import</span> { useSearchParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 <span class="kw">import</span> { useQuery } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
 <span class="kw">import</span> { fetchTasks } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
+<span class="kw">import type</span> { Task } <span class="kw">from</span> <span class="str">'../types'</span>;
+
+<span class="kw">type</span> <span class="tp">TaskStatus</span> = <span class="tp">Task</span>[<span class="str">'status'</span>] | <span class="str">'all'</span>;
 
 <span class="kw">export default function</span> <span class="fn">DashboardPage</span>() {
-  <span class="cmt">// searchParams = URLSearchParams object, setSearchParams = fungsi update URL</span>
   <span class="kw">const</span> [searchParams, setSearchParams] = <span class="fn">useSearchParams</span>();
 
-  <span class="cmt">// Baca nilai dari URL: /dashboard?status=todo => 'todo'</span>
-  <span class="cmt">// Jika tidak ada di URL, default ke 'all'</span>
-  <span class="kw">const</span> activeStatus = searchParams.<span class="fn">get</span>(<span class="str">'status'</span>) || <span class="str">'all'</span>;
+  <span class="kw">const</span> activeStatus = (searchParams.<span class="fn">get</span>(<span class="str">'status'</span>) <span class="kw">as</span> <span class="tp">TaskStatus</span>) || <span class="str">'all'</span>;
 
-  <span class="kw">const</span> { data: tasks = [], isLoading } = <span class="fn">useQuery</span>({
-    queryKey: [<span class="str">'tasks'</span>, { status: activeStatus }], <span class="cmt">// cache terpisah per filter</span>
+  <span class="kw">const</span> { data: tasks = [], isPending } = <span class="fn">useQuery</span>&lt;<span class="tp">Task</span>[]&gt;({
+    queryKey: [<span class="str">'tasks'</span>, { status: activeStatus }],
     queryFn: () => <span class="fn">fetchTasks</span>({ status: activeStatus }),
   });
 
-  <span class="kw">const</span> statusOptions = [<span class="str">'all'</span>, <span class="str">'todo'</span>, <span class="str">'in-progress'</span>, <span class="str">'done'</span>];
+  <span class="kw">const</span> statusOptions: <span class="tp">TaskStatus</span>[] = [<span class="str">'all'</span>, <span class="str">'todo'</span>, <span class="str">'in-progress'</span>, <span class="str">'done'</span>];
 
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
-      <span class="cmt">// Tombol filter - mengubah URL tanpa reload halaman</span>
       <span class="tag">&lt;div&gt;</span>
         <span class="jsx">{statusOptions.<span class="fn">map</span>((status) => (
           &lt;button
             key={status}
-            onClick={() => setSearchParams({ status })}
+            onClick={() =&gt; setSearchParams((prev) =&gt; {
+              prev.set('status', status);
+              return prev;
+            })}
             style={{ fontWeight: activeStatus === status ? 'bold' : 'normal' }}
           &gt;
             {status}
@@ -396,28 +554,45 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
         ))}</span>
       <span class="tag">&lt;/div&gt;</span>
 
-      <span class="jsx">{isLoading ? (
+      <span class="jsx">{isPending ? (
         &lt;p&gt;Memuat...&lt;/p&gt;
       ) : (
         tasks.<span class="fn">map</span>((task) => &lt;TaskCard key={task.id} task={task} /&gt;)
       )}</span>
     <span class="tag">&lt;/div&gt;</span>
   );
-}
-
-<span class="cmt">// URL berubah saat filter diklik:</span>
-<span class="cmt">// /dashboard           => activeStatus = 'all'</span>
-<span class="cmt">// /dashboard?status=todo        => activeStatus = 'todo'</span>
-<span class="cmt">// /dashboard?status=in-progress => activeStatus = 'in-progress'</span>`} />
+}`}
+        />
 
         <ProjectStep label="TaskFlow - Filter Task">
-          <p>Dengan <strong>useSearchParams</strong>, fitur filter status di DashboardPage TaskFlow menjadi persisten di URL. User bisa membagikan link <code>/dashboard?status=todo</code> dan orang lain langsung melihat task yang sama tersaring.</p>
+          <p>
+            Dengan <strong>useSearchParams</strong>, fitur filter status di
+            DashboardPage TaskFlow menjadi persisten di URL. User bisa
+            membagikan link <code>/dashboard?status=todo</code> dan orang lain
+            langsung melihat task yang sama tersaring.
+          </p>
         </ProjectStep>
 
         <MistakeBlock>
-          <li>Menyimpan state filter di <code>useState</code> biasa — filter hilang saat user refresh atau berpindah halaman lalu kembali. Gunakan <code>useSearchParams</code> agar filter persisten</li>
-          <li>Memanggil <code>setSearchParams(&#123; status &#125;)</code> yang menghapus semua params lain. Jika ada beberapa filter, pertahankan yang lain: <code>setSearchParams(prev =&gt; &#123; prev.set('status', status); return prev; &#125;)</code></li>
-          <li>Lupa menyertakan nilai filter di <code>queryKey</code> TanStack Query — semua filter akan berbagi cache yang sama dan data tidak akan diperbarui saat filter berubah</li>
+          <li>
+            Menyimpan state filter di <code>useState</code> biasa — filter
+            hilang saat user refresh atau berpindah halaman lalu kembali.
+            Gunakan <code>useSearchParams</code> agar filter persisten
+          </li>
+          <li>
+            Memanggil <code>setSearchParams(&#123; status &#125;)</code> yang
+            menghapus semua params lain. Jika ada beberapa filter, pertahankan
+            yang lain:{" "}
+            <code>
+              setSearchParams(prev =&gt; &#123; prev.set('status', status);
+              return prev; &#125;)
+            </code>
+          </li>
+          <li>
+            Lupa menyertakan nilai filter di <code>queryKey</code> TanStack
+            Query — semua filter akan berbagi cache yang sama dan data tidak
+            akan diperbarui saat filter berubah
+          </li>
         </MistakeBlock>
       </TopicSection>
     </>
