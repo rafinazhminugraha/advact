@@ -1,4 +1,4 @@
-import ChapterHeader from "../layout/ChapterHeader";
+﻿import ChapterHeader from "../layout/ChapterHeader";
 import CardGrid from "../layout/CardGrid";
 import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
@@ -91,16 +91,17 @@ export default function Chapter3Forms() {
     reset,
   } = <span class="fn">useForm</span>&lt;<span class="tp">TaskFormInputs</span>&gt;();
 
+  <span class="cmt">// Catatan: handleSubmit memastikan data sudah tervalidasi sebelum callback dipanggil</span>
   <span class="kw">const</span> submitHandler: <span class="tp">SubmitHandler</span>&lt;<span class="tp">TaskFormInputs</span>&gt; = (data) =&gt; {
     onSubmit(data);
-    reset();
+    reset(); <span class="cmt">// Catatan: kembali ke form kosong setelah submit sukses</span>
   };
 
   <span class="kw">return</span> (
     <span class="tag">&lt;form</span> <span class="atr">onSubmit</span>=<span class="jsx">{handleSubmit(submitHandler)}</span><span class="tag">&gt;</span>
       <span class="tag">&lt;input</span>
         <span class="atr">placeholder</span>=<span class="str">"Judul task"</span>
-        <span class="jsx">{...register('title')}</span>  <span class="cmt">// spread operator untuk register</span>
+        <span class="jsx">{...register('title')}</span>  <span class="cmt">// Catatan: spread operator untuk register</span>
       <span class="tag">/&gt;</span>
       <span class="tag">&lt;button</span> <span class="atr">type</span>=<span class="str">"submit"</span> <span class="atr">disabled</span>=<span class="jsx">{isSubmitting}</span><span class="tag">&gt;</span>
         Simpan
@@ -165,7 +166,7 @@ export default function Chapter3Forms() {
 <span class="kw">import</span> { useMutation, useQueryClient } <span class="kw">from</span> <span class="str">'@tanstack/react-query'</span>;
 <span class="kw">import</span> { createTask } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
 
-<span class="cmt">// 1. Definisikan schema validasi</span>
+<span class="cmt">// Catatan: 1. Definisikan schema validasi</span>
 <span class="kw">const</span> taskSchema = z.<span class="fn">object</span>({
   title: z.<span class="fn">string</span>()
     .<span class="fn">min</span>(<span class="num">3</span>, <span class="str">'Judul minimal 3 karakter'</span>)
@@ -180,7 +181,7 @@ export default function Chapter3Forms() {
   ),
 });
 
-<span class="cmt">// z.infer mengekstrak tipe TypeScript langsung dari schema Zod</span>
+<span class="cmt">// Catatan: z.infer mengekstrak tipe TypeScript langsung dari schema Zod</span>
 <span class="kw">type</span> <span class="tp">TaskFormData</span> = z.<span class="fn">infer</span>&lt;<span class="kw">typeof</span> taskSchema&gt;;
 
 <span class="kw">interface</span> <span class="tp">TaskFormProps</span> {
@@ -188,21 +189,23 @@ export default function Chapter3Forms() {
 }
 
 <span class="kw">export default function</span> <span class="fn">TaskForm</span>({ onClose }: <span class="tp">TaskFormProps</span>) {
-  <span class="kw">const</span> queryClient = <span class="fn">useQueryClient</span>();
+  <span class="kw">const</span> queryClient = <span class="fn">useQueryClient</span>(); <span class="cmt">// Catatan: akses cache TanStack Query</span>
 
   <span class="kw">const</span> { register, handleSubmit, formState: { errors } } = <span class="fn">useForm</span>&lt;<span class="tp">TaskFormData</span>&gt;({
-    resolver: <span class="fn">zodResolver</span>(taskSchema),
+    resolver: <span class="fn">zodResolver</span>(taskSchema), <span class="cmt">// Catatan: RHF delegasikan validasi ke schema Zod</span>
     defaultValues: { priority: <span class="str">'medium'</span> },
   });
 
   <span class="kw">const</span> mutation = <span class="fn">useMutation</span>({
     mutationFn: createTask,
     onSuccess: () => {
+      <span class="cmt">// Catatan: data list di dashboard bisa stale setelah create, jadi wajib invalidate</span>
       queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] });
       onClose();
     },
   });
 
+  <span class="cmt">// Catatan: mutate memicu request POST dan otomatis mengelola state isPending/error</span>
   <span class="kw">const</span> onSubmit: <span class="tp">SubmitHandler</span>&lt;<span class="tp">TaskFormData</span>&gt; = (data) =&gt; mutation.<span class="fn">mutate</span>(data);
 
   <span class="kw">return</span> (
@@ -272,7 +275,7 @@ export default function Chapter3Forms() {
           file="src/components/TaskForm.tsx - final Controller untuk integrasi komponen UI library eksternal"
           id="rhf-controlled-code"
           html={`<span class="kw">import</span> { useForm, Controller } <span class="kw">from</span> <span class="str">'react-hook-form'</span>;
-<span class="kw">import</span> CustomSelect <span class="kw">from</span> <span class="str">'./CustomSelect'</span>; <span class="cmt">// komponen dari library UI</span>
+<span class="kw">import</span> CustomSelect <span class="kw">from</span> <span class="str">'./CustomSelect'</span>; <span class="cmt">// Catatan: komponen dari library UI</span>
 
 <span class="kw">type</span> <span class="tp">Priority</span> = <span class="str">'low'</span> | <span class="str">'medium'</span> | <span class="str">'high'</span>;
 
@@ -290,6 +293,7 @@ export default function Chapter3Forms() {
       <span class="tag">&lt;Controller</span>&lt;<span class="tp">TaskFormValues</span>, <span class="str">'priority'</span>&gt;
         <span class="atr">name</span>=<span class="str">"priority"</span>
         <span class="atr">control</span>=<span class="jsx">{control}</span>
+        <span class="cmt">// Catatan: field menjembatani RHF dengan API komponen custom</span>
         <span class="atr">render</span>=<span class="jsx">{({ field }) => (
           &lt;CustomSelect
             {...field}
@@ -351,7 +355,7 @@ export default function Chapter3Forms() {
     resolver: <span class="fn">zodResolver</span>(editTaskSchema),
   });
 
-  <span class="cmt">// Ketika data task tersedia, isi ulang form</span>
+  <span class="cmt">// Catatan: Ketika data task tersedia, isi ulang form</span>
   useEffect(() => {
     <span class="kw">if</span> (task) {
       <span class="fn">reset</span>({

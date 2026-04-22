@@ -1,4 +1,4 @@
-import ChapterHeader from "../layout/ChapterHeader";
+﻿import ChapterHeader from "../layout/ChapterHeader";
 import CardGrid from "../layout/CardGrid";
 import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
@@ -102,7 +102,7 @@ export default function Chapter5Zustand() {
     }),
     {
       name: <span class="str">'auth-storage'</span>,
-      <span class="cmt">// Hanya simpan token dan user ke localStorage, bukan seluruh state</span>
+      <span class="cmt">// Catatan: Hanya simpan token dan user ke localStorage, bukan seluruh state</span>
       partialize: (state) => ({ token: state.token, user: state.user }),
     }
   )
@@ -152,6 +152,7 @@ export default function Chapter5Zustand() {
 
 <span class="kw">export default function</span> <span class="fn">LoginPage</span>() {
   <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
+  <span class="cmt">// Catatan: Ambil hanya action yang dibutuhkan agar komponen tidak re-render berlebihan</span>
   <span class="kw">const</span> login = <span class="fn">useAuthStore</span>((state) => state.login);
 
   <span class="kw">const</span> {
@@ -166,10 +167,11 @@ export default function Chapter5Zustand() {
   <span class="kw">const</span> onSubmit: <span class="tp">SubmitHandler</span>&lt;<span class="tp">LoginFormData</span>&gt; = <span class="kw">async</span> (data) =&gt; {
     <span class="kw">try</span> {
       <span class="kw">const</span> response = <span class="kw">await</span> api.<span class="fn">post</span>&lt;<span class="tp">LoginResponse</span>&gt;(<span class="str">'/auth/login'</span>, data);
+      <span class="cmt">// Catatan: Simpan user + token ke store persist agar sesi tetap ada setelah refresh</span>
       <span class="fn">login</span>(response.data.user, response.data.token);
       navigate(<span class="str">'/dashboard'</span>);
     } <span class="kw">catch</span> {
-      <span class="cmt">// Tampilkan error dari server ke field yang relevan</span>
+      <span class="cmt">// Catatan: Tampilkan error dari server ke field yang relevan</span>
       <span class="fn">setError</span>(<span class="str">'root'</span>, { message: <span class="str">'Email atau password salah'</span> });
     }
   };
@@ -204,10 +206,12 @@ export default function Chapter5Zustand() {
 <span class="kw">export default function</span> <span class="fn">Navbar</span>() {
   <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
         <span class="kw">const</span> dispatch = <span class="fn">useAppDispatch</span>();
-        <span class="kw">const</span> { user, logout } = <span class="fn">useAuthStore</span>();
+  <span class="kw">const</span> user = <span class="fn">useAuthStore</span>((state) => state.user);
+  <span class="kw">const</span> logout = <span class="fn">useAuthStore</span>((state) => state.logout);
 
   <span class="kw">const</span> <span class="fn">handleLogout</span> = () => {
     <span class="fn">logout</span>();
+    <span class="cmt">// Catatan: replace mencegah user kembali ke halaman private via tombol Back</span>
     navigate(<span class="str">'/'</span>, { replace: <span class="kw">true</span> });
   };
 

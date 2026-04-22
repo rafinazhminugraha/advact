@@ -1,4 +1,4 @@
-import TopicSection from "../layout/TopicSection";
+﻿import TopicSection from "../layout/TopicSection";
 import CodeBlock from "../ui/CodeBlock";
 import MentalModel from "../ui/MentalModel";
 import TipBlock from "../ui/TipBlock";
@@ -27,51 +27,51 @@ export default function IntroProject() {
         file="referensi - struktur folder proyek TaskFlow"
         id="intro-project-code"
         html={`taskflow/
-├── src/
-│   ├── api/
-│   │   ├── axiosInstance.ts       <span class="cmt"># Konfigurasi Axios + interceptor (CH 2)</span>
-│   │   └── taskApi.ts             <span class="cmt"># Fungsi API untuk task</span>
-│   │
-│   ├── components/
-│   │   ├── ui/
-│   │   │   ├── Button.tsx
-│   │   │   └── Input.tsx
-│   │   ├── TaskCard.tsx            <span class="cmt"># Kartu satu task</span>
-│   │   └── TaskForm.tsx            <span class="cmt"># Form buat/edit task (CH 3)</span>
-│   │
-│   ├── features/
-│   │   └── ui/
-│   │       └── uiSlice.ts          <span class="cmt"># Redux slice untuk UI state (CH 4)</span>
-│   │
-│   ├── pages/
-│   │   ├── LoginPage.tsx           <span class="cmt"># Halaman login</span>
-│   │   ├── DashboardPage.tsx       <span class="cmt"># Halaman utama berisi daftar task</span>
-│   │   └── TaskDetailPage.tsx      <span class="cmt"># Detail satu task</span>
-│   │
-│   ├── router/
-│   │   ├── AppRouter.tsx           <span class="cmt"># Definisi semua routes (CH 1)</span>
-│   │   └── ProtectedRoute.tsx      <span class="cmt"># Guard untuk route privat (CH 1)</span>
-│   │
-│   ├── store/
-│   │   ├── store.ts                <span class="cmt"># Redux store (CH 4)</span>
-│   │   └── hooks.ts                <span class="cmt"># Typed hooks Redux (CH 4)</span>
-│   │
-│   ├── stores/
-│   │   └── useAuthStore.ts         <span class="cmt"># Zustand store untuk auth (CH 5)</span>
-│   │
-│   ├── types/
-│   │   └── index.ts                <span class="cmt"># Shared type definitions</span>
-│   │
-│   ├── hooks/
-│   │   └── useTasks.ts             <span class="cmt"># Custom hook untuk query task (CH 2)</span>
-│   │
-│   └── App.tsx                     <span class="cmt"># Root component</span>
-│
-├── src/__tests__/
-│   ├── TaskCard.test.tsx           <span class="cmt"># Unit test komponen (CH 6)</span>
-│   └── TaskForm.test.tsx           <span class="cmt"># Test form dan validasi (CH 6)</span>
-│
-└── vite.config.ts`}
+|-- src/
+|   |-- api/
+|   |   |-- axiosInstance.ts       <span class="cmt"># Konfigurasi Axios + interceptor (CH 2)</span>
+|   |   \-- taskApi.ts             <span class="cmt"># Fungsi API untuk task</span>
+|   |
+|   |-- components/
+|   |   |-- ui/
+|   |   |   |-- Button.tsx
+|   |   |   \-- Input.tsx
+|   |   |-- TaskCard.tsx            <span class="cmt"># Kartu satu task</span>
+|   |   \-- TaskForm.tsx            <span class="cmt"># Form buat/edit task (CH 3)</span>
+|   |
+|   |-- features/
+|   |   \-- ui/
+|   |       \-- uiSlice.ts          <span class="cmt"># Redux slice untuk UI state (CH 4)</span>
+|   |
+|   |-- pages/
+|   |   |-- LoginPage.tsx           <span class="cmt"># Halaman login</span>
+|   |   |-- DashboardPage.tsx       <span class="cmt"># Halaman utama berisi daftar task</span>
+|   |   \-- TaskDetailPage.tsx      <span class="cmt"># Detail satu task</span>
+|   |
+|   |-- router/
+|   |   |-- AppRouter.tsx           <span class="cmt"># Definisi semua routes (CH 1)</span>
+|   |   \-- ProtectedRoute.tsx      <span class="cmt"># Guard untuk route privat (CH 1)</span>
+|   |
+|   |-- store/
+|   |   |-- store.ts                <span class="cmt"># Redux store (CH 4)</span>
+|   |   \-- hooks.ts                <span class="cmt"># Typed hooks Redux (CH 4)</span>
+|   |
+|   |-- stores/
+|   |   \-- useAuthStore.ts         <span class="cmt"># Zustand store untuk auth (CH 5)</span>
+|   |
+|   |-- types/
+|   |   \-- index.ts                <span class="cmt"># Shared type definitions</span>
+|   |
+|   |-- hooks/
+|   |   \-- useTasks.ts             <span class="cmt"># Custom hook untuk query task (CH 2)</span>
+|   |
+|   \-- App.tsx                     <span class="cmt"># Root component</span>
+|
+|-- src/__tests__/
+|   |-- TaskCard.test.tsx           <span class="cmt"># Unit test komponen (CH 6)</span>
+|   \-- TaskForm.test.tsx           <span class="cmt"># Test form dan validasi (CH 6)</span>
+|
+\-- vite.config.ts`}
       />
 
       <CodeBlock
@@ -112,32 +112,32 @@ export default function IntroProject() {
 }
 
 <span class="cmt">// Catatan: semua Provider (Redux, QueryClient) ada di main.tsx</span>
-<span class="cmt">// App.tsx hanya bertanggung jawab merender RouterProvider</span>`}
+<span class="cmt">// Catatan: App.tsx hanya bertanggung jawab merender RouterProvider</span>`}
       />
 
       <MistakeBlock>
         <li>
           <strong>Komponen UI dasar</strong> (<code>Button.tsx</code>,{" "}
-          <code>Input.tsx</code>, <code>Modal.tsx</code>) — ini regular React
+          <code>Input.tsx</code>, <code>Modal.tsx</code>) - ini regular React
           component, tidak butuh library khusus. Buat sendiri sesuai kebutuhan
         </li>
         <li>
-          <strong>Styling</strong> (CSS Modules, Tailwind, dsb) — tidak ada
+          <strong>Styling</strong> (CSS Modules, Tailwind, dsb) - tidak ada
           dalam scope materi library ini
         </li>
         <li>
-          <strong>Toast component</strong> — <code>uiSlice</code> sudah punya{" "}
+          <strong>Toast component</strong> - <code>uiSlice</code> sudah punya{" "}
           <code>showToast</code>/<code>hideToast</code> actions, tapi komponen
           Toast yang membaca dari Redux perlu dibuat sendiri dengan{" "}
           <code>useAppSelector(state =&gt; state.ui.toast)</code>
         </li>
         <li>
-          <strong>Halaman 404</strong> — sudah ada di AppRouter tapi komponennya
+          <strong>Halaman 404</strong> - sudah ada di AppRouter tapi komponennya
           tidak dibuat, cukup regular JSX
         </li>
         <li>
           <strong>Environment variables</strong> (<code>.env</code> untuk{" "}
-          <code>VITE_API_URL</code>) — ini Vite/project setup biasa, bukan React
+          <code>VITE_API_URL</code>) - ini Vite/project setup biasa, bukan React
           library
         </li>
       </MistakeBlock>

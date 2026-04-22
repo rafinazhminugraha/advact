@@ -1,4 +1,4 @@
-import ChapterHeader from "../layout/ChapterHeader";
+﻿import ChapterHeader from "../layout/ChapterHeader";
 import CardGrid from "../layout/CardGrid";
 import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
@@ -100,7 +100,7 @@ export default function Chapter4Redux() {
           html={`<span class="kw">import</span> { TypedUseSelectorHook, useDispatch, useSelector } <span class="kw">from</span> <span class="str">'react-redux'</span>;
 <span class="kw">import type</span> { RootState, AppDispatch } <span class="kw">from</span> <span class="str">'./store'</span>;
 
-<span class="cmt">// Gunakan dua hook ini di SEMUA komponen, bukan yang langsung dari react-redux</span>
+<span class="cmt">// Catatan: Gunakan dua hook ini di SEMUA komponen, bukan yang langsung dari react-redux</span>
 <span class="kw">export const</span> useAppDispatch = () =&gt; <span class="fn">useDispatch</span>&lt;<span class="tp">AppDispatch</span>&gt;();
 <span class="kw">export const</span> useAppSelector: <span class="tp">TypedUseSelectorHook</span>&lt;<span class="tp">RootState</span>&gt; = useSelector;`}
         />
@@ -137,9 +137,9 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
   <span class="tag">&lt;/React.StrictMode&gt;</span>
 );
 
-<span class="cmt">// Urutan Provider dari luar ke dalam tidak terlalu penting di sini</span>
-<span class="cmt">// karena ketiganya independen. Namun QueryClientProvider harus</span>
-<span class="cmt">// membungkus semua komponen yang menggunakan useQuery/useMutation.</span>`}
+<span class="cmt">// Catatan: Urutan Provider dari luar ke dalam tidak terlalu penting di sini</span>
+<span class="cmt">// Catatan: karena ketiganya independen. Namun QueryClientProvider harus</span>
+<span class="cmt">// Catatan: membungkus semua komponen yang menggunakan useQuery/useMutation.</span>`}
         />
       </TopicSection>
 
@@ -203,6 +203,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
   initialState,
   reducers: {
     <span class="fn">toggleSidebar</span>(state) {
+      <span class="cmt">// Catatan: Immer membuat "mutasi" ini aman dan tetap immutable di hasil akhir</span>
       state.isSidebarOpen = !state.isSidebarOpen;
     },
     <span class="fn">openCreateTaskModal</span>(state) {
@@ -212,6 +213,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       state.isCreateTaskModalOpen = <span class="kw">false</span>;
     },
     <span class="fn">showToast</span>(state, action: <span class="tp">PayloadAction</span>&lt;<span class="tp">ToastPayload</span>&gt;) {
+      <span class="cmt">// Catatan: Payload berisi message + type agar komponen toast tidak perlu logika tambahan</span>
       state.toast = action.payload;
     },
     <span class="fn">hideToast</span>(state) {
@@ -220,7 +222,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
   },
 });
 
-<span class="cmt">// Export action creators</span>
+<span class="cmt">// Catatan: Export action creators</span>
 <span class="kw">export const</span> {
   toggleSidebar,
   openCreateTaskModal,
@@ -229,7 +231,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
   hideToast,
 } = uiSlice.actions;
 
-<span class="cmt">// Export reducer untuk dimasukkan ke store</span>
+<span class="cmt">// Catatan: Export reducer untuk dimasukkan ke store</span>
 <span class="kw">export default</span> uiSlice.reducer;`}
         />
 
@@ -297,13 +299,13 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           html={`<span class="kw">import</span> { createAsyncThunk, createSlice } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
 <span class="kw">import</span> api <span class="kw">from</span> <span class="str">'../api/axiosInstance'</span>;
 
-<span class="cmt">// createAsyncThunk(actionName, asyncFunction)</span>
+<span class="cmt">// Catatan: createAsyncThunk(actionName, asyncFunction)</span>
 <span class="kw">export const</span> loginUser = <span class="fn">createAsyncThunk</span>(
   <span class="str">'auth/loginUser'</span>,
   <span class="kw">async</span> (credentials, thunkAPI) => {
     <span class="kw">try</span> {
       <span class="kw">const</span> response = <span class="kw">await</span> api.<span class="fn">post</span>(<span class="str">'/auth/login'</span>, credentials);
-      <span class="kw">return</span> response.data; <span class="cmt">// menjadi action.payload di fulfilled</span>
+      <span class="kw">return</span> response.data; <span class="cmt">// Catatan: menjadi action.payload di fulfilled</span>
     } <span class="kw">catch</span> (error) {
       <span class="kw">return</span> thunkAPI.<span class="fn">rejectWithValue</span>(error.response?.data?.message);
     }
@@ -374,14 +376,16 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 <span class="kw">export default function</span> <span class="fn">Sidebar</span>() {
         <span class="kw">const</span> dispatch = <span class="fn">useAppDispatch</span>();
 
+  <span class="cmt">// Catatan: Selector membaca state global tanpa prop drilling</span>
         <span class="kw">const</span> isSidebarOpen = <span class="fn">useAppSelector</span>((state) => state.ui.isSidebarOpen);
 
   <span class="kw">return</span> (
     <span class="tag">&lt;aside</span> <span class="atr">style</span>=<span class="jsx">{{ width: isSidebarOpen ? '240px' : '60px' }}</span><span class="tag">&gt;</span>
+      <span class="cmt">// Catatan: Dispatch mengirim action; reducer yang menentukan state baru</span>
       <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{() => dispatch(toggleSidebar())}</span><span class="tag">&gt;</span>
         <span class="jsx">{isSidebarOpen ? 'Tutup' : 'Buka'}</span>
       <span class="tag">&lt;/button&gt;</span>
-      <span class="cmt">// ... isi sidebar ...</span>
+      <span class="cmt">// Catatan: ... isi sidebar ...</span>
     <span class="tag">&lt;/aside&gt;</span>
   );
 }`}

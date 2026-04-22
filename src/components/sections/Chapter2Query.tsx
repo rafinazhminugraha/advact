@@ -1,4 +1,4 @@
-import ChapterHeader from "../layout/ChapterHeader";
+﻿import ChapterHeader from "../layout/ChapterHeader";
 import CardGrid from "../layout/CardGrid";
 import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
@@ -82,8 +82,8 @@ export default function Chapter2Query() {
 <span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
   defaultOptions: {
     queries: {
-      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>, <span class="cmt">// data dianggap fresh selama 5 menit</span>
-      retry: <span class="num">1</span>,               <span class="cmt">// coba ulang 1x jika gagal</span>
+      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>, <span class="cmt">// Catatan: data dianggap fresh selama 5 menit</span>
+      retry: <span class="num">1</span>,               <span class="cmt">// Catatan: coba ulang 1x jika gagal</span>
     },
   },
 });
@@ -190,9 +190,11 @@ VITE_API_URL=`}
 }
 
 <span class="kw">export const</span> <span class="fn">fetchTasks</span> = (params: <span class="tp">FetchTasksParams</span> = {}): <span class="tp">Promise</span>&lt;<span class="tp">Task</span>[]&gt; =&gt; {
+  <span class="cmt">// Catatan: Bersihkan param agar request tidak mengirim filter "all" atau undefined</span>
   <span class="kw">const</span> filteredParams = <span class="tp">Object</span>.<span class="fn">fromEntries</span>(
     <span class="tp">Object</span>.<span class="fn">entries</span>(params).<span class="fn">filter</span>(([, v]) =&gt; v !== <span class="str">'all'</span> &amp;&amp; v !== <span class="kw">undefined</span>)
   );
+  <span class="cmt">// Catatan: Query param diteruskan ke Axios agar endpoint tetap reusable</span>
   <span class="kw">return</span> api.<span class="fn">get</span>(<span class="str">'/tasks'</span>, { params: filteredParams }).<span class="fn">then</span>((res) =&gt; res.data);
 };
 
@@ -217,15 +219,18 @@ VITE_API_URL=`}
     error,
     isFetching,
   } = <span class="fn">useQuery</span>&lt;<span class="tp">Task</span>[]&gt;({
-    queryKey: [<span class="str">'tasks'</span>],
-    queryFn: fetchTasks,
+    queryKey: [<span class="str">'tasks'</span>], <span class="cmt">// Catatan: identitas cache daftar task</span>
+    queryFn: fetchTasks,       <span class="cmt">// Catatan: fungsi async yang benar-benar memanggil API</span>
   });
 
+  <span class="cmt">// Catatan: First load: belum ada data sama sekali</span>
   <span class="kw">if</span> (isPending) <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>Memuat tasks...<span class="tag">&lt;/div&gt;</span>;
+  <span class="cmt">// Catatan: Error state dipisah agar render utama tetap bersih</span>
   <span class="kw">if</span> (isError) <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>Error: <span class="jsx">{(error as Error).message}</span><span class="tag">&lt;/div&gt;</span>;
 
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
+      <span class="cmt">// Catatan: Background refetch: data lama tetap ditampilkan sambil sinkron ulang</span>
       <span class="jsx">{isFetching &amp;&amp; &lt;span&gt;Memperbarui data...&lt;/span&gt;}</span>
       <span class="jsx">{tasks.<span class="fn">map</span>((task) => (
         &lt;TaskCard key={task.id} task={task} /&gt;
@@ -248,9 +253,9 @@ VITE_API_URL=`}
   <span class="kw">const</span> { id } = <span class="fn">useParams</span>&lt;{ id: <span class="tp">string</span> }&gt;();
 
   <span class="kw">const</span> { data: task, isPending } = <span class="fn">useQuery</span>&lt;<span class="tp">Task</span>&gt;({
-    queryKey: [<span class="str">'tasks'</span>, id],
+    queryKey: [<span class="str">'tasks'</span>, id],   <span class="cmt">// Catatan: cache berbeda untuk tiap id task</span>
     queryFn: () => <span class="fn">fetchTaskById</span>(id!),
-    enabled: !!id,
+    enabled: !!id,                    <span class="cmt">// Catatan: cegah query berjalan sebelum id tersedia</span>
   });
 
   <span class="kw">if</span> (isPending) <span class="kw">return</span> <span class="tag">&lt;div&gt;</span>Memuat...<span class="tag">&lt;/div&gt;</span>;
@@ -274,7 +279,7 @@ VITE_API_URL=`}
 <span class="kw">import</span> { fetchTasks, fetchTaskById } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
 <span class="kw">import type</span> { FetchTasksParams } <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
 
-<span class="cmt">// Custom hook untuk daftar tasks dengan filter opsional</span>
+<span class="cmt">// Catatan: Custom hook untuk daftar tasks dengan filter opsional</span>
 <span class="kw">export function</span> <span class="fn">useTasks</span>(filters: <span class="tp">FetchTasksParams</span> = {}) {
   <span class="kw">return</span> <span class="fn">useQuery</span>({
     queryKey: [<span class="str">'tasks'</span>, filters],
@@ -282,7 +287,7 @@ VITE_API_URL=`}
   });
 }
 
-<span class="cmt">// Custom hook untuk satu task berdasarkan id</span>
+<span class="cmt">// Catatan: Custom hook untuk satu task berdasarkan id</span>
 <span class="kw">export function</span> <span class="fn">useTask</span>(id: <span class="tp">string</span> | <span class="tp">number</span>) {
   <span class="kw">return</span> <span class="fn">useQuery</span>({
     queryKey: [<span class="str">'tasks'</span>, id],
@@ -291,12 +296,12 @@ VITE_API_URL=`}
   });
 }
 
-<span class="cmt">// Pemakaian di komponen jadi jauh lebih bersih:</span>
-<span class="cmt">// const { data: tasks, isPending } = useTasks({ status: activeStatus });</span>
-<span class="cmt">// const { data: task } = useTask(id);</span>`}
+<span class="cmt">// Catatan: Pemakaian di komponen jadi jauh lebih bersih:</span>
+<span class="cmt">// Catatan: const { data: tasks, isPending } = useTasks({ status: activeStatus });</span>
+<span class="cmt">// Catatan: const { data: task } = useTask(id);</span>`}
         />
 
-        <MentalModel label="isPending vs isFetching — Perbedaan Penting di Query v5">
+        <MentalModel label="isPending vs isFetching - Perbedaan Penting di Query v5">
           <p>
             Ini adalah sumber kebingungan yang sering muncul di interview. Kedua
             properti ini berbeda dan masing-masing punya use case spesifik.
@@ -309,14 +314,14 @@ VITE_API_URL=`}
           id="tq-usequery-loading-diff"
           html={`<span class="kw">const</span> { data, isPending, isFetching } = <span class="fn">useQuery</span>({ ... });
 
-<span class="cmt">// isPending  = true saat belum ada data sama sekali (query baru pertama kali)</span>
-<span class="cmt">//             Gunakan ini untuk skeleton/halaman loading pertama kali</span>
+<span class="cmt">// Catatan: isPending  = true saat belum ada data sama sekali (query baru pertama kali)</span>
+<span class="cmt">// Catatan: Gunakan ini untuk skeleton/halaman loading pertama kali</span>
 
-<span class="cmt">// isFetching = true setiap kali sedang fetch, termasuk background refetch</span>
-<span class="cmt">//             Gunakan ini untuk indikator "sedang menyinkronkan" tanpa menghapus UI</span>
+<span class="cmt">// Catatan: isFetching = true setiap kali sedang fetch, termasuk background refetch</span>
+<span class="cmt">// Catatan: Gunakan ini untuk indikator "sedang menyinkronkan" tanpa menghapus UI</span>
 
-<span class="cmt">// Pola yang direkomendasikan:</span>
-<span class="kw">if</span> (isPending) <span class="kw">return</span> <span class="tag">&lt;SkeletonCard /&gt;</span>;    <span class="cmt">// skeleton saat pertama kali</span>
+<span class="cmt">// Catatan: Pola yang direkomendasikan:</span>
+<span class="kw">if</span> (isPending) <span class="kw">return</span> <span class="tag">&lt;SkeletonCard /&gt;</span>;    <span class="cmt">// Catatan: skeleton saat pertama kali</span>
 
 <span class="kw">return</span> (
   <span class="tag">&lt;div&gt;</span>
@@ -396,9 +401,11 @@ VITE_API_URL=`}
 <span class="kw">type</span> <span class="tp">UpdateTaskPayload</span> = <span class="tp">Partial</span>&lt;<span class="tp">Omit</span>&lt;<span class="tp">Task</span>, <span class="str">'id'</span>&gt;&gt; &amp; { id: <span class="tp">number</span> };
 
 <span class="kw">export const</span> <span class="fn">createTask</span> = (data: <span class="tp">CreateTaskPayload</span>): <span class="tp">Promise</span>&lt;<span class="tp">Task</span>&gt; =&gt;
+  <span class="cmt">// Catatan: POST mengembalikan task baru dari server (biasanya berisi id)</span>
   api.<span class="fn">post</span>(<span class="str">'/tasks'</span>, data).<span class="fn">then</span>((res) =&gt; res.data);
 
 <span class="kw">export const</span> <span class="fn">updateTask</span> = ({ id, ...data }: <span class="tp">UpdateTaskPayload</span>): <span class="tp">Promise</span>&lt;<span class="tp">Task</span>&gt; =&gt;
+  <span class="cmt">// Catatan: id dipisah dari payload agar URL tetap menjadi sumber identitas resource</span>
   api.<span class="fn">patch</span>(<span class="str">\`/tasks/\${id}\`</span>, data).<span class="fn">then</span>((res) =&gt; res.data);
 
 <span class="kw">export const</span> <span class="fn">deleteTask</span> = (id: <span class="tp">number</span>): <span class="tp">Promise</span>&lt;<span class="tp">void</span>&gt; =&gt;
@@ -419,12 +426,12 @@ VITE_API_URL=`}
 }
 
 <span class="kw">function</span> <span class="fn">TaskCard</span>({ task, isOwner = <span class="kw">false</span> }: <span class="tp">TaskCardProps</span>) {
-  <span class="kw">const</span> queryClient = <span class="fn">useQueryClient</span>(); <span class="cmt">// akses ke query cache</span>
+  <span class="kw">const</span> queryClient = <span class="fn">useQueryClient</span>(); <span class="cmt">// Catatan: akses ke query cache</span>
 
   <span class="kw">const</span> deleteMutation = <span class="fn">useMutation</span>({
     mutationFn: deleteTask,
     onSuccess: () => {
-      <span class="cmt">// Setelah hapus berhasil, invalidate cache tasks agar list direfresh</span>
+      <span class="cmt">// Catatan: Setelah hapus berhasil, invalidate cache tasks agar list direfresh</span>
       queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] });
     },
     onError: (error: <span class="tp">Error</span>) => {
@@ -483,16 +490,16 @@ VITE_API_URL=`}
           lang="jsx"
           file="referensi - cara queryKey bekerja sebagai kunci cache"
           id="tq-cache-concept"
-          html={`<span class="cmt">// Setiap queryKey yang unik punya cache sendiri</span>
-<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>] })             <span class="cmt">// cache: semua tasks</span>
-<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, <span class="str">'1'</span>] })        <span class="cmt">// cache: task dengan id 1</span>
-<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, <span class="str">'2'</span>] })        <span class="cmt">// cache: task dengan id 2</span>
-<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, { status: <span class="str">'done'</span> }] }) <span class="cmt">// cache: tasks dengan filter</span>
+          html={`<span class="cmt">// Catatan: Setiap queryKey yang unik punya cache sendiri</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>] })             <span class="cmt">// Catatan: cache: semua tasks</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, <span class="str">'1'</span>] })        <span class="cmt">// Catatan: cache: task dengan id 1</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, <span class="str">'2'</span>] })        <span class="cmt">// Catatan: cache: task dengan id 2</span>
+<span class="fn">useQuery</span>({ queryKey: [<span class="str">'tasks'</span>, { status: <span class="str">'done'</span> }] }) <span class="cmt">// Catatan: cache: tasks dengan filter</span>
 
-<span class="cmt">// Invalidate berdasarkan prefix key</span>
+<span class="cmt">// Catatan: Invalidate berdasarkan prefix key</span>
 queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="str">'tasks'</span>] });
-<span class="cmt">// Ini akan menginvalidasi SEMUA query yang keynya dimulai dengan 'tasks'</span>
-<span class="cmt">// Termasuk ['tasks'], ['tasks', '1'], ['tasks', '2'], dll.</span>`}
+<span class="cmt">// Catatan: Ini akan menginvalidasi SEMUA query yang keynya dimulai dengan 'tasks'</span>
+<span class="cmt">// Catatan: Termasuk ['tasks'], ['tasks', '1'], ['tasks', '2'], dll.</span>`}
         />
 
         <CodeBlock
@@ -502,15 +509,15 @@ queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="
           html={`<span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
   defaultOptions: {
     queries: {
-      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>,  <span class="cmt">// 5 menit: data dianggap "fresh", tidak refetch</span>
-      gcTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">10</span>,   <span class="cmt">// 10 menit: data dihapus dari cache setelah ini</span>
+      staleTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">5</span>,  <span class="cmt">// Catatan: 5 menit: data dianggap "fresh", tidak refetch</span>
+      gcTime: <span class="num">1000</span> * <span class="num">60</span> * <span class="num">10</span>,   <span class="cmt">// Catatan: 10 menit: data dihapus dari cache setelah ini</span>
     },
   },
 });
 
-<span class="cmt">// staleTime = 0 (default): setiap mount komponen akan refetch</span>
-<span class="cmt">// staleTime = Infinity: data tidak pernah dianggap stale (jarang dipakai)</span>
-<span class="cmt">// Untuk data yang jarang berubah (daftar kategori), staleTime tinggi lebih efisien</span>`}
+<span class="cmt">// Catatan: staleTime = 0 (default): setiap mount komponen akan refetch</span>
+<span class="cmt">// Catatan: staleTime = Infinity: data tidak pernah dianggap stale (jarang dipakai)</span>
+<span class="cmt">// Catatan: Untuk data yang jarang berubah (daftar kategori), staleTime tinggi lebih efisien</span>`}
         />
       </TopicSection>
 
@@ -559,25 +566,25 @@ queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="
   headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
 });
 
-<span class="cmt">// Request interceptor: tambahkan token sebelum request dikirim</span>
+<span class="cmt">// Catatan: Request interceptor: tambahkan token sebelum request dikirim</span>
 api.interceptors.request.<span class="fn">use</span>(
   (config) => {
     <span class="kw">const</span> token = localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>);
     <span class="kw">if</span> (token) {
       config.headers.Authorization = <span class="str">\`Bearer \${token}\`</span>;
     }
-    <span class="kw">return</span> config; <span class="cmt">// harus return config!</span>
+    <span class="kw">return</span> config; <span class="cmt">// Catatan: harus return config!</span>
   },
   (error) => Promise.<span class="fn">reject</span>(error)
 );
 
-<span class="cmt">// Response interceptor: handle error 401 secara global</span>
+<span class="cmt">// Catatan: Response interceptor: handle error 401 secara global</span>
 api.interceptors.response.<span class="fn">use</span>(
-  (response) => response, <span class="cmt">// jika sukses, lewatkan saja</span>
+  (response) => response, <span class="cmt">// Catatan: jika sukses, lewatkan saja</span>
   (error) => {
     <span class="kw">if</span> (error.response?.status === <span class="num">401</span>) {
       localStorage.<span class="fn">removeItem</span>(<span class="str">'token'</span>);
-      window.location.href = <span class="str">'/'</span>; <span class="cmt">// redirect ke login</span>
+      window.location.href = <span class="str">'/'</span>; <span class="cmt">// Catatan: redirect ke login</span>
     }
     <span class="kw">return</span> Promise.<span class="fn">reject</span>(error);
   }

@@ -1,4 +1,4 @@
-import ChapterHeader from "../layout/ChapterHeader";
+﻿import ChapterHeader from "../layout/ChapterHeader";
 import CardGrid from "../layout/CardGrid";
 import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
@@ -78,8 +78,8 @@ export default function Chapter6Testing() {
 <span class="kw">export default</span> <span class="fn">defineConfig</span>({
   plugins: [<span class="fn">react</span>()],
   test: {
-    environment: <span class="str">'jsdom'</span>,      <span class="cmt">// simulasi browser DOM</span>
-    globals: <span class="kw">true</span>,             <span class="cmt">// tidak perlu import describe, it, expect</span>
+    environment: <span class="str">'jsdom'</span>,      <span class="cmt">// Catatan: simulasi browser DOM</span>
+    globals: <span class="kw">true</span>,             <span class="cmt">// Catatan: tidak perlu import describe, it, expect</span>
     setupFiles: <span class="str">'./src/setupTests.ts'</span>,
   },
 });`}
@@ -101,7 +101,7 @@ export default function Chapter6Testing() {
           file="src/setupTests.ts - setup jest-dom matchers"
           id="test-setup-setup"
           html={`<span class="kw">import</span> <span class="str">'@testing-library/jest-dom'</span>;
-<span class="cmt">// Ini menambahkan matcher seperti .toBeInTheDocument(), .toBeVisible(), dll.</span>`}
+<span class="cmt">// Catatan: Ini menambahkan matcher seperti .toBeInTheDocument(), .toBeVisible(), dll.</span>`}
         />
       </TopicSection>
 
@@ -156,7 +156,7 @@ export default function Chapter6Testing() {
 <span class="kw">import</span> TaskCard <span class="kw">from</span> <span class="str">'../components/TaskCard'</span>;
 <span class="kw">import type</span> { Task } <span class="kw">from</span> <span class="str">'../types'</span>;
 
-<span class="cmt">// TaskCard menggunakan &lt;Link&gt; dari react-router-dom sehingga butuh BrowserRouter</span>
+<span class="cmt">// Catatan: TaskCard menggunakan &lt;Link&gt; dari react-router-dom sehingga butuh BrowserRouter</span>
 <span class="kw">const</span> renderTaskCard = (props: <span class="tp">Partial</span>&lt;<span class="tp">Parameters</span>&lt;<span class="kw">typeof</span> TaskCard&gt;[<span class="num">0</span>]&gt; = {}): <span class="tp">ReactElement</span> =&gt; {
   <span class="kw">const</span> defaultTask: <span class="tp">Task</span> = {
     id: <span class="num">1</span>,
@@ -194,20 +194,20 @@ export default function Chapter6Testing() {
           lang="jsx"
           file="referensi - urutan prioritas query selector RTL"
           id="test-render-priority"
-          html={`<span class="cmt">// Prioritas tinggi ke rendah (gunakan dari atas ke bawah):</span>
+          html={`<span class="cmt">// Catatan: Prioritas tinggi ke rendah (gunakan dari atas ke bawah):</span>
 
-screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /submit/i })   <span class="cmt">// TERBAIK - berbasis aksesibilitas</span>
-screen.<span class="fn">getByLabelText</span>(<span class="str">'Email'</span>)                     <span class="cmt">// untuk input dengan label</span>
-screen.<span class="fn">getByPlaceholderText</span>(<span class="str">'Masukkan email'</span>)       <span class="cmt">// kurang ideal tapi OK</span>
-screen.<span class="fn">getByText</span>(<span class="str">'Selamat Datang'</span>)                  <span class="cmt">// untuk konten teks biasa</span>
-screen.<span class="fn">getByDisplayValue</span>(<span class="str">'nilai input'</span>)             <span class="cmt">// untuk input yang sudah terisi</span>
-screen.<span class="fn">getByAltText</span>(<span class="str">'logo'</span>)                        <span class="cmt">// untuk gambar</span>
-screen.<span class="fn">getByTestId</span>(<span class="str">'my-element'</span>)                   <span class="cmt">// TERBURUK - hanya jika tidak ada pilihan</span>
+screen.<span class="fn">getByRole</span>(<span class="str">'button'</span>, { name: /submit/i })   <span class="cmt">// Catatan: TERBAIK - berbasis aksesibilitas</span>
+screen.<span class="fn">getByLabelText</span>(<span class="str">'Email'</span>)                     <span class="cmt">// Catatan: untuk input dengan label</span>
+screen.<span class="fn">getByPlaceholderText</span>(<span class="str">'Masukkan email'</span>)       <span class="cmt">// Catatan: kurang ideal tapi OK</span>
+screen.<span class="fn">getByText</span>(<span class="str">'Selamat Datang'</span>)                  <span class="cmt">// Catatan: untuk konten teks biasa</span>
+screen.<span class="fn">getByDisplayValue</span>(<span class="str">'nilai input'</span>)             <span class="cmt">// Catatan: untuk input yang sudah terisi</span>
+screen.<span class="fn">getByAltText</span>(<span class="str">'logo'</span>)                        <span class="cmt">// Catatan: untuk gambar</span>
+screen.<span class="fn">getByTestId</span>(<span class="str">'my-element'</span>)                   <span class="cmt">// Catatan: TERBURUK - hanya jika tidak ada pilihan</span>
 
-<span class="cmt">// Perbedaan getBy vs queryBy vs findBy:</span>
-<span class="cmt">// getBy    - throw error jika tidak ditemukan (untuk elemen yang HARUS ada)</span>
-<span class="cmt">// queryBy  - return null jika tidak ditemukan (untuk test "tidak ada")</span>
-<span class="cmt">// findBy   - async, return promise (untuk elemen yang muncul setelah loading)</span>`}
+<span class="cmt">// Catatan: Perbedaan getBy vs queryBy vs findBy:</span>
+<span class="cmt">// Catatan: getBy    - throw error jika tidak ditemukan (untuk elemen yang HARUS ada)</span>
+<span class="cmt">// Catatan: queryBy  - return null jika tidak ditemukan (untuk test "tidak ada")</span>
+<span class="cmt">// Catatan: findBy   - async, return promise (untuk elemen yang muncul setelah loading)</span>`}
         />
       </TopicSection>
 
@@ -258,9 +258,11 @@ screen.<span class="fn">getByTestId</span>(<span class="str">'my-element'</span>
 <span class="kw">import</span> * <span class="kw">as</span> taskApi <span class="kw">from</span> <span class="str">'../api/taskApi'</span>;
 
 vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
+<span class="cmt">// Catatan: Semua import dari taskApi sekarang menjadi mock function (bukan request jaringan asli)</span>
 
 <span class="kw">const</span> renderWithProviders = (ui: <span class="tp">ReactElement</span>) =&gt; {
   <span class="kw">const</span> queryClient = <span class="kw">new</span> <span class="fn">QueryClient</span>({
+    <span class="cmt">// Catatan: Retry dimatikan agar test error tidak menunggu retry bawaan</span>
     defaultOptions: { queries: { retry: <span class="kw">false</span> } },
   });
   <span class="kw">return</span> <span class="fn">render</span>(
@@ -378,6 +380,7 @@ vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
 vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
 
 <span class="kw">const</span> createTestStore = () =&gt;
+  <span class="cmt">// Catatan: Store test dibuat fresh per render agar state antar test tidak bocor</span>
   <span class="fn">configureStore</span>({ reducer: { ui: uiReducer } });
 
 <span class="kw">import type</span> { ReactElement } <span class="kw">from</span> <span class="str">'react'</span>;
@@ -386,6 +389,7 @@ vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
     defaultOptions: { queries: { retry: <span class="kw">false</span> } },
   });
   <span class="kw">return</span> <span class="fn">render</span>(
+    <span class="cmt">// Catatan: Urutan provider mengikuti dependency komponen nyata di aplikasi</span>
     <span class="tag">&lt;Provider</span> <span class="atr">store</span>=<span class="jsx">{createTestStore()}</span><span class="tag">&gt;</span>
       <span class="tag">&lt;QueryClientProvider</span> <span class="atr">client</span>=<span class="jsx">{queryClient}</span><span class="tag">&gt;</span>
         <span class="tag">&lt;BrowserRouter&gt;</span>{ui}<span class="tag">&lt;/BrowserRouter&gt;</span>
@@ -431,34 +435,34 @@ vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
 vi.<span class="fn">mock</span>(<span class="str">'../api/taskApi'</span>);
 
 <span class="fn">describe</span>(<span class="str">'NamaKomponen'</span>, () => {
-  <span class="cmt">// beforeEach: dijalankan SEBELUM setiap test dalam describe ini</span>
+  <span class="cmt">// Catatan: beforeEach: dijalankan SEBELUM setiap test dalam describe ini</span>
   <span class="fn">beforeEach</span>(() => {
-    <span class="cmt">// Reset semua mock ke kondisi awal - mencegah sisa mock dari test sebelumnya</span>
+    <span class="cmt">// Catatan: Reset semua mock ke kondisi awal - mencegah sisa mock dari test sebelumnya</span>
     vi.<span class="fn">clearAllMocks</span>();
   });
 
-  <span class="cmt">// afterEach: dijalankan SETELAH setiap test</span>
+  <span class="cmt">// Catatan: afterEach: dijalankan SETELAH setiap test</span>
   <span class="fn">afterEach</span>(() => {
-    <span class="cmt">// Bersihkan efek samping jika ada (localStorage, timer palsu, dll)</span>
+    <span class="cmt">// Catatan: Bersihkan efek samping jika ada (localStorage, timer palsu, dll)</span>
     localStorage.<span class="fn">clear</span>();
   });
 
   <span class="fn">it</span>(<span class="str">'test pertama'</span>, <span class="kw">async</span> () => {
     taskApi.fetchTasks.<span class="fn">mockResolvedValue</span>([{ id: <span class="num">1</span>, title: <span class="str">'Task A'</span> }]);
-    <span class="cmt">// ... test code</span>
+    <span class="cmt">// Catatan: ... test code</span>
   });
 
   <span class="fn">it</span>(<span class="str">'test kedua tidak terpengaruh mock dari test pertama'</span>, <span class="kw">async</span> () => {
-    <span class="cmt">// Mock di sini fresh karena clearAllMocks() dipanggil beforeEach</span>
+    <span class="cmt">// Catatan: Mock di sini fresh karena clearAllMocks() dipanggil beforeEach</span>
     taskApi.fetchTasks.<span class="fn">mockResolvedValue</span>([]);
-    <span class="cmt">// ... test code</span>
+    <span class="cmt">// Catatan: ... test code</span>
   });
 });
 
-<span class="cmt">// beforeAll  = sekali sebelum semua test di describe (untuk setup mahal)</span>
-<span class="cmt">// afterAll   = sekali setelah semua test di describe (untuk teardown)</span>
-<span class="cmt">// beforeEach = sebelum setiap test (paling sering dipakai)</span>
-<span class="cmt">// afterEach  = setelah setiap test</span>`}
+<span class="cmt">// Catatan: beforeAll  = sekali sebelum semua test di describe (untuk setup mahal)</span>
+<span class="cmt">// Catatan: afterAll   = sekali setelah semua test di describe (untuk teardown)</span>
+<span class="cmt">// Catatan: beforeEach = sebelum setiap test (paling sering dipakai)</span>
+<span class="cmt">// Catatan: afterEach  = setelah setiap test</span>`}
         />
 
         <TipBlock>

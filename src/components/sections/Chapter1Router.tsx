@@ -1,4 +1,4 @@
-import ChapterHeader from "../layout/ChapterHeader";
+﻿import ChapterHeader from "../layout/ChapterHeader";
 import CardGrid from "../layout/CardGrid";
 import Card from "../ui/Card";
 import CodeBlock from "../ui/CodeBlock";
@@ -73,10 +73,10 @@ export default function Chapter1Router() {
 <span class="kw">import</span> ReactDOM <span class="kw">from</span> <span class="str">'react-dom/client'</span>;
 <span class="kw">import</span> App <span class="kw">from</span> <span class="str">'./App'</span>;
 
-<span class="cmt">// Modern React Router pattern:</span>
-<span class="cmt">// RouterProvider ada di App.tsx, bukan di main.tsx</span>
-<span class="cmt">// main.tsx hanya jadi entry point render App</span>
-<span class="cmt">// Provider lain (QueryClient, Redux) ditambahkan bertahap di chapter berikutnya</span>
+<span class="cmt">// Catatan: Modern React Router pattern:</span>
+<span class="cmt">// Catatan: RouterProvider ada di App.tsx, bukan di main.tsx</span>
+<span class="cmt">// Catatan: main.tsx hanya jadi entry point render App</span>
+<span class="cmt">// Catatan: Provider lain (QueryClient, Redux) ditambahkan bertahap di chapter berikutnya</span>
 
 ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElementById</span>(<span class="str">'root'</span>) <span class="kw">as</span> <span class="tp">HTMLElement</span>).<span class="fn">render</span>(
   <span class="tag">&lt;React.StrictMode&gt;</span>
@@ -149,7 +149,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
     element: <span class="tag">&lt;LoginPage /&gt;</span>,
   },
   {
-    <span class="cmt">// Layout route: semua child mewarisi AppLayout + proteksi auth</span>
+    <span class="cmt">// Catatan: Layout route: semua child mewarisi AppLayout + proteksi auth</span>
     element: (
       <span class="tag">&lt;ProtectedRoute&gt;</span>
         <span class="tag">&lt;AppLayout /&gt;</span>
@@ -174,12 +174,12 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           html={`<span class="kw">import</span> { useParams } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 
 <span class="kw">export default function</span> <span class="fn">TaskDetailPage</span>() {
-  <span class="kw">const</span> { id } = <span class="fn">useParams</span>(); <span class="cmt">// membaca :id dari URL /tasks/42 => id = "42"</span>
+  <span class="kw">const</span> { id } = <span class="fn">useParams</span>(); <span class="cmt">// Catatan: membaca :id dari URL /tasks/42 => id = "42"</span>
 
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
       <span class="tag">&lt;h1&gt;</span>Detail Task #<span class="jsx">{id}</span><span class="tag">&lt;/h1&gt;</span>
-      <span class="cmt">// fetch task berdasarkan id (akan diintegrasikan di Chapter 2)</span>
+      <span class="cmt">// Catatan: fetch task berdasarkan id (akan diintegrasikan di Chapter 2)</span>
     <span class="tag">&lt;/div&gt;</span>
   );
 }`}
@@ -194,7 +194,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 <span class="kw">function</span> <span class="fn">Navbar</span>() {
   <span class="kw">return</span> (
     <span class="tag">&lt;nav&gt;</span>
-      <span class="cmt">// Link = navigasi tanpa reload, NavLink = Link dengan class "active" otomatis</span>
+      <span class="cmt">// Catatan: Link = navigasi tanpa reload, NavLink = Link dengan class "active" otomatis</span>
       <span class="tag">&lt;NavLink</span>
         <span class="atr">to</span>=<span class="str">"/dashboard"</span>
         <span class="atr">className</span>=<span class="jsx">{({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}</span>
@@ -202,7 +202,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
         Dashboard
       <span class="tag">&lt;/NavLink&gt;</span>
 
-      <span class="cmt">// Link ke halaman task dengan ID dinamis</span>
+      <span class="cmt">// Catatan: Link ke halaman task dengan ID dinamis</span>
       <span class="tag">&lt;Link</span> <span class="atr">to</span>=<span class="jsx">{\`/tasks/\${task.id}\`}</span><span class="tag">&gt;</span>Lihat Detail<span class="tag">&lt;/Link&gt;</span>
     <span class="tag">&lt;/nav&gt;</span>
   );
@@ -270,8 +270,8 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 
   <span class="kw">const</span> <span class="fn">handleLogin</span> = <span class="kw">async</span> (data) => {
     <span class="kw">try</span> {
-      <span class="kw">await</span> <span class="fn">loginApi</span>(data);             <span class="cmt">// panggil API login</span>
-      navigate(<span class="str">'/dashboard'</span>);          <span class="cmt">// redirect setelah berhasil</span>
+      <span class="kw">await</span> <span class="fn">loginApi</span>(data);             <span class="cmt">// Catatan: panggil API login</span>
+      navigate(<span class="str">'/dashboard'</span>);          <span class="cmt">// Catatan: redirect setelah berhasil</span>
     } <span class="kw">catch</span> (err) {
       console.<span class="fn">error</span>(<span class="str">'Login gagal'</span>, err);
     }
@@ -280,8 +280,8 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
   <span class="kw">return</span> <span class="tag">&lt;button</span> <span class="atr">onClick</span>=<span class="jsx">{handleLogin}</span><span class="tag">&gt;</span>Login<span class="tag">&lt;/button&gt;</span>;
 }
 
-<span class="cmt">// navigate(-1)         => kembali ke halaman sebelumnya (seperti tombol back)</span>
-<span class="cmt">// navigate('/login', { replace: true })  => replace history, tidak bisa back</span>`}
+<span class="cmt">// Catatan: navigate(-1)         => kembali ke halaman sebelumnya (seperti tombol back)</span>
+<span class="cmt">// Catatan: navigate('/login', { replace: true })  => replace history, tidak bisa back</span>`}
         />
 
         <MistakeBlock>
@@ -340,9 +340,9 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 }
 
 <span class="kw">export default function</span> <span class="fn">ProtectedRoute</span>({ children }: <span class="tp">ProtectedRouteProps</span>) {
-  <span class="cmt">// Interim placeholder untuk menjaga alur belajar Chapter 1 tetap jalan.</span>
-  <span class="cmt">// Di Chapter 5, ganti jadi:</span>
-  <span class="cmt">// const isLoggedIn = useAuthStore((state) =&gt; state.isLoggedIn);</span>
+  <span class="cmt">// Catatan: Interim placeholder untuk menjaga alur belajar Chapter 1 tetap jalan.</span>
+  <span class="cmt">// Catatan: Di Chapter 5, ganti jadi:</span>
+  <span class="cmt">// Catatan: const isLoggedIn = useAuthStore((state) =&gt; state.isLoggedIn);</span>
   <span class="kw">const</span> isLoggedIn = <span class="kw">true</span>;
 
   <span class="kw">if</span> (!isLoggedIn) {
@@ -415,7 +415,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 <span class="kw">import</span> Navbar <span class="kw">from</span> <span class="str">'./Navbar'</span>;
 <span class="kw">import</span> Sidebar <span class="kw">from</span> <span class="str">'./Sidebar'</span>;
 
-<span class="cmt">// Outlet = placeholder untuk child route yang aktif</span>
+<span class="cmt">// Catatan: Outlet = placeholder untuk child route yang aktif</span>
 <span class="kw">export default function</span> <span class="fn">AppLayout</span>() {
   <span class="kw">return</span> (
     <span class="tag">&lt;div&gt;</span>
@@ -423,7 +423,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
       <span class="tag">&lt;div</span> <span class="atr">style</span>=<span class="jsx">{{ display: 'flex' }}</span><span class="tag">&gt;</span>
         <span class="tag">&lt;Sidebar /&gt;</span>
         <span class="tag">&lt;main&gt;</span>
-          <span class="tag">&lt;Outlet /&gt;</span> <span class="cmt">// Di sini child route dirender</span>
+          <span class="tag">&lt;Outlet /&gt;</span> <span class="cmt">// Catatan: Di sini child route dirender</span>
         <span class="tag">&lt;/main&gt;</span>
       <span class="tag">&lt;/div&gt;</span>
     <span class="tag">&lt;/div&gt;</span>
@@ -509,7 +509,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
             Bayangkan <code>useSearchParams</code> seperti <code>useState</code>{" "}
             tapi nilainya disimpan di URL, bukan di memori React.{" "}
             <code>[searchParams, setSearchParams]</code> persis seperti{" "}
-            <code>[state, setState]</code> — bedanya perubahan langsung
+            <code>[state, setState]</code> - bedanya perubahan langsung
             tercermin di URL browser.
           </p>
         </MentalModel>
@@ -528,9 +528,11 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 <span class="kw">export default function</span> <span class="fn">DashboardPage</span>() {
   <span class="kw">const</span> [searchParams, setSearchParams] = <span class="fn">useSearchParams</span>();
 
+  <span class="cmt">// Catatan: URL menjadi source of truth untuk filter aktif</span>
   <span class="kw">const</span> activeStatus = (searchParams.<span class="fn">get</span>(<span class="str">'status'</span>) <span class="kw">as</span> <span class="tp">TaskStatus</span>) || <span class="str">'all'</span>;
 
   <span class="kw">const</span> { data: tasks = [], isPending } = <span class="fn">useQuery</span>&lt;<span class="tp">Task</span>[]&gt;({
+    <span class="cmt">// Catatan: status wajib masuk ke queryKey agar cache per-filter tidak tertukar</span>
     queryKey: [<span class="str">'tasks'</span>, { status: activeStatus }],
     queryFn: () => <span class="fn">fetchTasks</span>({ status: activeStatus }),
   });
@@ -544,6 +546,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           &lt;button
             key={status}
             onClick={() =&gt; setSearchParams((prev) =&gt; {
+              <span class="cmt">// Catatan: update hanya param status, param lain tetap dipertahankan</span>
               prev.set('status', status);
               return prev;
             })}
@@ -575,7 +578,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 
         <MistakeBlock>
           <li>
-            Menyimpan state filter di <code>useState</code> biasa — filter
+            Menyimpan state filter di <code>useState</code> biasa - filter
             hilang saat user refresh atau berpindah halaman lalu kembali.
             Gunakan <code>useSearchParams</code> agar filter persisten
           </li>
@@ -590,7 +593,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           </li>
           <li>
             Lupa menyertakan nilai filter di <code>queryKey</code> TanStack
-            Query — semua filter akan berbagi cache yang sama dan data tidak
+            Query - semua filter akan berbagi cache yang sama dan data tidak
             akan diperbarui saat filter berubah
           </li>
         </MistakeBlock>
