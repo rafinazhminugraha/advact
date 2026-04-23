@@ -10,13 +10,13 @@ A practical, structured guide to mastering the modern React ecosystem — built 
 
 This project started as a personal learning space to deeply understand advanced tools in the React ecosystem like:
 
-* React Router
-* TanStack Query
-* Axios
-* React Hook Form + Zod
-* Redux Toolkit
-* Zustand
-* Testing (React Testing Library + Vitest)
+- React Router
+- TanStack Query
+- Axios
+- React Hook Form + Zod
+- Redux Toolkit
+- Zustand
+- Testing (React Testing Library + Vitest)
 
 At first, this was meant to be **just for me** — a place to organize everything I learn.
 
@@ -44,11 +44,11 @@ Each chapter incrementally improves the same app, so you can understand how mode
 
 ## What Makes This Different?
 
-* Project-based learning (not random examples)
-* Focus on *mental models*, not just syntax
-* Covers real-world patterns used in production
-* Clean UI + structured navigation
-* Beginner-friendly → Intermediate/Advanced bridge
+- Project-based learning (not random examples)
+- Focus on _mental models_, not just syntax
+- Covers real-world patterns used in production
+- Clean UI + structured navigation
+- Beginner-friendly → Intermediate/Advanced bridge
 
 ---
 
@@ -65,26 +65,26 @@ The content is divided into multiple chapters:
 
 Each chapter includes:
 
-* Explanation (What, Why, When)
-* Mental model
-* Code examples
-* Common mistakes
-* Practical integration into the project
+- Explanation (What, Why, When)
+- Mental model
+- Code examples
+- Common mistakes
+- Practical integration into the project
 
 ---
 
 ## Tech Stack
 
-* React
-* React Router
-* TanStack Query
-* Axios
-* Redux Toolkit
-* Zustand
-* React Hook Form
-* Zod
-* React Testing Library
-* Vitest
+- React
+- React Router
+- TanStack Query
+- Axios
+- Redux Toolkit
+- Zustand
+- React Hook Form
+- Zod
+- React Testing Library
+- Vitest
 
 ---
 
@@ -92,11 +92,10 @@ Each chapter includes:
 
 This learning app is frontend-first, so we use a local mock backend shipped in this repo:
 
-* API root: `http://localhost:3001`
-* Frontend base URL in env: `VITE_API_URL=http://localhost:3001/api`
-* Mock API files:
-* `mock-api/server.js`
-* `mock-api/db.json`
+- API root: `http://localhost:3001`
+- Frontend base URL in env: `VITE_API_URL=http://localhost:3001/api`
+- Mock API files: `mock-api/server.js`, `mock-api/db.json`
+- Consistently used in all materials for task/auth flow (Chapter 2-5)
 
 ### Run
 
@@ -113,18 +112,18 @@ npm run dev:full
 
 ### Endpoint Contract
 
-* `GET /health` -> `{ "status": "ok" }`
-* `GET /api/tasks` -> `Task[]`
-* `GET /api/tasks/:id` -> `Task`
-* `POST /api/tasks` -> create task (returns created task with id)
-* `PATCH /api/tasks/:id` -> update task
-* `DELETE /api/tasks/:id` -> delete task
-* `POST /auth/login` -> `{ user, token }` for demo auth
+- `GET /health` -> `{ "status": "ok" }`
+- `GET /api/tasks` -> `Task[]`
+- `GET /api/tasks/:id` -> `Task`
+- `POST /api/tasks` -> create task (returns created task with id)
+- `PATCH /api/tasks/:id` -> update task
+- `DELETE /api/tasks/:id` -> delete task
+- `POST /auth/login` -> `{ user, token }` for demo auth
 
 Demo login credential for local mock auth:
 
-* `email: rafi@taskflow.dev`
-* `password: password123`
+- `email: rafi@taskflow.dev`
+- `password: password123`
 
 ---
 
