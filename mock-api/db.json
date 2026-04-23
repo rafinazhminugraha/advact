@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Rafi",
+      "email": "rafi@taskflow.dev"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Buat fitur login",
+      "description": "Integrasi RHF + Zod",
+      "priority": "high",
+      "status": "in-progress"
+    },
+    {
+      "id": 2,
+      "title": "Tambah unit test TaskCard",
+      "description": "Testing dengan RTL + Vitest",
+      "priority": "medium",
+      "status": "todo"
+    }
+  ]
+}

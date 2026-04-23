@@ -111,7 +111,7 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           file=".env dan .env.example - setup environment variable API"
           id="tq-setup-env"
           html={`# .env (di root project, jangan di-commit ke git)
-VITE_API_URL=https://api.taskflow.dev/v1
+      VITE_API_URL=http://localhost:3001/api
 
 # .env.example (template yang di-commit ke git)
 VITE_API_URL=`}
@@ -128,6 +128,209 @@ VITE_API_URL=`}
           </p>
         </TipBlock>
 
+        <TipBlock>
+          <p>
+            <strong>Klarifikasi penting (frontend-only):</strong> API resmi
+            untuk materi ini adalah mock backend lokal di project ini:
+            <code>http://localhost:3001</code>. Jadi kamu tidak perlu backend
+            production untuk mengikuti chapter 2 sampai 6.
+          </p>
+        </TipBlock>
+
+        <CodeBlock
+          lang="bash"
+          file="terminal - jalankan frontend + mock backend"
+          id="tq-setup-api-run"
+          html={`# Install dependency backend mock sekali saja
+npm install -D json-server concurrently
+
+# Jalankan API mock saja (port 3001)
+npm run api
+
+# Jalankan frontend + API mock bersamaan
+npm run dev:full`}
+        />
+
+        <CodeBlock
+          lang="json"
+          file="mock-api/db.json - sumber data mock untuk TaskFlow"
+          id="tq-setup-api-db"
+          html={`{
+  "users": [
+    {
+      "id": 1,
+      "name": "Rafi",
+      "email": "rafi@taskflow.dev"
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Buat fitur login",
+      "description": "Integrasi RHF + Zod",
+      "priority": "high",
+      "status": "in-progress"
+    },
+    {
+      "id": 2,
+      "title": "Tambah unit test TaskCard",
+      "description": "Testing dengan RTL + Vitest",
+      "priority": "medium",
+      "status": "todo"
+    }
+  ]
+}`}
+        />
+
+        <CodeBlock
+          lang="js"
+          file="mock-api/server.js - backend mock ringan dengan endpoint auth + tasks"
+          id="tq-setup-api-server"
+          html={`<span class="kw">import</span> jsonServer <span class="kw">from</span> <span class="str">'json-server'</span>;
+<span class="kw">import</span> fs <span class="kw">from</span> <span class="str">'node:fs'</span>;
+<span class="kw">import</span> path <span class="kw">from</span> <span class="str">'node:path'</span>;
+<span class="kw">import</span> { fileURLToPath } <span class="kw">from</span> <span class="str">'node:url'</span>;
+
+<span class="kw">const</span> __filename = <span class="fn">fileURLToPath</span>(import.meta.url);
+<span class="kw">const</span> __dirname = path.<span class="fn">dirname</span>(__filename);
+<span class="kw">const</span> dbPath = path.<span class="fn">join</span>(__dirname, <span class="str">'db.json'</span>);
+
+<span class="kw">const</span> server = jsonServer.<span class="fn">create</span>();
+<span class="kw">const</span> router = jsonServer.<span class="fn">router</span>(dbPath);
+
+server.<span class="fn">use</span>(jsonServer.<span class="fn">defaults</span>());
+server.<span class="fn">use</span>(jsonServer.bodyParser);
+
+<span class="cmt">// Catatan: Endpoint health check untuk memastikan server mock hidup</span>
+server.<span class="fn">get</span>(<span class="str">'/health'</span>, (_req, res) =&gt; {
+  res.<span class="fn">json</span>({ status: <span class="str">'ok'</span> });
+});
+
+<span class="cmt">// Catatan: Endpoint auth sederhana untuk chapter login (password demo: password123)</span>
+server.<span class="fn">post</span>(<span class="str">'/auth/login'</span>, (req, res) =&gt; {
+  <span class="kw">const</span> { email, password } = req.body ?? {};
+  <span class="kw">const</span> db = JSON.<span class="fn">parse</span>(fs.<span class="fn">readFileSync</span>(dbPath, <span class="str">'utf-8'</span>));
+  <span class="kw">const</span> user = db.users.<span class="fn">find</span>((u) =&gt; u.email === email);
+
+  <span class="kw">if</span> (!user || password !== <span class="str">'password123'</span>) {
+    <span class="kw">return</span> res.<span class="fn">status</span>(401).<span class="fn">json</span>({ message: <span class="str">'Email atau password salah'</span> });
+  }
+
+  <span class="kw">return</span> res.<span class="fn">json</span>({
+    user: { id: user.id, name: user.name, email: user.email },
+    token: <span class="str">\`mock-token-\${user.id}\`</span>,
+  });
+});
+
+<span class="cmt">// Catatan: Semua resource di db.json diekspos lewat prefix /api</span>
+server.<span class="fn">use</span>(<span class="str">'/api'</span>, router);
+
+server.<span class="fn">listen</span>(3001, () =&gt; {
+  console.<span class="fn">log</span>(<span class="str">'Mock API running at http://localhost:3001'</span>);
+});`}
+        />
+
+        <CodeBlock
+          lang="json"
+          file="package.json - scripts untuk workflow frontend + mock backend"
+          id="tq-setup-api-scripts"
+          html={`{
+  "scripts": {
+    "dev": "vite",
+    "api": "node mock-api/server.js",
+    "dev:full": "concurrently 'npm run api' 'npm run dev'"
+  }
+}`}
+        />
+
+        <CodeBlock
+          lang="text"
+          file="referensi - kontrak endpoint TaskFlow untuk frontend"
+          id="tq-setup-api-contract"
+          html={`BASE URL (dari .env)
+VITE_API_URL=http://localhost:3001/api
+
+GET /health
+200 OK
+{
+  "status": "ok"
+}
+
+GET /tasks
+200 OK
+[
+  {
+    "id": 1,
+    "title": "Buat fitur login",
+    "description": "Integrasi RHF + Zod",
+    "priority": "high",
+    "status": "in-progress"
+  }
+]
+
+GET /tasks?status=todo
+200 OK
+[
+  {
+    "id": 2,
+    "title": "Tambah unit test TaskCard",
+    "description": "Testing dengan RTL + Vitest",
+    "priority": "medium",
+    "status": "todo"
+  }
+]
+
+GET /tasks/:id
+200 OK
+{
+  "id": 1,
+  "title": "Buat fitur login",
+  "description": "Integrasi RHF + Zod",
+  "priority": "high",
+  "status": "in-progress"
+}
+
+POST /tasks
+Request body
+{
+  "title": "Task baru",
+  "description": "Opsional",
+  "priority": "medium",
+  "status": "todo"
+}
+
+Response 201 Created
+{
+  "id": 99,
+  "title": "Task baru",
+  "description": "Opsional",
+  "priority": "medium",
+  "status": "todo"
+}
+
+POST /auth/login
+Request body
+{
+  "email": "rafi@taskflow.dev",
+  "password": "password123"
+}
+
+Response 200 OK
+{
+  "user": {
+    "id": 1,
+    "name": "Rafi",
+    "email": "rafi@taskflow.dev"
+  },
+  "token": "mock-token-1"
+}
+
+Response 401
+{
+  "message": "Email atau password salah"
+}`}
+        />
+
         <CodeBlock
           lang="ts"
           file="src/api/axiosInstance.ts - konfigurasi base instance Axios dengan timeout dan headers"
@@ -135,7 +338,7 @@ VITE_API_URL=`}
           html={`<span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
 
 <span class="kw">const</span> api = axios.<span class="fn">create</span>({
-  baseURL: import.meta.env.VITE_API_URL ?? <span class="str">'https://api.taskflow.dev/v1'</span>,
+  baseURL: import.meta.env.VITE_API_URL ?? <span class="str">'http://localhost:3001/api'</span>,
   timeout: <span class="num">10000</span>,
   headers: {
     <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>,
@@ -561,7 +764,7 @@ queryClient.<span class="fn">invalidateQueries</span>({ queryKey: [<span class="
           html={`<span class="kw">import</span> axios <span class="kw">from</span> <span class="str">'axios'</span>;
 
 <span class="kw">const</span> api = axios.<span class="fn">create</span>({
-  baseURL: import.meta.env.VITE_API_URL ?? <span class="str">'https://api.taskflow.dev/v1'</span>,
+  baseURL: import.meta.env.VITE_API_URL ?? <span class="str">'http://localhost:3001/api'</span>,
   timeout: <span class="num">10000</span>,
   headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
 });

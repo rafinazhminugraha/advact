@@ -88,6 +88,46 @@ Each chapter includes:
 
 ---
 
+## API Source for This Course
+
+This learning app is frontend-first, so we use a local mock backend shipped in this repo:
+
+* API root: `http://localhost:3001`
+* Frontend base URL in env: `VITE_API_URL=http://localhost:3001/api`
+* Mock API files:
+* `mock-api/server.js`
+* `mock-api/db.json`
+
+### Run
+
+```bash
+# Install project dependencies (including mock API tools)
+npm install
+
+# Start mock API only
+npm run api
+
+# Start frontend + mock API together
+npm run dev:full
+```
+
+### Endpoint Contract
+
+* `GET /health` -> `{ "status": "ok" }`
+* `GET /api/tasks` -> `Task[]`
+* `GET /api/tasks/:id` -> `Task`
+* `POST /api/tasks` -> create task (returns created task with id)
+* `PATCH /api/tasks/:id` -> update task
+* `DELETE /api/tasks/:id` -> delete task
+* `POST /auth/login` -> `{ user, token }` for demo auth
+
+Demo login credential for local mock auth:
+
+* `email: rafi@taskflow.dev`
+* `password: password123`
+
+---
+
 ## Final Note
 
 This project is still evolving as I learn.
