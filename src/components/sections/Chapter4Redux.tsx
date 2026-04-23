@@ -292,12 +292,22 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           </p>
         </TipBlock>
 
+        <TipBlock>
+          <p>
+            <strong>Konsistensi API untuk materi ini:</strong> contoh login di
+            section ini tetap memakai mock backend lokal yang sama dari Chapter
+            2, yaitu endpoint <code>/auth/login</code> pada
+            <code>http://localhost:3001</code>. Gunakan akun demo
+            <code>rafi@taskflow.dev</code> dan <code>password123</code>.
+          </p>
+        </TipBlock>
+
         <CodeBlock
           lang="jsx"
-          file="src/features/auth/authSlice.js - createAsyncThunk untuk login (referensi, bukan bagian TaskFlow)"
+          file="src/features/auth/authSlice.js - createAsyncThunk untuk login (referensi pola legacy, endpoint tetap pakai mock API TaskFlow)"
           id="rtk-thunk-code"
           html={`<span class="kw">import</span> { createAsyncThunk, createSlice } <span class="kw">from</span> <span class="str">'@reduxjs/toolkit'</span>;
-<span class="kw">import</span> api <span class="kw">from</span> <span class="str">'../api/axiosInstance'</span>;
+<span class="kw">import</span> api <span class="kw">from</span> <span class="str">'../../api/axiosInstance'</span>;
 
 <span class="cmt">// Catatan: createAsyncThunk(actionName, asyncFunction)</span>
 <span class="kw">export const</span> loginUser = <span class="fn">createAsyncThunk</span>(

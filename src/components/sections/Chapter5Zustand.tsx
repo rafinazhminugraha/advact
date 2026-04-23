@@ -126,6 +126,16 @@ export default function Chapter5Zustand() {
         title="Menggunakan Store di Komponen"
         subtitle="Membaca state dan memanggil action dari Zustand store"
       >
+        <TipBlock>
+          <p>
+            <strong>Konsistensi API lintas chapter:</strong> snippet login di
+            section ini menggunakan endpoint yang sama dengan Chapter 2, yaitu
+            <code>POST /auth/login</code> di mock backend lokal
+            <code>http://localhost:3001</code>. Jika API mock belum jalan,
+            proses login memang akan gagal.
+          </p>
+        </TipBlock>
+
         <CodeBlock
           lang="tsx"
           file="src/pages/LoginPage.tsx - integrasi Zustand, RHF, Zod, dan useNavigate"

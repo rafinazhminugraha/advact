@@ -265,6 +265,18 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
           id="rr-navigate-code"
           html={`<span class="kw">import</span> { useNavigate } <span class="kw">from</span> <span class="str">'react-router-dom'</span>;
 
+<span class="kw">const</span> <span class="fn">loginApi</span> = <span class="kw">async</span> (data) => {
+  <span class="cmt">// Catatan: Untuk konsistensi materi, login diarahkan ke mock backend lokal yang sama</span>
+  <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'http://localhost:3001/auth/login'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    body: <span class="tp">JSON</span>.<span class="fn">stringify</span>(data),
+  });
+
+  <span class="kw">if</span> (!res.ok) <span class="kw">throw</span> <span class="kw">new</span> <span class="fn">Error</span>(<span class="str">'Login gagal'</span>);
+  <span class="kw">return</span> res.<span class="fn">json</span>();
+};
+
 <span class="kw">export default function</span> <span class="fn">LoginPage</span>() {
   <span class="kw">const</span> navigate = <span class="fn">useNavigate</span>();
 
@@ -281,7 +293,8 @@ ReactDOM.<span class="fn">createRoot</span>(document.<span class="fn">getElement
 }
 
 <span class="cmt">// Catatan: navigate(-1)         => kembali ke halaman sebelumnya (seperti tombol back)</span>
-<span class="cmt">// Catatan: navigate('/login', { replace: true })  => replace history, tidak bisa back</span>`}
+<span class="cmt">// Catatan: navigate('/login', { replace: true })  => replace history, tidak bisa back</span>
+<span class="cmt">// Catatan: Di Chapter 2, loginApi ini direfactor ke axiosInstance + VITE_API_URL</span>`}
         />
 
         <MistakeBlock>

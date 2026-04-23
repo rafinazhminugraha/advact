@@ -30,48 +30,55 @@ export default function IntroProject() {
 |-- src/
 |   |-- api/
 |   |   |-- axiosInstance.ts       <span class="cmt"># Konfigurasi Axios + interceptor (CH 2)</span>
-|   |   \-- taskApi.ts             <span class="cmt"># Fungsi API untuk task</span>
+|   |   \\-- taskApi.ts            <span class="cmt"># Fungsi API untuk task</span>
 |   |
 |   |-- components/
 |   |   |-- ui/
 |   |   |   |-- Button.tsx
-|   |   |   \-- Input.tsx
+|   |   |   \\-- Input.tsx
 |   |   |-- TaskCard.tsx            <span class="cmt"># Kartu satu task</span>
-|   |   \-- TaskForm.tsx            <span class="cmt"># Form buat/edit task (CH 3)</span>
+|   |   \\-- TaskForm.tsx           <span class="cmt"># Form buat/edit task (CH 3)</span>
 |   |
 |   |-- features/
-|   |   \-- ui/
-|   |       \-- uiSlice.ts          <span class="cmt"># Redux slice untuk UI state (CH 4)</span>
+|   |   \\-- ui/
+|   |       \\-- uiSlice.ts         <span class="cmt"># Redux slice untuk UI state (CH 4)</span>
 |   |
 |   |-- pages/
 |   |   |-- LoginPage.tsx           <span class="cmt"># Halaman login</span>
 |   |   |-- DashboardPage.tsx       <span class="cmt"># Halaman utama berisi daftar task</span>
-|   |   \-- TaskDetailPage.tsx      <span class="cmt"># Detail satu task</span>
+|   |   \\-- TaskDetailPage.tsx     <span class="cmt"># Detail satu task</span>
 |   |
 |   |-- router/
 |   |   |-- AppRouter.tsx           <span class="cmt"># Definisi semua routes (CH 1)</span>
-|   |   \-- ProtectedRoute.tsx      <span class="cmt"># Guard untuk route privat (CH 1)</span>
+|   |   \\-- ProtectedRoute.tsx     <span class="cmt"># Guard untuk route privat (CH 1)</span>
 |   |
 |   |-- store/
 |   |   |-- store.ts                <span class="cmt"># Redux store (CH 4)</span>
-|   |   \-- hooks.ts                <span class="cmt"># Typed hooks Redux (CH 4)</span>
+|   |   \\-- hooks.ts               <span class="cmt"># Typed hooks Redux (CH 4)</span>
 |   |
 |   |-- stores/
-|   |   \-- useAuthStore.ts         <span class="cmt"># Zustand store untuk auth (CH 5)</span>
+|   |   \\-- useAuthStore.ts        <span class="cmt"># Zustand store untuk auth (CH 5)</span>
 |   |
 |   |-- types/
-|   |   \-- index.ts                <span class="cmt"># Shared type definitions</span>
+|   |   \\-- index.ts               <span class="cmt"># Shared type definitions</span>
 |   |
 |   |-- hooks/
-|   |   \-- useTasks.ts             <span class="cmt"># Custom hook untuk query task (CH 2)</span>
+|   |   \\-- useTasks.ts            <span class="cmt"># Custom hook untuk query task (CH 2)</span>
 |   |
-|   \-- App.tsx                     <span class="cmt"># Root component</span>
+|   \\-- App.tsx                    <span class="cmt"># Root component</span>
 |
 |-- src/__tests__/
 |   |-- TaskCard.test.tsx           <span class="cmt"># Unit test komponen (CH 6)</span>
-|   \-- TaskForm.test.tsx           <span class="cmt"># Test form dan validasi (CH 6)</span>
+|   \\-- TaskForm.test.tsx          <span class="cmt"># Test form dan validasi (CH 6)</span>
 |
-\-- vite.config.ts`}
+|-- mock-api/
+|   |-- db.json                     <span class="cmt"># Data mock users + tasks (CH 2)</span>
+|   \\-- server.js                 <span class="cmt"># Server API lokal (CH 2, dipakai CH 2-5)</span>
+|
+|-- .env.example                    <span class="cmt"># Template env: VITE_API_URL=http://localhost:3001/api</span>
+|-- .env                            <span class="cmt"># File env lokal (jangan di-commit)</span>
+|-- package.json                    <span class="cmt"># Scripts: dev, api, dev:full</span>
+\\-- vite.config.ts`}
       />
 
       <CodeBlock
@@ -137,10 +144,20 @@ export default function IntroProject() {
         </li>
         <li>
           <strong>Environment variables</strong> (<code>.env</code> untuk{" "}
-          <code>VITE_API_URL</code>) - ini Vite/project setup biasa, bukan React
-          library
+          <code>VITE_API_URL</code>) - ini memang setup proyek Vite, tapi tetap
+          wajib agar semua contoh API lintas chapter mengarah ke backend mock
+          lokal yang sama
         </li>
       </MistakeBlock>
+
+      <TipBlock>
+        <p>
+          <strong>Supaya alur chapter sinkron:</strong> jalankan
+          <code>npm run dev:full</code> saat belajar agar frontend dan mock API
+          lokal aktif bersamaan. Semua contoh data fetching di Chapter 2, form
+          submit di Chapter 3, dan auth di Chapter 4-5 mengandalkan setup ini.
+        </p>
+      </TipBlock>
 
       <TipBlock>
         <p>
