@@ -14,9 +14,9 @@ const Tag = ({ variant, children }: { variant: string; children: React.ReactNode
 
 export default function ProjectBanner() {
   return (
-    <div className="max-w-[900px] mx-auto px-12 pt-8 pb-4">
-      <div className="bg-[linear-gradient(135deg,rgba(97,218,251,0.08)_0%,rgba(167,139,250,0.06)_100%)] border border-accent/20 rounded-[16px] px-8 py-6 flex items-start gap-6">
-        <div className="w-[50px] h-[50px] bg-accent/[0.12] border border-accent/25 rounded-xl flex items-center justify-center text-[24px] shrink-0">
+    <div className="max-w-225 mx-auto px-12 pt-8 pb-4">
+      <div className="bg-[linear-gradient(135deg,rgba(97,218,251,0.08)_0%,rgba(167,139,250,0.06)_100%)] border border-accent/20 rounded-2xl px-8 py-6 flex items-start gap-6">
+        <div className="w-12.5 h-12.5 bg-accent/12 border border-accent/25 rounded-xl flex items-center justify-center text-[24px] shrink-0">
         ⚙
       </div>
       <div>

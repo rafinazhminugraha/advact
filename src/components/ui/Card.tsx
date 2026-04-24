@@ -24,6 +24,9 @@ export default function Card({
   children,
 }: CardProps) {
   const typeLabel = typeLabelOverride ?? typeLabels[type];
+  const showLabel = Boolean(
+    label && label.trim().toLowerCase() !== typeLabel.trim().toLowerCase(),
+  );
 
   return (
     <div className="h-full bg-surface2 border border-border rounded-[10px] p-4 px-5 flex flex-col">
@@ -33,7 +36,7 @@ export default function Card({
         >
           {typeLabel}
         </div>
-        {label ? (
+        {showLabel ? (
           <span className="font-mono text-[10px] text-muted border border-border rounded px-1.5 py-px">
             {label}
           </span>

@@ -11,7 +11,6 @@ interface SidebarProps {
   subtitle: string;
 }
 
-// ─── Shared nav content (top-level so React never re-creates it) ───────────
 interface NavContentProps {
   activeId: string;
   progress: number;
@@ -33,7 +32,6 @@ function NavContent({
 }: NavContentProps) {
   return (
     <>
-      {/* Logo */}
       <div className="px-5 pt-6 pb-5 border-b border-border mb-3">
         <Link
           to="/"
@@ -51,68 +49,68 @@ function NavContent({
         />
       </div>
 
-      {/* Progress */}
       <div className="px-5 py-3 mb-1">
         <div className="flex justify-between text-[11px] text-muted mb-1.5">
           <span>Progress belajar</span>
           <span>{progress}%</span>
         </div>
-        <div className="h-[3px] bg-surface3 rounded-full overflow-hidden">
+        <div className="h-0.75 bg-surface3 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-accent to-accent2 rounded-full transition-[width] duration-300 ease-out"
+            className="h-full bg-linear-to-r from-accent to-accent2 rounded-full transition-[width] duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
-      {/* Nav Groups */}
       {navigationData.map((group, gi) => (
         <div key={gi}>
           {group.sectionLabel && (
-            <div className="px-5 pt-2 pb-1 text-[10px] font-semibold tracking-[0.1em] uppercase text-muted mt-2">
+            <div className="px-5 pt-2 pb-1 text-[10px] font-semibold tracking-widest uppercase text-muted mt-2">
               {group.sectionLabel}
             </div>
           )}
           {group.chapter && (
-            <div className="flex items-center gap-2 px-5 pt-2 pb-1 mt-1">
-              <span className="font-mono font-bold text-[10px] text-accent2 bg-accent2/10 border border-accent2/20 rounded px-1.5 py-px shrink-0">
-                {group.chapter.num}
-              </span>
-              <span className="text-[11px] font-semibold text-muted2 tracking-[0.04em]">
-                {group.chapter.label}
-              </span>
+            <div className="px-5 pt-2 pb-1 text-[10px] font-semibold tracking-widest uppercase text-muted mt-2">
+              {group.chapter.num
+                ? `${group.chapter.num} - ${group.chapter.label}`
+                : group.chapter.label}
             </div>
           )}
-          {group.items.map((item) => {
-            const isActive = activeId === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                data-nav-id={item.id}
-                onClick={() => onLinkClick(item.id)}
-                className={`flex w-full items-center gap-2 px-5 py-[6px] text-[12.5px] border-l-2 transition-all duration-150 text-left bg-transparent cursor-pointer ${
-                  isActive
-                    ? "text-accent border-accent bg-accent/[0.06] font-medium"
-                    : "text-muted2 border-transparent hover:text-text hover:bg-surface2"
-                }`}
-              >
-                <span
-                  className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-150 ${
-                    isActive ? "bg-accent" : "bg-surface3"
+          <div className="relative ml-5 border-l border-border/80">
+            {group.items.map((item) => {
+              const isActive = activeId === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  data-nav-id={item.id}
+                  onClick={() => onLinkClick(item.id)}
+                  className={`group relative flex w-full items-stretch text-[12.5px] text-left transition-all duration-150 cursor-pointer ${
+                    isActive
+                      ? "text-text font-semibold"
+                      : "text-muted2 hover:text-text"
                   }`}
-                />
-                {item.label}
-              </button>
-            );
-          })}
+                >
+                  <span
+                    className={`absolute left-0 top-0 bottom-0 w-px rounded-full transition-all duration-150 ${
+                      isActive
+                        ? "bg-text shadow-[0_0_10px_rgba(255,255,255,0.35)]"
+                        : "bg-transparent group-hover:bg-muted2"
+                    }`}
+                  />
+                  <span className="flex w-full items-center py-2 pl-4 pr-4 truncate">
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       ))}
     </>
   );
 }
 
-// ─── Main Sidebar component ────────────────────────────────────────────────
 export default function Sidebar({
   activeId,
   setActiveId,
@@ -124,7 +122,6 @@ export default function Sidebar({
   const desktopRef = useRef<HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Auto-scroll the desktop sidebar to keep the active link visible
   useEffect(() => {
     if (!activeId || !desktopRef.current) return;
     const activeLink = desktopRef.current.querySelector(
@@ -159,10 +156,9 @@ export default function Sidebar({
 
   return (
     <>
-      {/* ── DESKTOP sidebar — identical to original, hidden on mobile ── */}
       <nav
         ref={desktopRef}
-        className="w-[270px] min-w-[270px] bg-surface border-r border-border sticky top-0 h-screen overflow-y-auto pb-8 [scrollbar-width:thin] [scrollbar-color:var(--color-surface3)_transparent] hidden md:block"
+        className="w-67.5 min-w-67.5 bg-surface border-r border-border sticky top-0 h-screen overflow-y-auto pb-8 [scrollbar-width:thin] [scrollbar-color:var(--color-surface3)_transparent] hidden md:block"
       >
         <NavContent
           activeId={activeId}
@@ -175,7 +171,6 @@ export default function Sidebar({
         />
       </nav>
 
-      {/* ── MOBILE: hamburger button (only visible on mobile) ─────────── */}
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Open navigation"
@@ -196,7 +191,6 @@ export default function Sidebar({
         </svg>
       </button>
 
-      {/* ── MOBILE: backdrop (clicking closes drawer) ─────────────────── */}
       <div
         onClick={() => setMobileOpen(false)}
         className={`md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
@@ -206,13 +200,11 @@ export default function Sidebar({
         }`}
       />
 
-      {/* ── MOBILE: slide-in drawer ────────────────────────────────────── */}
       <div
-        className={`md:hidden fixed top-0 left-0 z-50 h-full w-[270px] bg-surface border-r border-border overflow-y-auto pb-8 [scrollbar-width:thin] [scrollbar-color:var(--color-surface3)_transparent] transition-transform duration-300 ease-in-out ${
+        className={`md:hidden fixed top-0 left-0 z-50 h-full w-67.5 bg-surface border-r border-border overflow-y-auto pb-8 [scrollbar-width:thin] [scrollbar-color:var(--color-surface3)_transparent] transition-transform duration-300 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Close button — inside the panel so it slides off-screen with it */}
         <div className="flex justify-start px-4 pt-4 pb-2">
           <button
             onClick={() => setMobileOpen(false)}

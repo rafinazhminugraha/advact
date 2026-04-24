@@ -106,7 +106,7 @@ function PromptContent({ prompt }: { prompt: string }) {
               key={key}
               className="prompt-code-scroll text-[12px] leading-[1.6] font-mono bg-surface3 border border-border rounded-md px-3 py-2 overflow-x-auto text-text"
             >
-              <code className="block whitespace-pre !bg-transparent !border-0 !rounded-none !px-0 !py-0 !text-text">
+              <code className="block whitespace-pre bg-transparent! border-0! rounded-none! px-0! py-0! text-text!">
                 {chunk}
               </code>
             </pre>
