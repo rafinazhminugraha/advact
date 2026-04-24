@@ -1,20 +1,5 @@
 /* Navigation data for the sidebar */
-
-export interface NavChapter {
-  num: string;
-  label: string;
-}
-
-export interface NavItemData {
-  id: string;
-  label: string;
-}
-
-export interface NavGroup {
-  chapter?: NavChapter;
-  sectionLabel?: string;
-  items: NavItemData[];
-}
+import type { NavGroup } from "../types/navigation";
 
 export const navigationData: NavGroup[] = [
   {

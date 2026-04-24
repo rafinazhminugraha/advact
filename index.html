@@ -11,6 +11,20 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.onerror = function(msg, url, lineNo, columnNo, error) {
+        var div = document.createElement('div');
+        div.style.color = 'red';
+        div.style.position = 'fixed';
+        div.style.top = '0';
+        div.style.left = '0';
+        div.style.backgroundColor = 'white';
+        div.style.padding = '10px';
+        div.style.zIndex = '9999';
+        div.innerText = 'Error: ' + msg + ' at ' + url + ':' + lineNo;
+        document.body.appendChild(div);
+      };
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

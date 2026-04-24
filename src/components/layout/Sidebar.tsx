@@ -1,30 +1,54 @@
 import { useEffect, useRef, useState } from "react";
-import { navigationData } from "../../data/navigation";
+import { Link } from "react-router-dom";
+import type { NavGroup } from "../../types/navigation";
 
 interface SidebarProps {
   activeId: string;
   setActiveId: (id: string) => void;
   progress: number;
+  navigationData: NavGroup[];
+  title: string;
+  subtitle: string;
 }
 
 // ─── Shared nav content (top-level so React never re-creates it) ───────────
 interface NavContentProps {
   activeId: string;
   progress: number;
+  onHomeClick: () => void;
   onLinkClick: (id: string) => void;
+  navigationData: NavGroup[];
+  title: string;
+  subtitle: string;
 }
 
-function NavContent({ activeId, progress, onLinkClick }: NavContentProps) {
+function NavContent({
+  activeId,
+  progress,
+  onHomeClick,
+  onLinkClick,
+  navigationData,
+  title,
+  subtitle,
+}: NavContentProps) {
   return (
     <>
       {/* Logo */}
       <div className="px-5 pt-6 pb-5 border-b border-border mb-3">
+        <Link
+          to="/"
+          onClick={onHomeClick}
+          className="mb-4 inline-flex items-center gap-2 rounded-md border border-border bg-surface2 px-3 py-1.5 text-[11px] font-semibold tracking-[0.08em] uppercase text-accent hover:bg-surface3 transition-colors"
+        >
+          Home
+        </Link>
         <span className="font-mono text-[11px] text-accent tracking-[0.08em] uppercase block mb-1">
-          Advact
+          {title}
         </span>
-        <h2 className="text-[15px] font-semibold text-text leading-[1.3]">
-          Advance React Learning<br />Junior Dev Roadmap
-        </h2>
+        <h2
+          className="text-[15px] font-semibold text-text leading-[1.3]"
+          dangerouslySetInnerHTML={{ __html: subtitle }}
+        />
       </div>
 
       {/* Progress */}
@@ -62,11 +86,12 @@ function NavContent({ activeId, progress, onLinkClick }: NavContentProps) {
           {group.items.map((item) => {
             const isActive = activeId === item.id;
             return (
-              <a
+              <button
                 key={item.id}
-                href={`#${item.id}`}
+                type="button"
+                data-nav-id={item.id}
                 onClick={() => onLinkClick(item.id)}
-                className={`flex items-center gap-2 px-5 py-[6px] text-[12.5px] border-l-2 transition-all duration-150 no-underline ${
+                className={`flex w-full items-center gap-2 px-5 py-[6px] text-[12.5px] border-l-2 transition-all duration-150 text-left bg-transparent cursor-pointer ${
                   isActive
                     ? "text-accent border-accent bg-accent/[0.06] font-medium"
                     : "text-muted2 border-transparent hover:text-text hover:bg-surface2"
@@ -78,7 +103,7 @@ function NavContent({ activeId, progress, onLinkClick }: NavContentProps) {
                   }`}
                 />
                 {item.label}
-              </a>
+              </button>
             );
           })}
         </div>
@@ -88,18 +113,30 @@ function NavContent({ activeId, progress, onLinkClick }: NavContentProps) {
 }
 
 // ─── Main Sidebar component ────────────────────────────────────────────────
-export default function Sidebar({ activeId, setActiveId, progress }: SidebarProps) {
+export default function Sidebar({
+  activeId,
+  setActiveId,
+  progress,
+  navigationData,
+  title,
+  subtitle,
+}: SidebarProps) {
   const desktopRef = useRef<HTMLElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Auto-scroll the desktop sidebar to keep the active link visible
   useEffect(() => {
     if (!activeId || !desktopRef.current) return;
-    const activeLink = desktopRef.current.querySelector(`a[href="#${activeId}"]`);
+    const activeLink = desktopRef.current.querySelector(
+      `[data-nav-id="${activeId}"]`,
+    );
     if (activeLink) {
       const sidebarRect = desktopRef.current.getBoundingClientRect();
       const linkRect = activeLink.getBoundingClientRect();
-      if (linkRect.top < sidebarRect.top || linkRect.bottom > sidebarRect.bottom) {
+      if (
+        linkRect.top < sidebarRect.top ||
+        linkRect.bottom > sidebarRect.bottom
+      ) {
         activeLink.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     }
@@ -107,6 +144,16 @@ export default function Sidebar({ activeId, setActiveId, progress }: SidebarProp
 
   const handleLinkClick = (id: string) => {
     setActiveId(id);
+
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    setMobileOpen(false);
+  };
+
+  const handleHomeClick = () => {
     setMobileOpen(false);
   };
 
@@ -120,7 +167,11 @@ export default function Sidebar({ activeId, setActiveId, progress }: SidebarProp
         <NavContent
           activeId={activeId}
           progress={progress}
+          onHomeClick={handleHomeClick}
           onLinkClick={handleLinkClick}
+          navigationData={navigationData}
+          title={title}
+          subtitle={subtitle}
         />
       </nav>
 
@@ -130,9 +181,17 @@ export default function Sidebar({ activeId, setActiveId, progress }: SidebarProp
         aria-label="Open navigation"
         className="md:hidden fixed top-4 right-4 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-surface border border-border text-text shadow-lg"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        >
           <line x1="2" y1="4.5" x2="16" y2="4.5" />
-          <line x1="2" y1="9"   x2="16" y2="9"   />
+          <line x1="2" y1="9" x2="16" y2="9" />
           <line x1="2" y1="13.5" x2="16" y2="13.5" />
         </svg>
       </button>
@@ -141,7 +200,9 @@ export default function Sidebar({ activeId, setActiveId, progress }: SidebarProp
       <div
         onClick={() => setMobileOpen(false)}
         className={`md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          mobileOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
       />
 
@@ -158,7 +219,15 @@ export default function Sidebar({ activeId, setActiveId, progress }: SidebarProp
             aria-label="Close navigation"
             className="w-8 h-8 flex items-center justify-center rounded-lg bg-surface2 border border-border text-muted hover:text-text transition-colors"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            >
               <line x1="1" y1="1" x2="13" y2="13" />
               <line x1="13" y1="1" x2="1" y2="13" />
             </svg>
@@ -168,7 +237,11 @@ export default function Sidebar({ activeId, setActiveId, progress }: SidebarProp
         <NavContent
           activeId={activeId}
           progress={progress}
+          onHomeClick={handleHomeClick}
           onLinkClick={handleLinkClick}
+          navigationData={navigationData}
+          title={title}
+          subtitle={subtitle}
         />
       </div>
     </>
